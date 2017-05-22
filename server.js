@@ -24,37 +24,37 @@ app.get('/', function(req, res) {
 });
 
 // shopping cart page
-app.get('/cart') {
+app.get('/cart', function(req, res) {
 
 });
 
 // retrive all items in stock
-app.get('/collections') {
+app.get('/collections', function(req, res) {
 
 });
 
 // retrive the list of all items in category1
-app.get('/collections/category1') {
+app.get('/collections/category1', function(req, res) {
 
 });
 
 // retrive the list of all items in category2
-app.get('/collections/category2') {
+app.get('/collections/category2', function(req, res) {
 
 });
 
 // retrive the list of all items in category3
-app.get('/collections/category3') {
+app.get('/collections/category3', function(req, res) {
 
 });
 
 // login request
-app.get('/login') {
+app.get('/login', function(req, res) {
 
 });
 
 // register request
-app.get('/register') {
+app.get('/register', function(req, res) {
 
 });
 
