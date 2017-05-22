@@ -64,11 +64,11 @@ app.listen(port, function(error) {
 });
 
 // resource locations
-var css = '/views/css/stylesheet.css';
-var cart = '/views/shopping_cart.js';
+var css = '/css/stylesheet.css';
+var cart = '/shopping_cart.js';
 var logo = '/resources/logo.png';
 
 // resource requests
-app.get(css, function(req, res) { res.sendFile(__dirname + css) });
-app.get(cart, function(req, res) { res.sendFile(__dirname + cart) });
+app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
+app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
 app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
