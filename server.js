@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // root page
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/views/index.html');
 });
 
 // shopping cart page
@@ -63,4 +63,12 @@ app.listen(port, function(error) {
     console.log('Listening on port ' + port);
 });
 
+// resource locations
+var css = '/views/css/stylesheet.css';
+var cart = '/views/shopping_cart.js';
+var logo = '/resources/logo.png';
+
 // resource requests
+app.get(css, function(req, res) { res.sendFile(__dirname + css) });
+app.get(cart, function(req, res) { res.sendFile(__dirname + cart) });
+app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
