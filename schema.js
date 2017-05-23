@@ -16,14 +16,7 @@ client.connect();
     varchar(128) : Product category
     varchar(255) : Path to image resource
 */
-var queryString = 'create table products (name varchar(255), ' +
-                                                'description varchar(1024), ' +
-                                                'price numeric, ' +
-                                                'new boolean, ' +
-                                                'sale boolean, ' +
-                                                'stock integer, ' +
-                                                'category varchar(255), ' +
-                                                'imagePath varchar(255))';
+var queryString = 'create table products (name varchar(255), description varchar(1024), price numeric, new boolean, sale boolean, stock integer, category varchar(255), imagePath varchar(255))';
 var makeProductTable = client.query(queryString);
 makeProductTable.on('end', function(result) {
     client.end();
