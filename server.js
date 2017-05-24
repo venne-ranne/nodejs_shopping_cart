@@ -77,7 +77,7 @@ var mPicsWoff = '/fonts/modernpics-webfont.woff';
 app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
 app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
 app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
-app.get(mPicsTtf), function(req, res) { res.sendFile(__dirname + '/views' + mPicsTtf) });
+app.get(mPicsTtf, function(req, res) { res.sendFile(__dirname + '/views' + mPicsTtf) });
 app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + '/views' + mPicsWoff) });
 
 // start server listening
