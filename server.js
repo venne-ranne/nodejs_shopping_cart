@@ -70,8 +70,8 @@ app.get('/register', function(req, res) {
 var css = '/css/stylesheet.css';
 var cart = '/shopping_cart.js';
 var logo = '/resources/logo.png';
-var mPicsTtf = '/views/fonts/modernpics-webfont.ttf';
-var mPicsWoff = '/views/fonts/modernpics-webfont.woff';
+var mPicsTtf = '/fonts/modernpics-webfont.ttf';
+var mPicsWoff = '/fonts/modernpics-webfont.woff';
 
 // resource requests
 app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
