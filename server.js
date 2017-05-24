@@ -70,11 +70,15 @@ app.get('/register', function(req, res) {
 var css = '/css/stylesheet.css';
 var cart = '/shopping_cart.js';
 var logo = '/resources/logo.png';
+var mPicsTtf = '/fonts/modernpics-webfont.ttf';
+var mPicsWoff = '/fonts/modernpics-webfont.woff';
 
 // resource requests
 app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
 app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
 app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
+app.get(mPicsTtf), function(req, res) { res.sendFile(__dirname + '/views' + mPicsTtf) });
+app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + '/views' + mPicsWoff) });
 
 // start server listening
 app.listen(port, function(error) {
