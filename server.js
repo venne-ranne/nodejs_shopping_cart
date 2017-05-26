@@ -20,13 +20,16 @@ var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 var app = express();
 
 // start server listening
-https.createServer({
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath),
-    passphrase: 'aaaa'
-    }, app).listen(port, function() {
-        console.log('Server listening on port ' + port);
+app.listen(port, function() {
+    console.log("Server running on port : " + port);
 });
+// https.createServer({
+//     key: fs.readFileSync(keyPath),
+//     cert: fs.readFileSync(certPath),
+//     passphrase: 'aaaa'
+//     }, app).listen(port, function() {
+//         console.log('Server listening on port ' + port);
+// });
 
 // connect to postgresql database
 var client = new pg.Client(connectionString);
@@ -38,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // root page
 app.get('/', function(req, res) {
-    res.writeHead(200);
+    //res.writeHead(200);
     res.sendFile(__dirname + '/views/index.html');
 });
 
