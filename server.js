@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // root page
 app.get('/', function(req, res) {
+    res.writeHead(200);
     res.sendFile(__dirname + '/views/index.html');
 });
 
