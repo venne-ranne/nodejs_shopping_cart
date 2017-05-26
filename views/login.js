@@ -36,8 +36,6 @@ $(document).ready(function(e) {
         console.log("loggin in");
     });
 
-
-
   var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
   var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); }, topbarML = function() { $('.header').fadeTo(fadeSpeed,fadeTo); };
   var inside = false;
