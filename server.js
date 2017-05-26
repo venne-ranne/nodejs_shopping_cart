@@ -7,7 +7,7 @@ var fs = require('fs');
 var request;
 
 // server parameters
-//var connectionString = process.env.DATABASE_URL;
+var connectionString = process.env.DATABASE_URL;
 var port = process.env.PORT;
 var keyPath = __dirname + '/key.pem';
 var certPath = __dirname + '/cert.pem';
