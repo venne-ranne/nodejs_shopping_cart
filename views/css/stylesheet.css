@@ -1,6 +1,6 @@
-html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, 
-acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, 
-strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, 
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr,
+acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike,
+strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label,
 legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details,
 embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section,
 summary, time, mark, audio, video {
@@ -8,22 +8,22 @@ summary, time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  vertical-align: baseline; 
+  vertical-align: baseline;
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-  display: block; 
+  display: block;
 }
 
 @font-face {
   font-family: 'ModernPictograms';
-  src: url("../views/fonts/modernpics-webfont.eot");
-  src: url("../views/fonts/modernpics-webfont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-       url("../views/fonts/modernpics-webfont.woff") format("woff"),     /* Modern Browsers */
-       url("../views/fonts/modernpics-webfont.ttf") format("truetype"),  /* Safari, Android, iOS */
-       url("../views/_fonts/modernpics-webfont.svg#ModernPictogramsNormal") format("svg");  /* Legacy iOS */
+  src: url("../fonts/modernpics-webfont.eot");
+  src: url("../fonts/modernpics-webfont.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+       url("../fonts/modernpics-webfont.woff") format("woff"),     /* Modern Browsers */
+       url("../fonts/modernpics-webfont.ttf") format("truetype"),  /* Safari, Android, iOS */
+       url("../fonts/modernpics-webfont.svg#ModernPictogramsNormal") format("svg");  /* Legacy iOS */
   font-weight: normal;
-  font-style: normal; 
+  font-style: normal;
 }
 
 body {
@@ -36,7 +36,7 @@ body {
   font-family: 'Quattrocento Sans', sans-serif;
   float: left;
   padding: 10px 15px 10px 15px;
-  display: block;    
+  display: block;
   text-decoration: none;
 }
 
@@ -45,12 +45,12 @@ body {
   font-size: 16px;
 }
 
-header { 
-    background:#ffffff; 
-    position:fixed; 
-    top:0; 
-    left:0; 
-    z-index:2000; 
+header {
+    background:#ffffff;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:2000;
     width:100%;
 }
 
@@ -101,7 +101,7 @@ header button {
   font-family: 'Quattrocento Sans', sans-serif;
   float: left;
   padding: 15px 20px 15px 20px;
-  display: block;    
+  display: block;
   text-decoration: none;
 }
 
