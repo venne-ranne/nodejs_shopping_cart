@@ -130,3 +130,42 @@ header button {
   height: 500px;
   margin-top: 80px;
 }
+
+#login-dialog{
+  font-family: 'Quattrocento Sans', sans-serif;
+  padding: 35px;
+  margin: auto;
+}
+
+.login-form input, .register-form input{
+  width: 100%;
+  height: 30px;
+  font-size: 0.8em;
+  font-weight: normal;
+  margin-top: 8px;
+  padding-left: 3px;
+}
+
+#signin-btn, #register-btn{
+  font-family: 'Quattrocento Sans', sans-serif;
+  width: 100px;
+  color: black;
+  font-size:1em;
+	display: inline-block;
+	outline: none;
+	border:1px solid;
+  padding: 5px 10px 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 3px;
+}
+
+#login-submit, #register-submit{
+  background: black;
+  color: white;
+  cursor: pointer;
+  height: 30px;
+  padding: 3px;
+  width: 103%;
+  margin-top: 10px;
+}

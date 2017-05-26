@@ -1,46 +1,70 @@
 <!doctype html>
 <html>
+
 <head>
 <meta charset="UTF-8">
-<title>Blak Rabbit</title>
+<title>Black Rabbit</title>
 <link href="https://fonts.googleapis.com/css?family=Quattrocento+Sans|Quicksand" rel="stylesheet">
 <link href="css/stylesheet.css" rel="stylesheet">
-<script src="scripts/jquery-3.2.1.min.js"></script>
-<script src="scripts/jquery-ui.min.js"></script>
+<link href="css/jquery-ui.css" rel="stylesheet">
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.js"></script>
 <script src="shopping_cart.js"></script>
 </head>
+
 <body>
 
-	<header>
-		<ul>
-			<li class = "tabs"><button>LOG IN</button></li>
-    		<li class = "tabs"><button><span id = "cart-icon">i</span> CART</button></li>
-    		<li class = "tabs"><button>CHECKOUT</button></li>
-    	</ul>
-	</header>
+<header>
+	<ul>
+		<li class = "tabs"><button id = "login-btn">LOG IN</button></li>
+    <li class = "tabs"><button><span id = "cart-icon">i</span> CART</button></li>
+    <li class = "tabs"><button>CHECKOUT</button></li>
+  </ul>
+</header>
 
-	<div class = "container-content">
+<div class = "container-content">
+	<div class = "logo">
+		<a href="#" title="Black Rabbit">
+			<img src="../resources/logo.png" alt="Black Rabbit"/>
+		</a>
+</div>
 
-		<div class = "logo">
-			<a href="#" title="Black Rabbit">
-				<img src="../resources/logo.png" alt="Black Rabbit"/>
-       		</a>
-		</div>
+<div class = "menu">
+	<ul>
+		<li class = "menu-tabs"><button>PRODUCTS</button></li>
+    <li class = "menu-tabs"><button>NEW</button></li>
+    <li class = "menu-tabs"><button>SALE</button></li>
+	</ul>
+</div>
 
-		<div class = "menu">
-			<ul>
-				<li class = "menu-tabs"><button>SHOP NOW</button></li>
-    			<li class = "menu-tabs"><button>NEW</button></li>
-    			<li class = "menu-tabs"><button>SALE</button></li>
-    			<li class = "menu-tabs"><button>BRANDS</button></li>
-    		</ul>
-		</div>
+<div class = "home-features">
+</div>
+<!--log in form popup dialog box-->
+<div id="login-dialog" title="Login now!">
 
-		<div class = "home-features">
-
-		</div>
-
+	<div class="selection">
+		<button id="signin-btn">SIGN IN</button>
+	  <button id="register-btn">REGISTER</button>
 	</div>
+
+	<div id = "login-container">
+		<form class = "login-form">
+			<input type="email" name="email" id="email" placeholder="Email">
+			<input type="password" name="password" id="password" placeholder="Password">
+			<input type="button" value="LOG IN" id="login-submit">
+		</form>
+	</div>
+
+	<div id = "register-container">
+		<form class = "register-form">
+			<input type="text" name="name-reg" id="name-reg" placeholder="Name">
+			<input type="email" name="email-reg" id="email-reg" placeholder="Email">
+			<input type="password" name="password-reg" id="password-reg" placeholder="Password">
+			<input type="password" name="password-reg-confirm" id="password-reg-confirm" placeholder="Confirm Password">
+			<input type="button" value="CREATE ACCOUNT" id="register-submit">
+		</form>
+	</div>
+</div>
 
 </body>
 </html>
