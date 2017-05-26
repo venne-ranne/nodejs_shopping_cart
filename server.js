@@ -2,16 +2,31 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
-var request
+var https = require('https');
+var fs = require('fs');
+var request;
 
 // server parameters
 var connectionString = process.env.DATABASE_URL;
 var port = process.env.PORT;
+var keyPath = __dirname + '/key.pem';
+var certPath = __dirname + '/cert.pem';
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 
+
+
 // start express application
 var app = express();
+
+// start server listening
+https.createServer({
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath),
+    passphrase: 'aaaa'
+    }, app).listen(port, function() {
+        console.log('Server listening on port ' + port);
+});
 
 // connect to postgresql database
 var client = new pg.Client(connectionString);
@@ -70,13 +85,12 @@ app.get('/register', function(req, res) {
 var css = '/css/stylesheet.css';
 var cart = '/shopping_cart.js';
 var logo = '/resources/logo.png';
+var mPicsTtf = '/views/fonts/modernpics-webfont.ttf';
+var mPicsWoff = '/views/fonts/modernpics-webfont.woff';
 
 // resource requests
 app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
 app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
 app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
-
-// start server listening
-app.listen(port, function(error) {
-    console.log('Listening on port ' + port);
-});
+app.get(mPicsTtf, function(req, res) { res.sendFile(__dirname + mPicsTtf) });
+app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + mPicsWoff) });
