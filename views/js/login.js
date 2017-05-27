@@ -6,14 +6,18 @@ $(document).ready(function(e) {
     $('#login-dialog').dialog({
       modal:true,
   		autoOpen:false,
-      autoResize:true
+      autoResize:true,
+      minHeight: 300,
+      minWidth: 500,
+			close: function(){  // to reset the textfield to the default values
+				$('#login-dialog [type=email]').val('');
+        $('#login-dialog [type=password]').val('');
+        $('#login-dialog [type=text]').val('');
+			}
     });
 
     $('#login-btn').on('click', function(){
 		    $('#login-dialog').dialog('open');
-      //  $('#register-container').hide();
-        //activate_tabs(register_btn, login_btn);
-        //$('#login-container').show();
     }); //end click function
 
     $('#register-btn').on('click', function(){

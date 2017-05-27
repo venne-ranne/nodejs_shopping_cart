@@ -7,8 +7,8 @@ var fs = require('fs');
 var request;
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
-var port = process.env.PORT;
+var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/yappvivi_jdbc";
+var port = process.env.PORT || 8080; ;
 var keyPath = __dirname + '/key.pem';
 var certPath = __dirname + '/cert.pem';
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
@@ -19,10 +19,14 @@ var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 // start express application
 var app = express();
 
+// static files such as css, js, resource files in views folder
+app.use(express.static('./views'));
+
 // start server listening
 app.listen(port, function() {
     console.log("Server running on port : " + port);
 });
+
 // https.createServer({
 //     key: fs.readFileSync(keyPath),
 //     cert: fs.readFileSync(certPath),
@@ -53,6 +57,25 @@ app.get('/cart', function(req, res) {
 // retrive all items in stock
 app.get('/collections', function(req, res) {
     // select * from products
+    var results = [];
+    var query, queryCmd;
+    pg.connect(connectionString, (err, client, done) => {
+      if (err){
+        done();
+        console.log("get all products error");
+        console.log(err);
+        return res.status(500).json({success: false, data: err});
+      }
+      queryCmd = 'SELECT * FROM products;';
+      query = client.query(queryCmd);
+      query.on('row', (row) => {
+        results.push(row);
+      });
+      query.on('end', () => {
+        done();
+        return res.json(results);
+      });
+    });
 });
 
 // retrive the list of all items in category 'art'
@@ -86,15 +109,15 @@ app.get('/register', function(req, res) {
 });
 
 // resource locations
-var css = '/css/stylesheet.css';
-var cart = '/shopping_cart.js';
-var logo = '/resources/logo.png';
-var mPicsTtf = '/views/fonts/modernpics-webfont.ttf';
-var mPicsWoff = '/views/fonts/modernpics-webfont.woff';
+//var css = '/css/stylesheet.css';
+//var cart = '/shopping_cart.js';
+//var logo = '/resources/logo.png';
+//var mPicsTtf = '/views/fonts/modernpics-webfont.ttf';
+//var mPicsWoff = '/views/fonts/modernpics-webfont.woff';
 
 // resource requests
-app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
-app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
-app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
-app.get(mPicsTtf, function(req, res) { res.sendFile(__dirname + mPicsTtf) });
-app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + mPicsWoff) });
+//app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
+//app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
+//app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
+//app.get(mPicsTtf, function(req, res) { res.sendFile(__dirname + mPicsTtf) });
+//app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + mPicsWoff) });
