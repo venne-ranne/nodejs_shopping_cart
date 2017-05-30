@@ -250,3 +250,73 @@ header button {
 .products-list_single:hover .cart-submit{
 
 }
+#nav_wrap{
+	margin-top:15px
+}
+
+#nav_wrap ul{
+	list-style:none;
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0
+}
+
+#nav_wrap ul a{
+	display:block;
+	color:#333;
+	text-decoration:none;
+	font-size:16px;
+	line-height:32px;
+	padding:0 15px;
+	font-family: 'Quattrocento Sans', sans-serif;
+}
+
+#nav_wrap ul li{
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0
+}
+
+#nav_wrap ul li.current-menu-item
+{
+	background:#ddd
+}
+
+#nav_wrap ul li:hover{
+	background:#f6f6f6
+}
+
+#nav_wrap ul ul{
+	display:none;
+	position:absolute;
+	top:100%;
+	left:0;
+	background:#fff;
+	padding:0
+}
+
+#nav_wrap ul ul li{
+	float:none;
+	width:200px
+}
+
+#nav_wrap ul ul a{
+	line-height:120%;
+	padding:10px 15px
+}
+
+#nav_wrap ul ul ul{
+	top:0;
+	left:100%
+}
+
+#nav_wrap ul li:hover > ul{
+	display:block
+}
+
+/*arrow down */
+#arrow-down{
+     font-size: 11px;
+}
