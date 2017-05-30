@@ -22,22 +22,22 @@ var app = express();
 // static files such as css, js, resource files in views folder
 app.use(express.static('./views'));
 
-// start server listening
-// app.listen(port, function() {
-//     console.log("Server running on port : " + port);
-// });
-
-https.createServer({
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath),
-    passphrase: 'aaaa'
-    }, app).listen(port, function() {
-        console.log('Server listening on port ' + port);
+//start server listening
+app.listen(port, function() {
+    console.log("Server running on port : " + port);
 });
 
+// https.createServer({
+//     key: fs.readFileSync(keyPath),
+//     cert: fs.readFileSync(certPath),
+//     passphrase: 'aaaa'
+//     }, app).listen(port, function() {
+//         console.log('Server listening on port ' + port);
+// });
+
 // connect to postgresql database
-var client = new pg.Client(connectionString);
-client.connect();
+//var client = new pg.Client(connectionString);
+//client.connect();
 
 // setup body parser to use JSON
 app.use(bodyParser.json());
@@ -100,6 +100,7 @@ app.get('/collections/vase', function(req, res) {
 
 // login request
 app.post('/login', function(req, res) {
+    // request body consists of JSON with email and hashed password
     console.log('request reciecved to login');
 });
 

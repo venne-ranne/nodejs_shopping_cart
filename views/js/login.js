@@ -42,7 +42,6 @@ $(document).ready(function(e) {
     });
 
     $('#login-submit').on('click', function(){
-        console.log("loggin in");
         // get form data
         var username = $('#email').val();
         var plainTextPassword = $('#password').val();
@@ -60,6 +59,7 @@ $(document).ready(function(e) {
             success: function(data) {
                 // recieve token to use in future communications with server
                 // change site to reflect logged on status
+                console.log("loggin in");
             }
         });
     });
@@ -70,9 +70,6 @@ $(document).ready(function(e) {
         var username = $('#email-reg').val();
         var password1 = $('#password-reg').val();
         var password2 = $('#password-reg-confirm').val();
-        console.log(password1);
-        console.log(password2);
-        console.log(password1 === password2);
         // check passwords match
         if (password1 !== password2) {
             // could be prettier
@@ -88,7 +85,13 @@ $(document).ready(function(e) {
             };
             console.log(JSON.stringify(formData));
             // send post request with form data as JSON to /register route
-            console.log("loggin in");
+            $.ajax({
+                method: 'POST',
+                url: '/register',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                dataType: 'json'
+            });
         }
     });
 
