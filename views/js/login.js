@@ -65,8 +65,31 @@ $(document).ready(function(e) {
     });
 
     $('#register-submit').on('click', function(){
-        console.log("loggin in");
-
+        // get form data
+        var realname = $('#name-reg').val();
+        var username = $('#email-reg').val();
+        var password1 = $('#password-reg').val();
+        var password2 = $('#password-reg-confirm').val();
+        console.log(password1);
+        console.log(password2);
+        console.log(password1 === password2);
+        // check passwords match
+        if (password1 !== password2) {
+            // could be prettier
+            alert('Passwords do not match');
+        } else {
+            // salt and hash password
+            var saltedPassword = password1 + salt;
+            var hashedPassword = CryptoJS.SHA256(saltedPassword).toString();
+            var formData = {
+                email:username,
+                password:hashedPassword,
+                name:realname,
+            };
+            console.log(JSON.stringify(formData));
+            // send post request with form data as JSON to /register route
+            console.log("loggin in");
+        }
     });
 
   var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
