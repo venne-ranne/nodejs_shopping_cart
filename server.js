@@ -22,7 +22,7 @@ var app = express();
 // static files such as css, js, resource files in views folder
 app.use(express.static('./views'));
 
-// start server listening
+//start server listening
 app.listen(port, function() {
     console.log("Server running on port : " + port);
 });
@@ -36,8 +36,8 @@ app.listen(port, function() {
 // });
 
 // connect to postgresql database
-var client = new pg.Client(connectionString);
-client.connect();
+//var client = new pg.Client(connectionString);
+//client.connect();
 
 // setup body parser to use JSON
 app.use(bodyParser.json());
@@ -99,25 +99,12 @@ app.get('/collections/vase', function(req, res) {
 });
 
 // login request
-app.get('/login', function(req, res) {
-
+app.post('/login', function(req, res) {
+    // request body consists of JSON with email and hashed password
+    console.log('request reciecved to login');
 });
 
 // register request
 app.get('/register', function(req, res) {
 
 });
-
-// resource locations
-//var css = '/css/stylesheet.css';
-//var cart = '/shopping_cart.js';
-//var logo = '/resources/logo.png';
-//var mPicsTtf = '/views/fonts/modernpics-webfont.ttf';
-//var mPicsWoff = '/views/fonts/modernpics-webfont.woff';
-
-// resource requests
-//app.get(css, function(req, res) { res.sendFile(__dirname + '/views' + css) });
-//app.get(cart, function(req, res) { res.sendFile(__dirname + '/views' + cart) });
-//app.get(logo, function(req, res) { res.sendFile(__dirname + logo) });
-//app.get(mPicsTtf, function(req, res) { res.sendFile(__dirname + mPicsTtf) });
-//app.get(mPicsWoff, function(req, res) { res.sendFile(__dirname + mPicsWoff) });

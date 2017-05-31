@@ -2,6 +2,7 @@ $(document).ready(function(e) {
 
     var login_btn = document.getElementById('signin-btn');
     var register_btn = document.getElementById('register-btn');
+    var salt = -1;
 
     $('#login-dialog').dialog({
       modal:true,
@@ -17,6 +18,14 @@ $(document).ready(function(e) {
     });
 
     $('#login-btn').on('click', function(){
+            // request salt from server
+            $.ajax({
+                method: 'GET',
+                url: '/login',
+                success: function(data) {
+                    salt = data;
+                }
+            });
 		    $('#login-dialog').dialog('open');
     }); //end click function
 
@@ -33,11 +42,57 @@ $(document).ready(function(e) {
     });
 
     $('#login-submit').on('click', function(){
-        console.log("loggin in");
+        // get form data
+        var username = $('#email').val();
+        var plainTextPassword = $('#password').val();
+        var saltedPassword = plainTextPassword + salt;
+        var hashedPassword = CryptoJS.SHA256(saltedPassword).toString();
+        var formData = { email:username, password:hashedPassword};
+        console.log(JSON.stringify(formData));
+        // send post request with form data as JSON to /login route
+        $.ajax({
+            method: 'POST',
+            url: '/login',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                // recieve token to use in future communications with server
+                // change site to reflect logged on status
+                console.log("loggin in");
+            }
+        });
     });
 
     $('#register-submit').on('click', function(){
-        console.log("loggin in");
+        // get form data
+        var realname = $('#name-reg').val();
+        var username = $('#email-reg').val();
+        var password1 = $('#password-reg').val();
+        var password2 = $('#password-reg-confirm').val();
+        // check passwords match
+        if (password1 !== password2) {
+            // could be prettier
+            alert('Passwords do not match');
+        } else {
+            // salt and hash password
+            var saltedPassword = password1 + salt;
+            var hashedPassword = CryptoJS.SHA256(saltedPassword).toString();
+            var formData = {
+                email:username,
+                password:hashedPassword,
+                name:realname,
+            };
+            console.log(JSON.stringify(formData));
+            // send post request with form data as JSON to /register route
+            $.ajax({
+                method: 'POST',
+                url: '/register',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                dataType: 'json'
+            });
+        }
     });
 
   var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
