@@ -117,9 +117,6 @@ $(document).ready(function(e) {
   });
 
 }); // end ready
-
-
-
 function activate_tabs(button1 , button2){
   button1.style.removeProperty('background');
   button1.style.removeProperty('color');
