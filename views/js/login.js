@@ -23,7 +23,7 @@ $(document).ready(function(e) {
                 method: 'GET',
                 url: '/login',
                 success: function(data) {
-                    salt = data;
+                    salt = data.salt;
                 }
             });
 		    $('#login-dialog').dialog('open');
@@ -60,6 +60,13 @@ $(document).ready(function(e) {
                 // recieve token to use in future communications with server
                 // change site to reflect logged on status
                 console.log("loggin in");
+                console.log(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('incorrect password or username');
+                console.log('text status = ' + textStatus);
+                console.log('error thrown = ' + errorThrown);
+
             }
         });
     });
