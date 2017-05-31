@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 var https = require('https');
 var fs = require('fs');
+var CryptoJS = require('crypto-js');
 var request;
 
 // server parameters
@@ -13,6 +14,7 @@ var keyPath = __dirname + '/key.pem';
 var certPath = __dirname + '/cert.pem';
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
+var salt = 1234567890;
 
 
 
@@ -56,26 +58,23 @@ app.get('/cart', function(req, res) {
 
 // retrive all items in stock
 app.get('/collections', function(req, res) {
-    // select * from products
-    var results = [];
-    var query, queryCmd;
-    pg.connect(connectionString, (err, client, done) => {
-      if (err){
-        done();
-        console.log("get all products error");
-        console.log(err);
-        return res.status(500).json({success: false, data: err});
-      }
-      queryCmd = 'SELECT * FROM products;';
-      query = client.query(queryCmd);
-      query.on('row', (row) => {
-        results.push(row);
-      });
-      query.on('end', () => {
-        done();
-        return res.json(results);
-      });
-    });
+    // // select * from products
+    // var results = [];
+    // var query, queryCmd;
+    // pg.connect(connectionString, (err, client, done) => {
+    //   if (err){
+    //     done();
+    //     console.log("get all products error");
+    //     console.log(err);
+    //     return res.status(500).json({success: false, data: err});
+    //   }
+    //   queryCmd = 'SELECT * FROM products;';
+    //   query = client.query(queryCmd);
+    //   query.on('row',false (row) => {
+    //     results.push(row);false
+    //     return res.json(results);
+    //   });
+    // });
 });
 
 // retrive the list of all items in category 'art'
@@ -98,13 +97,42 @@ app.get('/collections/vase', function(req, res) {
     // select from products where category = 'vase'
 });
 
+app.get('/login', function(req, res) {
+    res.json({salt: salt});
+    console.log('get request to login');
+});
+
 // login request
 app.post('/login', function(req, res) {
     // request body consists of JSON with email and hashed password
-    console.log('request reciecved to login');
+    console.log(req.body);
+    var suppliedUser = req.body;
+    // check if user is in data base
+    // make connection to database and attempt to retrieve user
+    var expectedUser = {
+        email: 'conor',
+        password: '8a7e87b3a2433b111d4a018d17ab3556e76d4066748174d5142f1b2836e8ba3d',
+        name: 'conor foran'
+    };
+    //pg.connect(connectionString, (err, client, done) => {
+        // attempt to retieve from database
+    //});
+    if (expectedUser != undefined && suppliedUser.email === expectedUser.email) {
+        // check if passwords match
+        if (suppliedUser.password === expectedUser.password) {
+            res.json(expectedUser);
+        } else {
+            res.status(403).send('Password is incorrect');
+            console.log('Login attempt with incorrect password');
+        }
+    } else {
+        res.status(422).send('User does not exist');
+        console.log('Login attempt with incorrect username');
+    }
 });
 
 // register request
-app.get('/register', function(req, res) {
+app.post('/register', function(req, res) {
+    console.log(req.body);
 
 });
