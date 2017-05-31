@@ -63,10 +63,14 @@ $(document).ready(function(e) {
                 console.log(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert('incorrect password or username');
+
                 console.log('text status = ' + textStatus);
                 console.log('error thrown = ' + errorThrown);
-
+                if (errorThrown === 'Unprocessable Entity') {
+                    alert('incorrect username');
+                } else if (errorThrown === 'Forbidden') {
+                    alert('incorrect password');
+                }
             }
         });
     });
@@ -97,7 +101,15 @@ $(document).ready(function(e) {
                 url: '/register',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
-                dataType: 'json'
+                dataType: 'json',
+                success: function(data) {
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (errorThrown === 'Conflict') {
+                        alert('username already exists');
+                    }
+                }
             });
         }
     });

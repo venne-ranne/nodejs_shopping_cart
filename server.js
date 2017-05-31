@@ -133,6 +133,12 @@ app.post('/login', function(req, res) {
 
 // register request
 app.post('/register', function(req, res) {
+    // request body is JSON with email, password and name
     console.log(req.body);
-
+    var newUser = req.body;
+    // perform a db lookup on user - if results user exist
+    pg.connect(connectionString, (err, client, done) => {
+        if (err) return res.status(500).json({success: false, data: err});
+        var queryString = 'select * from users where email  '
+    })
 });
