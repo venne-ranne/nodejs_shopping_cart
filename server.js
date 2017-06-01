@@ -29,18 +29,6 @@ app.listen(port, function() {
     console.log("Server running on port : " + port);
 });
 
-// https.createServer({
-//     key: fs.readFileSync(keyPath),
-//     cert: fs.readFileSync(certPath),
-//     passphrase: 'aaaa'
-//     }, app).listen(port, function() {
-//         console.log('Server listening on port ' + port);
-// });
-
-// connect to postgresql database
-//var client = new pg.Client(connectionString);
-//client.connect();
-
 // setup body parser to use JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
