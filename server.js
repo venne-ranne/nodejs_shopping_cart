@@ -8,7 +8,7 @@ var CryptoJS = require('crypto-js');
 var request;
 
 // server parameters
-var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/conor";
 var port = process.env.PORT || 8080; ;
 var keyPath = __dirname + '/key.pem';
 var certPath = __dirname + '/cert.pem';
@@ -58,23 +58,23 @@ app.get('/cart', function(req, res) {
 
 // retrive all items in stock
 app.get('/collections', function(req, res) {
-    // // select * from products
-    // var results = [];
-    // var query, queryCmd;
-    // pg.connect(connectionString, (err, client, done) => {
-    //   if (err){
-    //     done();
-    //     console.log("get all products error");
-    //     console.log(err);
-    //     return res.status(500).json({success: false, data: err});
-    //   }
-    //   queryCmd = 'SELECT * FROM products;';
-    //   query = client.query(queryCmd);
-    //   query.on('row',false (row) => {
-    //     results.push(row);false
-    //     return res.json(results);
-    //   });
-    // });
+    // select * from products
+    var results = [];
+    var query, queryCmd;
+    pg.connect(connectionString, (err, client, done) => {
+      if (err){
+        done();
+        console.log("get all products error");
+        console.log(err);
+        return res.status(500).json({success: false, data: err});
+      }
+      queryCmd = 'SELECT * FROM products;';
+      query = client.query(queryCmd);
+      query.on('row', (row) => {
+        results.push(row);
+        return res.json(results);
+      });
+    });
 });
 
 // retrive the list of all items in category 'art'
@@ -114,21 +114,34 @@ app.post('/login', function(req, res) {
         password: '8a7e87b3a2433b111d4a018d17ab3556e76d4066748174d5142f1b2836e8ba3d',
         name: 'conor foran'
     };
-    //pg.connect(connectionString, (err, client, done) => {
+    pg.connect(connectionString, (err, client, done) => {
+        if (err) return res.status(500)
         // attempt to retieve from database
-    //});
-    if (expectedUser != undefined && suppliedUser.email === expectedUser.email) {
-        // check if passwords match
-        if (suppliedUser.password === expectedUser.password) {
-            res.json(expectedUser);
-        } else {
-            res.status(403).send('Password is incorrect');
-            console.log('Login attempt with incorrect password');
-        }
-    } else {
-        res.status(422).send('User does not exist');
-        console.log('Login attempt with incorrect username');
-    }
+        var check = client.query(
+            'select email, password, name from users where email = $1',
+            [suppliedUser.email]
+        );
+        check.on('row', function(row, result) {
+            result.addRow(row);
+        });
+        check.on('end', function(result) {
+            client.end();
+            if (result.rowCount == 0) { // nothing found
+                res.status(422).send('User does not exist');
+                console.log('Login attempt with incorrect username');
+            } else {
+                var expectedUser = result.rows[0];
+                console.log(expectedUser);
+                if (suppliedUser.password === expectedUser.password) {
+                    // successful login
+                    res.json(expectedUser);
+                } else {
+                    res.status(403).send('Password is incorrect');
+                    console.log('Login attempt with incorrect password');
+                }
+            }
+        });
+    });
 });
 
 // register request
@@ -139,6 +152,27 @@ app.post('/register', function(req, res) {
     // perform a db lookup on user - if results user exist
     pg.connect(connectionString, (err, client, done) => {
         if (err) return res.status(500).json({success: false, data: err});
-        var queryString = 'select * from users where email  '
+        var check = client.query(
+            'select email, password, name from users where email = $1',
+            [newUser.email]
+        );
+        check.on('row', function(row, result) {
+            result.addRow(row);
+        });
+        check.on('end', function(result) {
+            if (result.rowCount > 0) { // username already exists
+                client.end();
+                return res.status(409).send('Username already exists');
+            } else {
+                var insert = client.query(
+                    'insert into users values($1, $2, $3)',
+                    [newUser.email, newUser.password, newUser.name]
+                );
+                insert.on('end', function() {
+                    client.end();
+                    return res.status(201).send(newUser);
+                });
+            }
+        });
     })
 });

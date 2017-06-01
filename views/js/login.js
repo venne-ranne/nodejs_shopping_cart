@@ -63,9 +63,6 @@ $(document).ready(function(e) {
                 console.log(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-
-                console.log('text status = ' + textStatus);
-                console.log('error thrown = ' + errorThrown);
                 if (errorThrown === 'Unprocessable Entity') {
                     alert('incorrect username');
                 } else if (errorThrown === 'Forbidden') {
