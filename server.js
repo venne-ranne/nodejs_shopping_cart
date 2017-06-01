@@ -51,7 +51,7 @@ app.get('/collections', function(req, res) {
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
       if (err){
-        done();
+        client.end();
         console.log("get all products error");
         console.log(err);
         return res.status(500).json({success: false, data: err});
@@ -61,6 +61,9 @@ app.get('/collections', function(req, res) {
       query.on('row', (row) => {
         results.push(row);
         return res.json(results);
+      });
+      query.on('end', function(result) {
+          client.end();
       });
     });
 });
