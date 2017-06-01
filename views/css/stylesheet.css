@@ -115,6 +115,7 @@ header button {
   display:inline;
   position: inline-block;
   background-color: blue;
+  margin-bottom: 20px;
 }
 
 .menu-tabs{
@@ -126,7 +127,7 @@ header button {
   text-decoration: none;
 }
 
-.menu ul {
+.menu ul{
   list-style: none;
   position: relative;
 }
@@ -244,7 +245,6 @@ header button {
   font-size: 1.0em;
   padding: 5px;
   width: 60%;
-  margin-left: 20%;
 }
 
 .products-list_single:hover .cart-submit{
@@ -294,7 +294,8 @@ header button {
 	top:100%;
 	left:0;
 	background:#fff;
-	padding:0
+	padding:0;
+  z-index: 999;
 }
 
 #nav_wrap ul ul li{
@@ -304,7 +305,8 @@ header button {
 
 #nav_wrap ul ul a{
 	line-height:120%;
-	padding:10px 15px
+	padding:10px 15px;
+  z-index: 999;
 }
 
 #nav_wrap ul ul ul{

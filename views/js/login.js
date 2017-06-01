@@ -95,6 +95,12 @@ $(document).ready(function(e) {
         }
     });
 
+    $('#menu-new').on('click', function(){
+      console.log("New button in the nav is clicked.");
+      $('.home-features').load("collections.html");
+      //$('.home-features').replaceWith($('.products-list-wrap'));
+    });
+
   var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
   var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); }, topbarML = function() { $('.header').fadeTo(fadeSpeed,fadeTo); };
   var inside = false;
