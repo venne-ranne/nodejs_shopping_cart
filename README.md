@@ -43,9 +43,9 @@ TABLE "incarts" CONSTRAINT "incarts_cartid_fkey" FOREIGN KEY (cartid) REFERENCES
 ## Table "public.incarts"
 |Column  |  Type   | Modifiers | Storage | Stats target | Description |
 |:---:|:---:|:---:|:---:|:---:|:---:|
- |cartid   | integer | not null  | plain   |              | |
- |id       | integer | not null  | plain   |              | |
- |quantity | integer |           | plain   |              | ||
+|cartid   | integer | not null  | plain   |              | |
+|id       | integer | not null  | plain   |              | |
+|quantity | integer |           | plain   |              | ||
 Indexes:  
     "incarts_pkey" PRIMARY KEY, btree (cartid, id)  
 Foreign-key constraints:  
