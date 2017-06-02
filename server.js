@@ -58,12 +58,12 @@ app.get('/collections', function(req, res) {
       }
       queryCmd = 'SELECT * FROM products;';
       query = client.query(queryCmd);
-      query.on('row', (row) => {
-        results.push(row);
-        res.json(results);
+      query.on('row', function(row, result) {
+        result.addRow(row);
       });
       query.on('end', function(result) {
           client.end();
+          res.status(200).json(result.rows);
       });
     });
 });
