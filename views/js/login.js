@@ -60,8 +60,7 @@ $(document).ready(function(e) {
             success: function(data) {
                 // recieve token to use in future communications with server
                 // change site to reflect logged on status
-                console.log("loggin in");
-                console.log(data);
+                $('#login-btn').html(data.name);
                 $('#login-dialog').dialog('close');
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -103,10 +102,6 @@ $(document).ready(function(e) {
                 dataType: 'json',
                 success: function(data) {
                     // recieve data with name
-                    console.log(data.name);
-                    console.log($('#login-btn').text);
-                    console.log($('#username').html);
-                    $('#username').html(data.name);
                     $('#login-btn').html(data.name);
                     $('#login-dialog').dialog('close');
                 },
