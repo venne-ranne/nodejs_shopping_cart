@@ -104,6 +104,7 @@ $(document).ready(function(e) {
                 success: function(data) {
                     // recieve data with name
                     console.log(data.name);
+                    console.log($('#login-btn').val());
                     $('#login-btn').val(data.name);
                     $('#login-dialog').dialog('close');
                 },
