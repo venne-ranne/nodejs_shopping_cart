@@ -105,9 +105,9 @@ $(document).ready(function(e) {
                     // recieve data with name
                     console.log(data.name);
                     console.log($('#login-btn').text);
-                    console.log($('#login-btn').html);
-                    $('#username').value = data.name;
-                    $('#login-btn').text = data.name;
+                    console.log($('#username').html);
+                    $('#username').html(data.name);
+                    $('#login-btn').html(data.name);
                     $('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
