@@ -27,7 +27,7 @@ $(document).ready(function(e) {
         var $newProduct = $(productHTML);
         $newProduct.find('.product-name').text(data[i].name);
         $newProduct.find('.product-price').text(data[i].price);
-        $('.products-list').prepend($newProduct);
+        $('.products-list').append($newProduct);
 			}
 		}
 
