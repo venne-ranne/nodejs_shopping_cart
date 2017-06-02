@@ -204,7 +204,7 @@ header button {
 }
 
 .products-list_single{
-  display: inline-grid;
+  display: inline-block;
   font-family: 'Quattrocento Sans', sans-serif;
   width: 250px;
   margin: 10px;
