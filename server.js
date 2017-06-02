@@ -54,13 +54,13 @@ app.get('/collections', function(req, res) {
         client.end();
         console.log("get all products error");
         console.log(err);
-        return res.status(500).json({success: false, data: err});
+        res.status(500).json({success: false, data: err});
       }
       queryCmd = 'SELECT * FROM products;';
       query = client.query(queryCmd);
       query.on('row', (row) => {
         results.push(row);
-        return res.json(results);
+        res.json(results);
       });
       query.on('end', function(result) {
           client.end();
@@ -142,7 +142,7 @@ app.post('/register', function(req, res) {
     var newUser = req.body;
     // perform a db lookup on user - if results user exist
     pg.connect(connectionString, (err, client, done) => {
-        if (err) return res.status(500).json({success: false, data: err});
+        if (err) res.status(500).json({success: false, data: err});
         var check = client.query(
             'select email, password, name from users where email = $1',
             [newUser.email]
@@ -153,7 +153,7 @@ app.post('/register', function(req, res) {
         check.on('end', function(result) {
             if (result.rowCount > 0) { // username already exists
                 client.end();
-                return res.status(409).send('Username already exists');
+                res.status(409).send('Username already exists');
             } else {
                 var insert = client.query(
                     'insert into users values($1, $2, $3)',
@@ -161,7 +161,7 @@ app.post('/register', function(req, res) {
                 );
                 insert.on('end', function() {
                     client.end();
-                    return res.status(201).send(newUser);
+                    res.status(201).send(newUser);
                 });
             }
         });
