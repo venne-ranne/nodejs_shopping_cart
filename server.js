@@ -56,6 +56,7 @@ app.post('/cart', function(req, res) {
             result.addRow(row);
         });
         insert.on('end', function(result) {
+            client.end();
             // return id to user
             console.log(result.rows);
             res.status(201).json(result.rows);
