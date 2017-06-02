@@ -93,7 +93,6 @@ $(document).ready(function(e) {
                 password:hashedPassword,
                 name:realname,
             };
-            $('#login-btn').val(formData.name);
             console.log(JSON.stringify(formData));
             // send post request with form data as JSON to /register route
             $.ajax({
@@ -104,7 +103,8 @@ $(document).ready(function(e) {
                 dataType: 'json',
                 success: function(data) {
                     // recieve data with name
-
+                    console.log(data.name);
+                    $('#login-btn').val(data.name);
                     $('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
