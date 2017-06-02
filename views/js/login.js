@@ -105,7 +105,7 @@ $(document).ready(function(e) {
                     // recieve data with name
                     console.log(data.name);
                     console.log($('#login-btn').val());
-                    $('#login-btn').val(data.name);
+                    $('#login-btn').innerHTML = data.name;
                     $('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
