@@ -104,8 +104,9 @@ $(document).ready(function(e) {
                 success: function(data) {
                     // recieve data with name
                     console.log(data.name);
-                    console.log($('#login-btn').val());
-                    $('#login-btn').innerHTML = data.name;
+                    console.log($('#login-btn').value);
+                    console.log($('#login-btn').innerHTML);
+                    $('#login-btn').value = data.name;
                     $('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
