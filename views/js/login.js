@@ -1,3 +1,4 @@
+var userEmail = undefined;
 $(document).ready(function(e) {
 
     var login_btn = document.getElementById('signin-btn');
@@ -100,7 +101,9 @@ $(document).ready(function(e) {
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(data) {
-
+                    // recieve data with name
+                    $('#login-btn').val(data.name);
+                    $('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (errorThrown === 'Conflict') {

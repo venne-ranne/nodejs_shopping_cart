@@ -39,9 +39,29 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
 
-// shopping cart page
-app.get('/cart', function(req, res) {
-
+// create new shopping cart page
+app.post('/cart', function(req, res) {
+    // add row to database for cart
+    pg.connect(connectionString, function(err, client, done) {
+        if (err) {
+            client.end();
+            res.status(500).json({success: false, data: err});
+        }
+        var user = req.body.email || 'guest';
+        var insert = client.query(
+            'insert into carts values($1) returning id',
+            [user]
+        );
+        insert.on('row', function(row, result) {
+            result.addRow(row);
+        });
+        insert.on('end', function(result) {
+            // return id to user
+            console.log(result.rows);
+            res.status(201).json(result.rows);
+        });
+    });
+    // return cart number back to users
 });
 
 // retrive all items in stock
