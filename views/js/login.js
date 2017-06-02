@@ -106,6 +106,7 @@ $(document).ready(function(e) {
                     console.log(data.name);
                     console.log($('#login-btn').text);
                     console.log($('#login-btn').html);
+                    $('#username').value = data.name;
                     $('#login-btn').text = data.name;
                     $('#login-dialog').dialog('close');
                 },
