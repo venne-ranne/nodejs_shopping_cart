@@ -60,7 +60,6 @@ $(document).ready(function(e) {
             success: function(data) {
                 // recieve token to use in future communications with server
                 // change site to reflect logged on status
-                
                 $('#login-btn').html(data.name);
                 $('#login-dialog').dialog('close');
             },

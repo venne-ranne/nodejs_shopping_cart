@@ -1,15 +1,4 @@
 $(document).ready(function(e) {
-  $('#search-text').on('keydown', function(e) {
-    if (e.which == 13) {
-      console.log("enter!!!");
-      e.preventDefault();
-    }
-  });
-
-  $('#search-text').blur(function() {
-    $(this).val('');
-  }); //END blur()
-
   // get all the rows from the
 	$.ajax({
 		type: 'GET',
@@ -26,9 +15,8 @@ $(document).ready(function(e) {
         var $newProduct = $(productHTML);
         $newProduct.find('.product-name').text(data[i].name);
         $newProduct.find('.product-price').text(data[i].price);
-        $('.products-list').append($newProduct);
+        $('.products-list').prepend($newProduct);
 			}
 		}
-
 	});
 });
