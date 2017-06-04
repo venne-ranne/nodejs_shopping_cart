@@ -8,7 +8,8 @@ var CryptoJS = require('crypto-js');
 var request;
 
 // server parameters
-var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/conor";
+//var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/conor";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var keyPath = __dirname + '/key.pem';
 var certPath = __dirname + '/cert.pem';
