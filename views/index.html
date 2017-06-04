@@ -18,6 +18,7 @@
    <script src="js/user/sha256.js"></script>
    <script src="js/user/login.js"></script>
    <script src="js/search.js"></script>
+   <script src="js/shopping-cart.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
    </div>
    <ul>
       <li class = "tabs"><button id = "login-btn"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> LOG IN</button></li>
-      <li class = "tabs"><button><span class = "modern-pic-icon">i</span> CART</button></li>
+      <li class = "tabs"><button id = "shopping-cart-btn"><span class = "modern-pic-icon">i</span> CART</button></li>
       <li class = "tabs"><button>CHECKOUT</button></li>
    </ul>
 </header>
@@ -109,7 +110,9 @@
 </div>
 
 <!--shopping cart popup dialog box-->
-
+<div class = "shopping-cart-container" title = "Your shopping cart!">
+    <ul id="shopping-cart"></ul>
+</div>
 
 <div class = "container-content">
    <div class = "home-features">
