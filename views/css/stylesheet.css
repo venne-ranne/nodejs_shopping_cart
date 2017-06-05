@@ -344,7 +344,7 @@ header button {
 .side-bar{
     float: left;
     background-color: black;
-    min-width: 240px;
+    min-width: 200px;
     position: inherit;
     margin-top: 20px;
     min-height: 500px;
