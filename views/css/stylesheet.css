@@ -286,7 +286,7 @@ header button {
 .products-list_single{
   display: inline-block;
   font-family: 'Quattrocento Sans', sans-serif;
-  min-width: 240px;
+  min-width: 200px;
   margin: 5px;
   text-align: center;
   background-color: white;
