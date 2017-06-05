@@ -273,6 +273,7 @@ header button {
   position: relative;
   float: right;
   display: inline-block;
+  align-content: center;
 }
 
 .products-list{
@@ -293,6 +294,7 @@ header button {
   padding-top: 3px;
   padding-bottom: 10px;
   align-content: center;
+  float: right;
 }
 
 .product-name{
