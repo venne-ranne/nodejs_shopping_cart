@@ -15,6 +15,16 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 
+a:hover{
+  cursor: pointer;
+}
+
+body {
+    line-height: 1.2;
+    background-color: rgba(240,245,250, .8);
+    display: grid;
+}
+
 @font-face {
   font-family: 'ModernPictograms';
   src: url("../fonts/modernpics-webfont.eot");
@@ -26,11 +36,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   font-style: normal;
 }
 
-body {
-  line-height: 1.2;
-  background-color: rgba(240,245,250, .8);
-}
-
 .tabs{
   list-style: none;
   font-family: 'Quattrocento Sans', sans-serif;
@@ -40,7 +45,7 @@ body {
   text-decoration: none;
 }
 
-#cart-icon {
+.modern-pic-icon {
   font-family: ModernPictograms;
   font-size: 16px;
 }
@@ -50,7 +55,7 @@ header {
     position:fixed;
     top:0;
     left:0;
-    z-index:2000;
+    z-index:9999;
     width:100%;
     padding-top: 3px;
 }
@@ -102,12 +107,90 @@ header button {
   position: relative;
   width: 60%;
   left: 20%;
-  padding-top: 70px;
+  margin-top: 50px;
+}
+
+.nav-container{
+  padding-top: 20px;
+  margin-bottom: 5px;
+  min-height: 80px;
+}
+
+.nav_wrap{
+	margin-top:15px;
+}
+
+.nav_wrap ul{
+	list-style:none;
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0;
+    z-index: 999;
+}
+
+.nav_wrap ul a{
+	display:block;
+	color:#333;
+	text-decoration:none;
+	font-size:16px;
+	line-height:32px;
+	padding:0 15px;
+	font-family: 'Quattrocento Sans', sans-serif;
+}
+
+.nav_wrap ul li{
+	position:relative;
+	float:left;
+	margin:0;
+	padding:0
+}
+
+.nav_wrap ul li.current-menu-item{
+	background:#ddd
+}
+
+.nav_wrap ul li:hover{
+	background:#f6f6f6
+}
+
+.nav_wrap ul ul{
+	display:none;
+	position:absolute;
+	top:100%;
+	left:0;
+	background:#fff;
+	padding:0
+}
+
+.nav_wrap ul ul li{
+	float:none;
+	width:200px
+}
+
+.nav_wrap ul ul a{
+	line-height:120%;
+	padding:10px 15px
+}
+
+.nav_wrap ul ul ul{
+	top:0;
+	left:100%
+}
+
+.nav_wrap ul li:hover > ul{
+	display:block
+}
+
+/*arrow down */
+#arrow-down{
+     font-size: 11px;
 }
 
 .logo{
   position: relative;
   float: left;
+  max-height: 45px;
 }
 
 .menu{
@@ -146,16 +229,11 @@ header button {
   font-size: 120%;
 }
 
-.home-features{
-  background-color: brown;
-  height: 300px;
-  margin-top: 80px;
-}
-
-#login-dialog{
-  font-family: 'Quattrocento Sans', sans-serif;
-  padding: 35px;
-  margin: auto;
+.login-dialog{
+    font-family: 'Quattrocento Sans', sans-serif;
+    padding: 35px;
+    margin: auto;
+    align-content: center;
 }
 
 .input-text input{
@@ -168,36 +246,38 @@ header button {
 }
 
 #signin-btn, #register-btn{
-  font-family: 'Quattrocento Sans', sans-serif;
-  width: 100px;
-  color: black;
-  font-size:1em;
+    font-family: 'Quattrocento Sans', sans-serif;
+    width: 100px;
+    color: black;
+    font-size:1em;
 	display: inline-block;
 	outline: none;
 	border:1px solid;
-  padding: 5px 10px 5px 10px;
-  cursor: pointer;
-  background: transparent;
-  border-radius: 3px;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 3px;
 }
 
-#login-submit, #register-submit{
+#login-submit, #register-submit, #cart-checkout-submit{
   background: black;
   color: white;
   cursor: pointer;
   height: 35px;
   padding: 3px;
-  width: 102%;
+  width: 100%;
   margin-top: 10px;
 }
 
 .products-list-wrap{
   position: relative;
+  float: right;
+  display: inline-block;
 }
 
 .products-list{
   margin: auto;
-  padding-top: 50px;
+  padding-top: 20px;
   padding-bottom: 50px;
   display: inline-block;
   width: 100%;
@@ -206,20 +286,22 @@ header button {
 .products-list_single{
   display: inline-block;
   font-family: 'Quattrocento Sans', sans-serif;
-  width: 250px;
-  margin: 10px;
+  min-width: 250px;
+  margin: 8px;
   text-align: center;
   background-color: white;
   padding-top: 3px;
   padding-bottom: 10px;
+  align-content: center;
 }
 
 .product-name{
   font-weight: bold;
   cursor: pointer;
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: #FF4500;
   padding-top: 5px;
+  align-content: center;
 }
 
 .product-name:hover{
@@ -229,94 +311,69 @@ header button {
 .product-price{
   font-size: 1.2em;
   padding-top: 5px;
+  align-content: center;
 }
 
 .product-image {
-  cursor: pointer;
+    cursor: pointer;
+    max-height: 200px;
+    max-width: 200px;
+    align-content: center;
 }
 
 .cart-submit{
   font-family: 'Quattrocento Sans', sans-serif;
   height: 40px;
-  background: #FF4500;
-  color: white;
+  background: white;
+  color: black;
   cursor: pointer;
   font-size: 1.0em;
   padding: 5px;
   width: 60%;
-  margin-left: 20%;
 }
 
-.products-list_single:hover .cart-submit{
-
-}
-#nav_wrap{
-	margin-top:15px
+.cart-submit:hover{
+    background-color: #3c43a4;
+    color: white;
 }
 
-#nav_wrap ul{
-	list-style:none;
-	position:relative;
-	float:left;
-	margin:0;
-	padding:0
+.cart-submit:focus{
+    outline: 0;
 }
 
-#nav_wrap ul a{
-	display:block;
-	color:#333;
-	text-decoration:none;
-	font-size:16px;
-	line-height:32px;
-	padding:0 15px;
-	font-family: 'Quattrocento Sans', sans-serif;
+.side-bar{
+    float: left;
+    background-color: black;
+    min-width: 240px;
+    position: inherit;
+    margin-top: 20px;
+    min-height: 500px;
+    display: inline-block;
 }
 
-#nav_wrap ul li{
-	position:relative;
-	float:left;
-	margin:0;
-	padding:0
+.home-features{
+  background-color: brown;
+  height: 300px;
 }
 
-#nav_wrap ul li.current-menu-item
-{
-	background:#ddd
+.shopping-cart{
+     list-style: none;
 }
 
-#nav_wrap ul li:hover{
-	background:#f6f6f6
+.shopping-cart li{
+    padding-top: 10px;
+    margin-bottom: 5px;
 }
 
-#nav_wrap ul ul{
-	display:none;
-	position:absolute;
-	top:100%;
-	left:0;
-	background:#fff;
-	padding:0
+.shopping-list button{
+    background-color: gray;
+    color: white;
 }
 
-#nav_wrap ul ul li{
-	float:none;
-	width:200px
+.shopping-list button:hover{
+    background-color: black;
 }
 
-#nav_wrap ul ul a{
-	line-height:120%;
-	padding:10px 15px
-}
-
-#nav_wrap ul ul ul{
-	top:0;
-	left:100%
-}
-
-#nav_wrap ul li:hover > ul{
-	display:block
-}
-
-/*arrow down */
-#arrow-down{
-     font-size: 11px;
+#cart-checkout-btn{
+    float: right;
 }
