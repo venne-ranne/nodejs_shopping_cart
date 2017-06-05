@@ -79,28 +79,28 @@ app.get('/collections', function(req, res) {
     res.redirect('collections/everything');
 });
 
-// // retrive all items in stock
-// app.get('/collections/everything', function(req, res) {
-//     // select * from products
-//     var query, queryCmd;
-//     pg.connect(connectionString, (err, client, done) => {
-//       if (err){
-//         client.end();
-//         console.log("get all products error");
-//         console.log(err);
-//         res.status(500).json({success: false, data: err});
-//       }
-//       queryCmd = 'SELECT row_to_json(products) FROM products;';
-//       query = client.query(queryCmd);
-//       query.on('row', function(row, result) {
-//         result.addRow(row.row_to_json);
-//       });
-//       query.on('end', function(result) {
-//           client.end();
-//           res.status(200).send(result);
-//       });
-//     });
-// });
+// retrive all items in stock
+app.get('/collections/everything', function(req, res) {
+    // select * from products
+    var query, queryCmd;
+    pg.connect(connectionString, (err, client, done) => {
+      if (err){
+        client.end();
+        console.log("get all products error");
+        console.log(err);
+        res.status(500).json({success: false, data: err});
+      }
+      queryCmd = 'SELECT row_to_json(products) FROM products;';
+      query = client.query(queryCmd);
+      query.on('row', function(row, result) {
+        result.addRow(row.row_to_json);
+      });
+      query.on('end', function(result) {
+          client.end();
+          res.status(200).send(result);
+      });
+    });
+});
 
 // retrive the list of all items in category 'art'
 app.get('/collections/art', function(req, res) {
@@ -227,28 +227,4 @@ app.get("/collections/:id", function (req, res){
         res.status(200).send(result);
     });
   });
-});
-
-// retrive all items in stock
-app.get('/collections/everything', function(req, res) {
-    // select * from products
-    var query, queryCmd;
-    var results = [];
-    pg.connect(connectionString, (err, client, done) => {
-      if (err){
-        done();
-        console.log("get all products error");
-        console.log(err);
-        return res.status(500).json({success: false, data: err});
-      }
-      queryCmd = 'SELECT row_to_json(products) FROM products;';
-      query = client.query(queryCmd);
-      query.on('row', (row) => {
-        results.push(row.row_to_json);
-      });
-      query.on('end', () => {
-          done();
-          return res.status(200).send(results);
-      });
-    });
 });
