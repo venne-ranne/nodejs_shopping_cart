@@ -6,8 +6,8 @@ $(document).ready(function(e) {
         autoOpen:false,
         autoResize:true,
         minWidth: 380,
-         resizable: false,
-        position: { my: "bottom+200", at: "right bottom", of: '#shopping-cart-btn' }
+        resizable: false,
+        position: { my: "bottom+120%", at: "right bottom", of: '#shopping-cart-btn' }
     });
 
     // when the shopping cart button on header is clicked

@@ -17,7 +17,7 @@ var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleu
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 var salt = 1234567890;
 
-
+var expressLayouts = require('express-ejs-layouts');
 
 // start express application
 var app = express();
@@ -34,10 +34,15 @@ app.listen(port, function() {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// set up template engine
+app.set('view engine', 'ejs');
+//app.use(expressLayouts);
+
 // root page
 app.get('/', function(req, res) {
     //res.writeHead(200);
-    res.sendFile(__dirname + '/views/index.html');
+    //res.sendFile(__dirname + '/views/index.html');
+    res.render('index.ejs');
 });
 
 // create new shopping cart page
@@ -66,10 +71,16 @@ app.post('/cart', function(req, res) {
     // return cart number back to users
 });
 
-// retrive all items in stock
+// root page
 app.get('/collections', function(req, res) {
+    //res.writeHead(200);
+    //res.sendFile(__dirname + '/views/index.html');
+    res.redirect('collections/everything');
+});
+
+// retrive all items in stock
+app.get('/collections/everything', function(req, res) {
     // select * from products
-    var results = [];
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
       if (err){
@@ -78,14 +89,14 @@ app.get('/collections', function(req, res) {
         console.log(err);
         res.status(500).json({success: false, data: err});
       }
-      queryCmd = 'SELECT * FROM products;';
+      queryCmd = 'SELECT row_to_json(products) FROM products;';
       query = client.query(queryCmd);
       query.on('row', function(row, result) {
-        result.addRow(row);
+        result.addRow(row.row_to_json);
       });
       query.on('end', function(result) {
           client.end();
-          res.status(200).json(result.rows);
+          res.status(200).send(result);
       });
     });
 });
@@ -188,4 +199,31 @@ app.post('/register', function(req, res) {
             }
         });
     })
+});
+
+// get a product using id to add into shopping card
+app.get("/collections/:id", function (req, res){
+  var id = req.params.id;
+  var query, queryCmd;
+
+  pg.connect(connectionString, (err, client, done) => {
+    if (err){
+      done();
+      console.log("get a product using id error");
+      console.log(err);
+      return res.status(500).json({success: false, data: err});
+    }
+
+    queryCmd = 'SELECT row_to_json(products) FROM products WHERE id = ($1);';
+    query = client.query(queryCmd, [id]);
+
+    query.on('row', function(row, result) {
+        console.log(row.row_to_json);
+        result.addRow(row.row_to_json);
+    });
+    query.on('end', function(result) {
+        client.end();
+        res.status(200).send(result);
+    });
+  });
 });

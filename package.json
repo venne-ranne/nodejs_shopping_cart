@@ -11,5 +11,9 @@
     "url": "git@gitlab.ecs.vuw.ac.nz:NWEN304-Group6/Project.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express-ejs-layouts": "^2.3.0"
+  }
 }
