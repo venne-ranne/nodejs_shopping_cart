@@ -108,6 +108,7 @@ header button {
   width: 60%;
   left: 20%;
   margin-top: 50px;
+  align-content: center;
 }
 
 .nav-container{
