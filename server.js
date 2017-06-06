@@ -8,8 +8,8 @@ var CryptoJS = require('crypto-js');
 var request;
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
-//var connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/conor";
+//var connectionString = process.env.DATABASE_URL;
+var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var keyPath = __dirname + '/key.pem';
@@ -76,7 +76,40 @@ app.post('/cart', function(req, res) {
 app.get('/collections', function(req, res) {
     //res.writeHead(200);
     //res.sendFile(__dirname + '/views/index.html');
-    res.redirect('collections/everything');
+    var searchPattern = req.query.search;
+    if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
+        pg.connect(connectionString, function (err, client, done) {
+            if (err) {
+                res.status(500).send('Database Connection Error');
+            }
+            searchPattern = '%' + searchPattern + '%';
+            var query = client.query( // ilike is case insensitve like
+                'select name, description, price, new, sale, stock, category, imagepath, id from products where name ilike $1 or description ilike $1',
+                [searchPattern]
+            );
+            query.on('error', function(error) {
+                console.log('Database Error!!');
+                console.log(error);
+            });
+            query.on('row', function(row, result) {
+                result.addRow(row);
+            });
+            query.on('end', function(result) {
+                client.end();
+                if (result.rowCount == 0) {
+                    console.log('Nothing found show all');
+                    res.redirect('collections/everything');
+                } else {
+                    console.log(result.rows);
+                    res.status(200).send(result.rows);
+                }
+            });
+        });
+    } else {
+        // nothin to search redirect to everything
+        console.log('No search show all');
+        res.redirect('collections/everything');
+    }
 });
 
 // retrive all items in stock
@@ -134,11 +167,7 @@ app.post('/login', function(req, res) {
     var suppliedUser = req.body;
     // check if user is in data base
     // make connection to database and attempt to retrieve user
-    var expectedUser = {
-        email: 'conor',
-        password: '8a7e87b3a2433b111d4a018d17ab3556e76d4066748174d5142f1b2836e8ba3d',
-        name: 'conor foran'
-    };
+
     pg.connect(connectionString, (err, client, done) => {
         if (err) return res.status(500)
         // attempt to retieve from database
