@@ -104,18 +104,23 @@ app.post('/cart', function(req, res) {
 
 // get request on shopping cart will get an array of items in the cart
 app.get('/cart', function(req, res) {
-    var cartID = req.query.search;
-    if (cartID != undefined && cartID !== '') {
+    var cartid = req.query.cartid;
+    //console.log(req.query.cartid);
+    if (cartid != undefined && cartid !== '') {
         pg.connect(connectionString, function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
             var query = client.query(
                 'select * from products, incarts where products.id = incarts.id and cartid = $1',
-                [cartID]
+                [cartid]
             );
             query.on('error', function(error) { res.status(500).send('Database query error'); });
-            query.on('row', function(row, result) { result.addRow(row); });
+            query.on('row', function(row, result) {
+                console.log(row);
+                result.addRow(row);
+            });
             query.on('end', function(result) {
                 client.end();
+                console.log(result.rows);
                 res.status(200).send(result.rows);
             });
         });
@@ -150,7 +155,9 @@ app.get('/collections', function(req, res) {
             });
         });
     } else if (collection != undefined ) {
-
+        // select on collection
+    } else if (sale) {
+        //
     } else {
         // nothin to search redirect to everything
         console.log('No search show all');

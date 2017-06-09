@@ -60,13 +60,15 @@ $(document).ready(function(e) {
             }
         });
     });
+
+
 });
 
 // selected item is the product id
 function addToCart(selectedItem){
     console.log(selectedItem);
     $.ajax({
-        type: 'PUT',
+        method: 'PUT',
         url: '/cart',
         data: JSON.stringify({
             cartid: shoppingCartNumber,
@@ -75,18 +77,10 @@ function addToCart(selectedItem){
         contentType: 'application/json',
         dataType: 'json',
         success: function(data){
-            var imagepath = ''+data[0].imagepath;     // add the imagepath to src
-            var cartHTML = '<li class = "shopping-list">';
-            cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
-            cartHTML += '<label class = "cart-name-label"></label>';
-            cartHTML += '<input type="number" name="quantity" min="1" max="10" value="1">';
-            cartHTML += '<button class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
-            cartHTML += '<label class = "cart-price-label"></label></li>';
-            var $addProduct = $(cartHTML);
-            $addProduct.find('.cart-name-label').html(data[0].name);
-            $addProduct.find('.cart-price-label').html(' $'+data[0].price);
-            $('.shopping-cart').append($addProduct);
-            console.log(data[0].name);
+            console.log('item added to cart');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('failed to add item to cart');
         }
     });
 }
