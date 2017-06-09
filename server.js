@@ -40,7 +40,7 @@ app.get('/', function(req, res) {
 });
 
 app.put('/cart', function(req, res) {
-    console.log(req.body);
+    //console.log(req.body);
     var cart = req.body.cartid;
     var product = req.body.id;
     pg.connect(connectionString, function(err, client, done) {
@@ -48,9 +48,9 @@ app.put('/cart', function(req, res) {
         var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
             'on conflict (cartid, id) do update ' +
             'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
-        console.log(addString);
-        console.log(cart);
-        console.log(product);
+        //console.log(addString);
+        //console.log(cart);
+        //console.log(product);
         var add = client.query(
             //'insert into incarts (cartid, id, quantity) values ($1, $2, 1) on conflict (cartid, id) do update set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1',
             addString,
