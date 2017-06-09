@@ -6,8 +6,8 @@ var fs = require('fs');
 
 
 // server parameters
-//var connectionString = process.env.DATABASE_URL;
-var connectionString = "postgres://localhost:5432/conor";
+var connectionString = process.env.DATABASE_URL;
+//var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
