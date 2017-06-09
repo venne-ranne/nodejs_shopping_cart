@@ -24,20 +24,19 @@
 |email|character varying(255)|not null|extended|||
 |password|character varying(511)||extended|||
 |name|character varying(255)||extended||||
-Indexes: "users_pkey" PRIMARY KEY, btree (email)
-Referenced by: TABLE "carts" CONSTRAINT "carts_email_fkey" FOREIGN KEY (email) REFERENCES users(email)
+Indexes:  
+"users_pkey" PRIMARY KEY, btree (email)  
+Referenced by:  
+TABLE "carts" CONSTRAINT "carts_email_fkey" FOREIGN KEY (email) REFERENCES users(email)
 
 ## Table "public.carts"
-
 |Column|Type|Modifiers|Storage|Stats target|Description|
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |cartid|integer|not null default nextval('carts_cartid_seq'::regclass)|plain|||
 |email|character varying(255)|extended|||||
 Indexes:  
 "carts_pkey" PRIMARY KEY, btree (cartid)  
-Foreign-key constraints:  
-"carts_email_fkey" FOREIGN KEY (email) REFERENCES users(email)  
-Referenced by:  
+ Referenced by:  
 TABLE "incarts" CONSTRAINT "incarts_cartid_fkey" FOREIGN KEY (cartid) REFERENCES carts(cartid)
 
 ## Table "public.incarts"
