@@ -67,11 +67,13 @@ app.put('/cart', function(req, res) {
                 [product]
             );
             p.on('error', function(error) {
+                client.end();
                 console.log(error);
                 res.status(420).send('Database query error');
             });
             p.on('row', function(row, result) { result.addRow(row); });
             p.on('end', function(result) {
+                client.end();
                 console.log(result.rows);
                 res.status(201).send(result.rows); });
         });
@@ -301,7 +303,6 @@ app.get("/collections/:id", function (req, res){
     });
     query.on('end', function(result) {
         client.end();
-        updateCarts()
         res.status(200).send(result);
     });
   });
