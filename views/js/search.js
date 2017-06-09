@@ -11,7 +11,9 @@ $(document).ready(function(e) {
                 url: '/collections?search=' + userQuery,
                 success: function(data) {
                     // get json array of products which match query in some way
+                    clearProducts();
                     for (var a = 0; a < data.length; ++ a) {
+                        addProduct(data[a]);
                         console.log(data[a].name + ' : ' + data[a].description);
                     }
                 },

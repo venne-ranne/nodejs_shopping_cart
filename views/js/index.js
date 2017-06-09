@@ -1,4 +1,18 @@
+
+
 $(document).ready(function(e) {
+    $('.replace-container').load('collections.ejs');
+    // on dom ready call to collections with no query to get all products
+    $.ajax({
+        method:'GET',
+        url:'/collections',
+        success: function(data) {
+            clearProducts();
+            for (var a = 0; a < data.length; ++ a) {
+                addProduct(data[a]);
+            }
+        }
+    });
     var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
     var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); };
     var topbarML = function() { $('.header').fadeTo(fadeSpeed,fadeTo);};
@@ -42,19 +56,26 @@ $(document).ready(function(e) {
                     $('.products-list').append($newProduct);
                 }
                 var url = e.target.getAttribute('data-name');
-                history.pushState(null, null, url);
+                history.pushState(null, null, url); // what does this do???
             }
         });
     });
 });
 
+// selected item is the product id
 function addToCart(selectedItem){
-    var productId = selectedItem.substring(8);
+    console.log(selectedItem);
     $.ajax({
-        type: 'GET',
-        url: '/collections/'+ productId,
+        type: 'PUT',
+        url: '/cart',
+        data: JSON.stringify({
+            cartid: shoppingCartNumber,
+            id: selectedItem
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
         success: function(data){
-            var imagepath = ''+data.rows[0].imagepath;     // add the imagepath to src
+            var imagepath = ''+data[0].imagepath;     // add the imagepath to src
             var cartHTML = '<li class = "shopping-list">';
             cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
             cartHTML += '<label class = "cart-name-label"></label>';
@@ -62,10 +83,27 @@ function addToCart(selectedItem){
             cartHTML += '<button class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
             cartHTML += '<label class = "cart-price-label"></label></li>';
             var $addProduct = $(cartHTML);
-            $addProduct.find('.cart-name-label').html(data.rows[0].name);
-            $addProduct.find('.cart-price-label').html(' $'+data.rows[0].price);
+            $addProduct.find('.cart-name-label').html(data[0].name);
+            $addProduct.find('.cart-price-label').html(' $'+data[0].price);
             $('.shopping-cart').append($addProduct);
-            console.log(data.rows[0].name);
+            console.log(data[0].name);
         }
     });
+}
+
+function clearProducts() {
+    $('.products-list').empty();
+}
+
+function addProduct(product) {
+    //console.log('Adding product: ' + product.name);
+    var productHTML = '<div class="products-list_single">';
+    productHTML += '<img class = "product-image" width = "250px" height = "250px" src ="'+product.imagepath+'"><br />';
+    productHTML += '<span class = "product-name"></span><br />';
+    productHTML += '<span class = "product-price"></span><br />';
+    productHTML += '<button id = "'+product.id+'" class="cart-submit" onclick = addToCart(this.id)>ADD TO CART</button><br />';
+    var $newProduct = $(productHTML);
+    $newProduct.find('.product-name').text(product.name);
+    $newProduct.find('.product-price').text(product.price);
+    $('.products-list').append($newProduct);
 }

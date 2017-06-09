@@ -51,7 +51,11 @@ $(document).ready(function(e) {
         var plainTextPassword = $('#password').val();
         var saltedPassword = plainTextPassword + salt;
         var hashedPassword = CryptoJS.SHA256(saltedPassword).toString();
-        var formData = { email:username, password:hashedPassword};
+        var formData = {
+            email:username,
+            password:hashedPassword,
+            cartid:shoppingCartNumber
+        };
         console.log(JSON.stringify(formData));
         // send post request with form data as JSON to /login route
         $.ajax({
@@ -94,6 +98,7 @@ $(document).ready(function(e) {
                 email:username,
                 password:hashedPassword,
                 name:realname,
+                cartid:shoppingCartNumber
             };
             console.log(JSON.stringify(formData));
             // send post request with form data as JSON to /register route

@@ -2,18 +2,14 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
-var https = require('https');
 var fs = require('fs');
-var CryptoJS = require('crypto-js');
-var request;
+
 
 // server parameters
 //var connectionString = process.env.DATABASE_URL;
 var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
-var keyPath = __dirname + '/key.pem';
-var certPath = __dirname + '/cert.pem';
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 var salt = 1234567890;
@@ -37,28 +33,62 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // set up template engine
 app.set('view engine', 'ejs');
-//app.use(expressLayouts);
 
 // root page
 app.get('/', function(req, res) {
-    //res.writeHead(200);
-    //res.sendFile(__dirname + '/views/index.html');
     res.render('index.ejs');
+});
+
+app.put('/cart', function(req, res) {
+    console.log(req.body);
+    var cart = req.body.cartid;
+    var product = req.body.id;
+    pg.connect(connectionString, function(err, client, done) {
+        if (err) res.status(500).send('Database connection error');
+        var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
+            'on conflict (cartid, id) do update ' +
+            'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
+        console.log(addString);
+        console.log(cart);
+        console.log(product);
+        var add = client.query(
+            //'insert into incarts (cartid, id, quantity) values ($1, $2, 1) on conflict (cartid, id) do update set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1',
+            addString,
+            [cart, product]
+        );
+        add.on('error', function(error) {
+            console.log(error);
+            res.status(500).send('Database query error');
+        });
+        add.on('row', function(row, result) { result.addRow(row); })
+        add.on('end', function(result) {
+            var p = client.query(
+                'select name, description, price, new, sale, stock, category, imagepath, id from products where id=$1',
+                [product]
+            );
+            p.on('error', function(error) {
+                console.log(error);
+                res.status(420).send('Database query error');
+            });
+            p.on('row', function(row, result) { result.addRow(row); });
+            p.on('end', function(result) {
+                console.log(result.rows);
+                res.status(201).send(result.rows); });
+        });
+    });
 });
 
 // create new shopping cart page
 app.post('/cart', function(req, res) {
     // add row to database for cart
     pg.connect(connectionString, function(err, client, done) {
-        if (err) {
-            client.end();
-            res.status(500).json({success: false, data: err});
-        }
+        if (err) res.status(500).send('Database connection error');
         var user = req.body.email || 'guest';
         var insert = client.query(
-            'insert into carts values($1) returning id',
+            'insert into carts values(default, $1) returning cartid',
             [user]
         );
+        insert.on('error', function(error) { res.status(500).send('Database query error'); });
         insert.on('row', function(row, result) {
             result.addRow(row);
         });
@@ -66,34 +96,48 @@ app.post('/cart', function(req, res) {
             client.end();
             // return id to user
             console.log(result.rows);
-            res.status(201).json(result.rows);
+            res.status(201).json(result.rows[0]);
         });
     });
     // return cart number back to users
 });
 
+// get request on shopping cart will get an array of items in the cart
+app.get('/cart', function(req, res) {
+    var cartID = req.query.search;
+    if (cartID != undefined && cartID !== '') {
+        pg.connect(connectionString, function (err, client, done) {
+            if (err) res.status(500).send('Database connection error');
+            var query = client.query(
+                'select * from products, incarts where products.id = incarts.id and cartid = $1',
+                [cartID]
+            );
+            query.on('error', function(error) { res.status(500).send('Database query error'); });
+            query.on('row', function(row, result) { result.addRow(row); });
+            query.on('end', function(result) {
+                client.end();
+                res.status(200).send(result.rows);
+            });
+        });
+    }
+});
+
 // root page
 app.get('/collections', function(req, res) {
-    //res.writeHead(200);
-    //res.sendFile(__dirname + '/views/index.html');
     var searchPattern = req.query.search;
+    var collection = req.query.collection;
+    var sale = req.query.sale;
+    var newProduct = req.query.new;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
         pg.connect(connectionString, function (err, client, done) {
-            if (err) {
-                res.status(500).send('Database Connection Error');
-            }
+            if (err) res.status(500).send('Database connection error');
             searchPattern = '%' + searchPattern + '%';
             var query = client.query( // ilike is case insensitve like
                 'select name, description, price, new, sale, stock, category, imagepath, id from products where name ilike $1 or description ilike $1',
                 [searchPattern]
             );
-            query.on('error', function(error) {
-                console.log('Database Error!!');
-                console.log(error);
-            });
-            query.on('row', function(row, result) {
-                result.addRow(row);
-            });
+            query.on('error', function(error) { res.status(500).send('Database query error'); });
+            query.on('row', function(row, result) { result.addRow(row); });
             query.on('end', function(result) {
                 client.end();
                 if (result.rowCount == 0) {
@@ -105,10 +149,24 @@ app.get('/collections', function(req, res) {
                 }
             });
         });
+    } else if (collection != undefined ) {
+
     } else {
         // nothin to search redirect to everything
         console.log('No search show all');
-        res.redirect('collections/everything');
+        pg.connect(connectionString, function(err, client, done) {
+            if (err) res.status(500).send('Database connection error');
+            var products = client.query(
+                'select name, description, price, new, sale, stock, category, imagepath, id from products'
+            );
+            products.on('error', function(error) { res.status(500).send('Database query error'); });
+            products.on('row', function(row, result) { result.addRow(row); });
+            products.on('end', function(result) {
+                client.end();
+                res.status(200).send(result.rows);
+            });
+        });
+        //res.redirect('collections/everything');
     }
 });
 
@@ -135,25 +193,6 @@ app.get('/collections/everything', function(req, res) {
     });
 });
 
-// retrive the list of all items in category 'art'
-app.get('/collections/art', function(req, res) {
-    // select from products where category = 'art'
-});
-
-// retrive the list of all items in category 'cushion'
-app.get('/collections/cushion', function(req, res) {
-    // select from products where category = 'cushion'
-});
-
-// retrive the list of all items in category 'mug'
-app.get('/collections/mug', function(req, res) {
-    // select from products where category = 'mug'
-});
-
-// retrive the list of all items in category 'vase'
-app.get('/collections/vase', function(req, res) {
-    // select from products where category = 'vase'
-});
 
 app.get('/login', function(req, res) {
     res.json({salt: salt});
@@ -188,6 +227,7 @@ app.post('/login', function(req, res) {
                 console.log(expectedUser);
                 if (suppliedUser.password === expectedUser.password) {
                     // successful login
+                    updateCarts(suppliedUser);
                     res.json(expectedUser);
                 } else {
                     res.status(403).send('Password is incorrect');
@@ -224,6 +264,7 @@ app.post('/register', function(req, res) {
                 );
                 insert.on('end', function() {
                     client.end();
+                    updateCarts(newUser);
                     res.status(201).send(newUser);
                 });
             }
@@ -253,7 +294,22 @@ app.get("/collections/:id", function (req, res){
     });
     query.on('end', function(result) {
         client.end();
+        updateCarts()
         res.status(200).send(result);
     });
   });
 });
+
+function updateCarts(user) {
+    console.log('Updating user ...');
+    pg.connect(connectionString, function(err, client, done) {
+        var query = client.query(
+            'update carts set email = $1 where cartid = $2',
+            [user.email, user.cartid]
+        );
+        query.on('end', function(result) {
+            console.log('Updating user done.');
+            client.end();
+        });
+    });
+}
