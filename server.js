@@ -6,9 +6,9 @@ var fs = require('fs');
 var session = require('express-session');
 
 // server parameters
-//var connectionString = process.env.DATABASE_URL;
+var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
@@ -195,10 +195,10 @@ app.get('/collections/:category', function(req, res) {
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
       if (err){
-        res.status(500).send('Database connection error');
-        client.end();
-        console.log("GET collections error... Database connection error.");
-        console.log(err);
+          done();
+          res.status(500).send('Database connection error');
+          console.log("GET collections error... Database connection error.");
+          console.log(err);
       }
 
       if (category == 'everything'){
@@ -211,8 +211,9 @@ app.get('/collections/:category', function(req, res) {
           queryCmd = 'SELECT * FROM products WHERE sale = ($1);';
           query = client.query(queryCmd, [true]);
       } else {
+          done();
           res.status(500).send('GET collections... CATEGORY NOT FOUND!');
-          client.end();
+          //client.end();
       }
       query.on('row', function(row, result) {
         result.addRow(row);
