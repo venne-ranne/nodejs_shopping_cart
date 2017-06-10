@@ -306,7 +306,6 @@ header ul li:hover > ul{
 
 .products-list-wrap{
   position: relative;
-  float: right;
   display: inline-block;
 }
 

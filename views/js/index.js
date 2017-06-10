@@ -23,46 +23,34 @@ $(document).ready(function(e) {
         }
     });
 
-    $('#menu-new').on('click', function(e){
-        $('.replace-container').load('collections.ejs');
-        // get all the new arrival products from the database
-        $.ajax({
-            type: 'GET',
-            url: '/collections/new',
-            success: function(data){
-                for (i = 0; i < data.rows.length; i++) {
-                    addProductToList(data.rows[i]);
-                }
-            }
-        });
-    });
+    // $('#menu-new').on('click', function(e){
+    //     //$('.replace-container').load('collections.ejs');
+    //     // get all the new arrival products from the database
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: '/collections/new',
+    //         success: function(data){
+    //             // for (i = 0; i < data.rows.length; i++) {
+    //             //     addProductToList(data.rows[i]);
+    //             // }
+    //         }
+    //     });
+    // });
 
-    $('#menu-shop-all').on('click', function(e){
-        // if (window.location.pathname === '/collections/everything') return;
-        $('.replace-container').load('collections.ejs');
-        // get all the products from the database
-        $.ajax({
-            type: 'GET',
-            url: '/collections/everything',
-            success: function(data){
-                for (i = 0; i < data.rows.length; i++) {
-                    addProductToList(data.rows[i]);
-                }
-                // var url = '/collections/everything';
-                // history.pushState(null, null, url);
-            }
-        });
-    });
+    // $('#menu-shop-all').on('click', function(e){
+    //     // if (window.location.pathname === '/collections/everything') return;
+    //     $('.replace-container').load('collections.ejs');
+    //     // get all the products from the database
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: '/collections/everything',
+    //         success: function(data){
+    //             for (i = 0; i < data.rows.length; i++) {
+    //                 addProductToList(data.rows[i]);
+    //             }
+    //             // var url = '/collections/everything';
+    //             // history.pushState(null, null, url);
+    //         }
+    //     });
+    // });
 });
-
-function addProductToList(product) {
-    var productHTML = '<div class="products-list_single">';
-    productHTML += '<img class = "product-image" width = "250px" height = "250px" src ="'+product.imagepath+'"><br />';
-    productHTML += '<span class = "product-name"></span><br />';
-    productHTML += '<span class = "product-price"></span><br />';
-    productHTML += '<button id = "'+product.id+'" class="cart-submit" onclick = addToCart(this.id)>ADD TO CART</button><br />';
-    var $newProduct = $(productHTML);
-    $newProduct.find('.product-name').text(product.name);
-    $newProduct.find('.product-price').text(product.price);
-    $('.products-list').append($newProduct);
-}
