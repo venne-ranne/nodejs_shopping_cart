@@ -14,13 +14,12 @@ $(document).ready(function(e) {
                     if (window.location.pathname == '/'){
                         $('.home-features').hide();
                     }
-
+                    $('.products-list').empty();   // removed the previous content
                     // if the result is 0
                     if (data == "NOT FOUND"){
                         $('.result-label').text("0 results");
                         return;
                     }
-                    $('.products-list').empty();   // removed the previous content
                     $('.result-label').text(data.length + " results");   // display the number of results
                     // get json array of products which match query in some way
                     for (i = 0; i < data.length; i++) {
