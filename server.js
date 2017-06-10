@@ -90,10 +90,7 @@ app.post('/cart', function(req, res) {
     pg.connect(connectionString, function(err, client, done) {
         if (err) res.status(500).send('Database connection error');
         var user = req.body.email || 'guest';
-        var insert = client.query(
-            'insert into carts values(default, $1) returning cartid',
-            [user]
-        );
+        var insert = client.query('insert into carts values(default, $1) returning cartid', [user]);
         insert.on('error', function(error) { res.status(500).send('Database query error'); });
         insert.on('row', function(row, result) {
             result.addRow(row);
@@ -114,8 +111,7 @@ app.get('/cart', function(req, res) {
     if (cartid != undefined && cartid !== '') {
         pg.connect(connectionString, function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
-            var query = client.query(
-                'SELECT * from products, incarts WHERE products.id = incarts.id AND cartid = $1',[cartid]);
+            var query = client.query('select * from products, incarts where products.id = incarts.id and cartid = $1',[cartid]);
             query.on('error', function(error) {
                 res.status(500).send('Database query error');
             });
