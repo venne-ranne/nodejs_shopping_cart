@@ -195,9 +195,10 @@ app.get('/collections/:category', function(req, res) {
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
       if (err){
-          res.status(500).send('Database connection error');
-          console.log("GET collections error... Database connection error.");
-          console.log(err);
+        res.status(500).send('Database connection error');
+        client.end();
+        console.log("GET collections error... Database connection error.");
+        console.log(err);
       }
 
       if (category == 'everything'){
@@ -210,8 +211,8 @@ app.get('/collections/:category', function(req, res) {
           queryCmd = 'SELECT * FROM products WHERE sale = ($1);';
           query = client.query(queryCmd, [true]);
       } else {
-          done();
           res.status(500).send('GET collections... CATEGORY NOT FOUND!');
+          client.end();
       }
       query.on('row', function(row, result) {
         result.addRow(row);
