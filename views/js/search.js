@@ -1,7 +1,9 @@
 $(document).ready(function(e) {
+
     $('#search-text').on('keydown', function(e) {
         if (e.which == 13) {
             console.log("enter!!!");
+            $('.replace-container').load('collections.ejs');
             // get what the user typed
             var userQuery = $(this).val();
             // send to server
@@ -11,10 +13,8 @@ $(document).ready(function(e) {
                 url: '/collections?search=' + userQuery,
                 success: function(data) {
                     // get json array of products which match query in some way
-                    clearProducts();
-                    for (var a = 0; a < data.length; ++ a) {
-                        addProduct(data[a]);
-                        console.log(data[a].name + ' : ' + data[a].description);
+                    for (i = 0; i < data.length; i++) {
+                        addProductToList(data[i]);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

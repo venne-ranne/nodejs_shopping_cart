@@ -1,4 +1,5 @@
 var userEmail = undefined;
+
 $(document).ready(function(e) {
 
     var login_btn = document.getElementById('signin-btn');
@@ -31,6 +32,7 @@ $(document).ready(function(e) {
         $('#login-dialog').dialog('open');
     }); //end click function
 
+    // hide the login form when register form is showing
     $('#register-btn').on('click', function(){
         $('#login-container').hide();
         activate_tabs(login_btn, register_btn);
@@ -65,10 +67,8 @@ $(document).ready(function(e) {
             contentType: 'application/json',
             dataType: 'json',
             success: function(data) {
-                // recieve token to use in future communications with server
-                // change site to reflect logged on status
-                $('#login-btn').html(data.name);
-                $('#login-dialog').dialog('close');
+                console.log(data);
+                location.reload();  // change site to reflect logged on status
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (errorThrown === 'Unprocessable Entity') {
@@ -109,9 +109,9 @@ $(document).ready(function(e) {
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(data) {
-                    // recieve data with name
-                    $('#login-btn').html(data.name);
-                    $('#login-dialog').dialog('close');
+                    location.reload();  // change site to reflect logged on status
+                    //$('#login-btn').html(data.name);
+                    //$('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (errorThrown === 'Conflict') {
@@ -120,6 +120,17 @@ $(document).ready(function(e) {
                 }
             });
         }
+    });
+
+    $('#logout-btn').on('click', function(){
+        console.log("Logout btn is clicked..");
+        $.ajax({
+            method: 'GET',
+            url: '/logout',
+            success: function(data) {
+                location.reload();
+            }
+        });
     });
 }); // end ready
 

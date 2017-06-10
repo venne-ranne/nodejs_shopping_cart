@@ -3,7 +3,14 @@
       <input type=“search” name=“search” id="search-text" placeholder="Search…">
    </div>
    <ul>
-      <li class = "tabs"><button id = "login-btn"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> LOG IN</button></li>
+      <% if (user != undefined) { %>
+          <li class = "tabs">Hi, <b><%= user.name %>! </b><button id = "logout-btn"> sign out </button>
+      </li>
+      <% } else { %>
+          <li class = "tabs"><button id = "login-btn">
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span> LOG IN</button>
+          </li>
+      <% } %>
       <li class = "tabs"><button id = "shopping-cart-btn"><span class = "modern-pic-icon">i</span> CART</button></li>
       <li class = "tabs"><button>CHECKOUT</button></li>
    </ul>
