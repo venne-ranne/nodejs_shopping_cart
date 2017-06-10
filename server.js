@@ -37,6 +37,8 @@ app.use(session({
 
 // set up template engine
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout');
 
 // root page
 app.get('/', function(req, res) {
@@ -141,85 +143,81 @@ app.get('/collections', function(req, res) {
                 'select name, description, price, new, sale, stock, category, imagepath, id from products where name ilike $1 or description ilike $1',
                 [searchPattern]
             );
-            query.on('error', function(error) { res.status(500).send('Database query error'); });
-            query.on('row', function(row, result) { result.addRow(row); });
+            query.on('error', function(error) {
+                res.status(500).send('Database query error');
+            });
+            query.on('row', function(row, result) {
+                result.addRow(row);
+            });
             query.on('end', function(result) {
                 client.end();
                 if (result.rowCount == 0) {
                     console.log('Nothing found show all');
-                    res.redirect('collections/everything');
+                    res.send("NOT FOUND");
+                    //res.redirect('collections/everything');
                 } else {
                     console.log(result.rows);
-                    res.status(200).send(result.rows);
+                    res.status(200).json(result.rows);
                 }
             });
         });
-    } else if (collection != undefined ) {
-        // select on collection
-    } else if (sale) {
-        //
-    } else {
-        // nothin to search redirect to everything
-        console.log('No search show all');
-        pg.connect(connectionString, function(err, client, done) {
-            if (err) res.status(500).send('Database connection error');
-            var products = client.query(
-                'select name, description, price, new, sale, stock, category, imagepath, id from products'
-            );
-            products.on('error', function(error) { res.status(500).send('Database query error'); });
-            products.on('row', function(row, result) { result.addRow(row); });
-            products.on('end', function(result) {
-                client.end();
-                res.status(200).send(result.rows);
-            });
-        });
-        //res.redirect('collections/everything');
     }
+
+    // else if (collection != undefined ) {
+    //     // select on collection
+    // } else if (sale) {
+    //     //
+    // } else {
+    //     // nothin to search redirect to everything
+    //     console.log('No search show all');
+    //     pg.connect(connectionString, function(err, client, done) {
+    //         if (err) res.status(500).send('Database connection error');
+    //         var products = client.query(
+    //             'select name, description, price, new, sale, stock, category, imagepath, id from products'
+    //         );
+    //         products.on('error', function(error) { res.status(500).send('Database query error'); });
+    //         products.on('row', function(row, result) { result.addRow(row); });
+    //         products.on('end', function(result) {
+    //             client.end();
+    //             res.status(200).json(result.rows);
+    //         });
+    //     });
+    //     //res.redirect('collections/everything');
+    //}
 });
 
-// retrive all items in stock
-app.get('/collections/everything', function(req, res) {
-    // select * from products
+// retrive all items in stock based on the category name
+app.get('/collections/:category', function(req, res) {
+    var category = req.params.category;
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
       if (err){
+        res.status(500).send('Database connection error');
         client.end();
-        console.log("GET all products error");
+        console.log("GET collections error... Database connection error.");
         console.log(err);
-        res.status(500).json({success: false, data: err});
       }
-      queryCmd = 'SELECT row_to_json(products) FROM products;';
-      query = client.query(queryCmd);
-      query.on('row', function(row, result) {
-        result.addRow(row.row_to_json);
-      });
-      query.on('end', function(result) {
-          client.end();
-          res.status(200).send(result);
-      });
-    });
-});
 
-// retrive all new arrival items
-app.get('/collections/new', function(req, res) {
-    // select * from products
-    var query, queryCmd;
-    pg.connect(connectionString, (err, client, done) => {
-        //console.log("collection/new = " + req.session.user.email);
-      if (err){
-        client.end();
-        console.log("GET all new products error");
-        console.log(err);
-        res.status(500).json({success: false, data: err});
+      if (category == 'everything'){
+          queryCmd = 'SELECT *  FROM products;';
+          query = client.query(queryCmd);
+      } else if (category == 'new'){
+          queryCmd = 'SELECT * FROM products WHERE new = ($1);';
+          query = client.query(queryCmd, [true]);
+      } else if (category == 'sale'){
+          queryCmd = 'SELECT * FROM products WHERE sale = ($1);';
+          query = client.query(queryCmd, [true]);
+      } else {
+          res.status(500).send('GET collections... CATEGORY NOT FOUND!');
+          client.end();
       }
-      queryCmd = 'SELECT row_to_json(products) FROM products WHERE new = ($1);';
-      query = client.query(queryCmd, [true]);
       query.on('row', function(row, result) {
-        result.addRow(row.row_to_json);
+        result.addRow(row);
       });
       query.on('end', function(result) {
-          client.end();
-          res.status(200).send(result);
+          done();
+          //client.end();
+          res.status(200).render('collections.ejs', {user: req.session.user, products:result.rows});
       });
     });
 });
