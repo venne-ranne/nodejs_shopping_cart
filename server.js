@@ -3,12 +3,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
 var fs = require('fs');
-
+var session = require('express-session');
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
@@ -30,13 +30,17 @@ app.listen(port, function() {
 // setup body parser to use JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+    secret: 'iloveblackrabbitproject',
+    resave: false,
+    saveUninitialized: true})); // session secret
 
 // set up template engine
 app.set('view engine', 'ejs');
 
 // root page
 app.get('/', function(req, res) {
-    res.render('index.ejs');
+    res.render('index.ejs', { user: req.session.user });
 });
 
 app.put('/cart', function(req, res) {
@@ -107,17 +111,15 @@ app.post('/cart', function(req, res) {
 // get request on shopping cart will get an array of items in the cart
 app.get('/cart', function(req, res) {
     var cartid = req.query.cartid;
-    //console.log(req.query.cartid);
     if (cartid != undefined && cartid !== '') {
         pg.connect(connectionString, function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
             var query = client.query(
-                'select * from products, incarts where products.id = incarts.id and cartid = $1',
-                [cartid]
-            );
-            query.on('error', function(error) { res.status(500).send('Database query error'); });
+                'SELECT * from products, incarts WHERE products.id = incarts.id AND cartid = $1',[cartid]);
+            query.on('error', function(error) {
+                res.status(500).send('Database query error');
+            });
             query.on('row', function(row, result) {
-                console.log(row);
                 result.addRow(row);
             });
             query.on('end', function(result) {
@@ -186,7 +188,7 @@ app.get('/collections/everything', function(req, res) {
     pg.connect(connectionString, (err, client, done) => {
       if (err){
         client.end();
-        console.log("get all products error");
+        console.log("GET all products error");
         console.log(err);
         res.status(500).json({success: false, data: err});
       }
@@ -202,6 +204,29 @@ app.get('/collections/everything', function(req, res) {
     });
 });
 
+// retrive all new arrival items
+app.get('/collections/new', function(req, res) {
+    // select * from products
+    var query, queryCmd;
+    pg.connect(connectionString, (err, client, done) => {
+        //console.log("collection/new = " + req.session.user.email);
+      if (err){
+        client.end();
+        console.log("GET all new products error");
+        console.log(err);
+        res.status(500).json({success: false, data: err});
+      }
+      queryCmd = 'SELECT row_to_json(products) FROM products WHERE new = ($1);';
+      query = client.query(queryCmd, [true]);
+      query.on('row', function(row, result) {
+        result.addRow(row.row_to_json);
+      });
+      query.on('end', function(result) {
+          client.end();
+          res.status(200).send(result);
+      });
+    });
+});
 
 app.get('/login', function(req, res) {
     res.json({salt: salt});
@@ -237,7 +262,9 @@ app.post('/login', function(req, res) {
                 if (suppliedUser.password === expectedUser.password) {
                     // successful login
                     updateCarts(suppliedUser);
-                    res.json(expectedUser);
+                    req.session.user = expectedUser;  // save the logged in user in the session
+                    res.send({user: expectedUser});
+                    //res.json(expectedUser);
                 } else {
                     res.status(403).send('Password is incorrect');
                     console.log('Login attempt with incorrect password');
@@ -274,38 +301,44 @@ app.post('/register', function(req, res) {
                 insert.on('end', function() {
                     client.end();
                     updateCarts(newUser);
-                    res.status(201).send(newUser);
+                    req.session.user = newUser;  // save the logged in user in the session
+                    res.send({user: newUser});
+                    //res.status(201).send(newUser);
                 });
             }
         });
     })
 });
 
-// get a product using id to add into shopping card
-app.get("/collections/:id", function (req, res){
-  var id = req.params.id;
-  var query, queryCmd;
+// // get a product using id to add into shopping card
+// app.get("/collections/:id", function (req, res){
+//   var id = req.params.id;
+//   var query, queryCmd;
+//
+//   pg.connect(connectionString, (err, client, done) => {
+//     if (err){
+//       done();
+//       console.log("get a product using id error");
+//       console.log(err);
+//       return res.status(500).json({success: false, data: err});
+//     }
+//
+//     queryCmd = 'SELECT row_to_json(products) FROM products WHERE id = ($1);';
+//     query = client.query(queryCmd, [id]);
+//
+//     query.on('row', function(row, result) {
+//         result.addRow(row.row_to_json);
+//     });
+//     query.on('end', function(result) {
+//         client.end();
+//         res.status(200).send(result);
+//     });
+//   });
+// });
 
-  pg.connect(connectionString, (err, client, done) => {
-    if (err){
-      done();
-      console.log("get a product using id error");
-      console.log(err);
-      return res.status(500).json({success: false, data: err});
-    }
-
-    queryCmd = 'SELECT row_to_json(products) FROM products WHERE id = ($1);';
-    query = client.query(queryCmd, [id]);
-
-    query.on('row', function(row, result) {
-        console.log(row.row_to_json);
-        result.addRow(row.row_to_json);
-    });
-    query.on('end', function(result) {
-        client.end();
-        res.status(200).send(result);
-    });
-  });
+app.get('/logout', function(req, res) {
+    req.session.destroy();
+    res.status(200).send({user: undefined});
 });
 
 function updateCarts(user) {
