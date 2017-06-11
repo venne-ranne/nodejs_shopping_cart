@@ -6,9 +6,9 @@ var fs = require('fs');
 var session = require('express-session');
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
@@ -46,17 +46,24 @@ app.get('/', function(req, res) {
 });
 
 app.put('/cart', function(req, res) {
-    //console.log(req.body);
-    var cart = req.body.cartid;
+    // set up the cartid number for the first-timer
+    if (req.session.cartid == undefined){createCartId(req);}
+
+    //var cart = req.body.cartid;
     var product = req.body.id;
+
     pg.connect(connectionString, function(err, client, done) {
+        console.log("cartid created = " +req.session.cartid);
         if (err) res.status(500).send('Database connection error');
+        var cart = req.session.cartid;
         var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
             'on conflict (cartid, id) do update ' +
             'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
         //console.log(addString);
         //console.log(cart);
         //console.log(product);
+
+        client.query('UPDATE carts SET total_items = total_items + 1 WHERE cartid = ($1);', [cart]);  // just update the total items in the cart
         var add = client.query(
             //'insert into incarts (cartid, id, quantity) values ($1, $2, 1) on conflict (cartid, id) do update set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1',
             addString,
@@ -126,6 +133,28 @@ app.get('/cart', function(req, res) {
                 res.status(200).send(result.rows);
             });
         });
+    }
+});
+
+// get request on total number of items in the cart
+app.get('/totalcart', function(req, res) {
+    var cartid = req.session.cartid;
+    if (cartid != undefined && cartid !== '') {
+        pg.connect(connectionString, function (err, client, done) {
+            var totalNumber = 0;
+            if (err) res.status(500).send('Database connection error');
+            var query = client.query('select total_items from carts where cartid = ($1);',[cartid]);
+            query.on('error', function(error) {
+                res.status(500).send('Database query error on GET totalcart..');
+            });
+            query.on('row', function(row) { totalNumber = row.total_items;});
+            query.on('end', function() {
+                done();
+                res.status(200).send({total:totalNumber});
+            });
+        });
+    } else {
+        res.status(200).send({total: 0});
     }
 });
 
@@ -334,7 +363,8 @@ app.post('/register', function(req, res) {
 // });
 
 app.get('/logout', function(req, res) {
-    req.session.destroy();
+    //req.session.destroy();
+    req.session.user = undefined;
     res.status(200).send({user: undefined});
 });
 
@@ -349,5 +379,18 @@ function updateCarts(user) {
             console.log('Updating user done.');
             client.end();
         });
+    });
+}
+
+function createCartId(req){
+    if (req.session.cartid != undefined) return;
+    pg.connect(connectionString, function(err, client, done) {
+        if (err) res.status(500).send('Create cartid error... Database connection error');
+        var user = req.session.user || 'guest';
+        if (req.session.user != undefined) user = req.session.user.email;
+        var insert = client.query('insert into carts values(default, $1) returning cartid', [user]);
+        insert.on('error', function(error) { res.status(500).send('Create cartid error... Database query error'); });
+        insert.on('row', function(row) { req.session.cartid = row.cartid;});
+        insert.on('end', function() { done(); });
     });
 }
