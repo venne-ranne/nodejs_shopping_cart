@@ -2,25 +2,12 @@
 var shoppingCartNumber = undefined;
 $(document).ready(function(e) {
 
-    // //when page is loaded make a request to the server to a shopping cart number
-    // $.ajax({
-    //     method: 'POST',
-    //     url: '/cart',
-    //     success: function(data) {
-    //         shoppingCartNumber = data.cartid;
-    //         console.log('Shopping cart number = ' + shoppingCartNumber);
-    //     },
-    //     error: function(jqXHR, textStatus, errorThrown) {
-    //         console.log('Server failed to provide shopping cart number');
-    //     }
-    // });
-
     // pop-up shopping cart dialog box
     $('.shopping-cart-container').dialog({
         modal:true,
         autoOpen:false,
         autoResize:true,
-        minWidth: 380,
+        minWidth: 400,
         resizable: false,
         position: { my: "bottom+120%", at: "right bottom", of: '#shopping-cart-btn' }
     });
@@ -48,7 +35,24 @@ function clearCart() { $('.shopping-cart').empty(); }
 
 // selected item is the product id when the button addToCart is clicked
 function addToCart(selectedItem){
-    console.log(selectedItem);
+    var total = $('.shopping-cart li').length;
+
+    // check the cart if a cartid is created or not
+    if (total == 0){ // if the cart is empty
+        console.log("total number is " + total);
+        $.ajax({
+            method: 'POST',
+            url: '/cart',
+            success: function(data) {
+                shoppingCartNumber = data.cartid;
+                console.log('Shopping cart number = ' + shoppingCartNumber);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Server failed to provide shopping cart number');
+            }
+        });
+    }
+
     $.ajax({
         method: 'PUT',
         url: '/cart',
@@ -62,7 +66,9 @@ function addToCart(selectedItem){
             console.log('failed to add item to cart');
         },
         success: function(data){
-            //addProductToCartList(data[0]);
+            addProductToCartList(data[0]);
+            var total = $('.shopping-cart li').length;
+            $('#total-num-cart').text("(" + total +")");
             console.log('item added to cart');
         }
     });

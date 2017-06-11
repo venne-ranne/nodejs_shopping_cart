@@ -10,7 +10,7 @@ $(document).ready(function(e) {
         modal:true,
         autoOpen:false,
         autoResize:true,
-        minHeight: 300,
+        minHeight: 380,
         minWidth: 500,
         close: function(){  // to reset the textfield to the default values
             $('#login-dialog [type=email]').val('');
@@ -131,6 +131,10 @@ $(document).ready(function(e) {
                 location.reload();
             }
         });
+    });
+
+    $('.google-btn').on('click', function(){
+        console.log("Sign in with google button is clicked...");
     });
 }); // end ready
 

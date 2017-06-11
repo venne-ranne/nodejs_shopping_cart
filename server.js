@@ -213,7 +213,6 @@ app.get('/collections/:category', function(req, res) {
       } else {
           done();
           res.status(500).send('GET collections... CATEGORY NOT FOUND!');
-          //client.end();
       }
       query.on('row', function(row, result) {
         result.addRow(row);
