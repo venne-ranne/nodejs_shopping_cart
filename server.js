@@ -6,9 +6,9 @@ var fs = require('fs');
 var session = require('express-session');
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
@@ -42,7 +42,8 @@ app.set('layout', 'layouts/layout');
 
 // root page
 app.get('/', function(req, res) {
-    res.render('index.ejs', { user: req.session.user });
+    if (req.session.totalcart == undefined) req.session.totalcart = 0;
+    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
 });
 
 app.put('/cart', function(req, res) {
@@ -70,20 +71,24 @@ app.put('/cart', function(req, res) {
         });
         add.on('row', function(row, result) { result.addRow(row); })
         add.on('end', function(result) {
-            var p = client.query(
-                'select name, description, price, new, sale, stock, category, imagepath, id from products where id=$1',
-                [product]
-            );
-            p.on('error', function(error) {
-                client.end();
-                console.log(error);
-                res.status(420).send('Database query error');
-            });
-            p.on('row', function(row, result) { result.addRow(row); });
-            p.on('end', function(result) {
-                client.end();
-                console.log(result.rows);
-                res.status(201).send(result.rows); });
+            done();
+            req.session.totalcart = req.session.totalcart + 1;
+            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+            // var p = client.query(
+            //     'select name, description, price, new, sale, stock, category, imagepath, id from products where id=$1',
+            //     [product]
+            // );
+            // p.on('error', function(error) {
+            //     client.end();
+            //     console.log(error);
+            //     res.status(420).send('Database query error');
+            // });
+            // p.on('row', function(row, result) { result.addRow(row); });
+            // p.on('end', function(result) {
+            //     client.end();
+            //     console.log(result.rows);
+            //     req.session.totalcart = req.session.totalcart + 1;
+            //     res.status(201).send(result.rows); });
         });
     });
 });
@@ -99,6 +104,7 @@ app.post('/cart', function(req, res) {
         insert.on('error', function(error) { res.status(500).send('Database query error'); });
         insert.on('row', function(row, result) {
             req.session.cartid = row.cartid;
+            req.session.totalcart = 0;
             result.addRow(row);
         });
         insert.on('end', function(result) {
@@ -130,28 +136,6 @@ app.get('/cart', function(req, res) {
                 res.status(200).send(result.rows);
             });
         });
-    }
-});
-
-// get request on total number of items in the cart
-app.get('/totalcart', function(req, res) {
-    var cartid = req.session.cartid;
-    if (cartid != undefined && cartid !== '') {
-        pg.connect(connectionString, function (err, client, done) {
-            var totalNumber = 0;
-            if (err) res.status(500).send('Database connection error');
-            var query = client.query('select total_items from carts where cartid = ($1);',[cartid]);
-            query.on('error', function(error) {
-                res.status(500).send('Database query error on GET totalcart..');
-            });
-            query.on('row', function(row) { totalNumber = row.total_items;});
-            query.on('end', function() {
-                done();
-                res.status(200).send({total:totalNumber});
-            });
-        });
-    } else {
-        res.status(200).send({total: 0});
     }
 });
 
@@ -246,7 +230,7 @@ app.get('/collections/:category', function(req, res) {
       query.on('end', function(result) {
           done();
           //client.end();
-          res.status(200).render('collections.ejs', {user: req.session.user, products:result.rows});
+          res.status(200).render('collections.ejs', {user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
       });
     });
 });

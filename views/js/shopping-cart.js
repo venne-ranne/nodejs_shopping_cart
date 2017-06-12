@@ -1,7 +1,5 @@
 $(document).ready(function(e) {
 
-    getTotalCart();   // get the total number of items in the cart
-
     // pop-up shopping cart dialog box
     $('.shopping-cart-container').dialog({
         modal:true,
@@ -38,7 +36,6 @@ $(document).ready(function(e) {
                 url: '/cart',
                 success: function(data) {
                     addProductIntoCart(productId);
-                    getTotalCart();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log('Server failed to provide shopping cart number');
@@ -47,20 +44,9 @@ $(document).ready(function(e) {
         } else {
             // put the new added item to the cart
             addProductIntoCart(productId);
-            getTotalCart();
         }
     });
 });
-
-function getTotalCart(){
-    $.ajax({
-        method: 'GET',
-         url: '/totalcart',
-         success: function(data) {
-            $('#total-num-cart').text(data.total);
-         }
-    });
-}
 
 // add the product to the shopping cart when add to cart button is clicked
 function addProductIntoCart(selectedItem){
@@ -76,7 +62,7 @@ function addProductIntoCart(selectedItem){
             console.log('failed to add item to cart');
         },
         success: function(data){
-            getTotalCart();
+            $('#total-num-cart').text(data.totalcart);
             console.log('item added to cart');
         }
     });
