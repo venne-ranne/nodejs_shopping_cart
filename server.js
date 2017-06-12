@@ -333,34 +333,7 @@ app.post('/register', function(req, res) {
     })
 });
 
-// // get a product using id to add into shopping card
-// app.get("/collections/:id", function (req, res){
-//   var id = req.params.id;
-//   var query, queryCmd;
-//
-//   pg.connect(connectionString, (err, client, done) => {
-//     if (err){
-//       done();
-//       console.log("get a product using id error");
-//       console.log(err);
-//       return res.status(500).json({success: false, data: err});
-//     }
-//
-//     queryCmd = 'SELECT row_to_json(products) FROM products WHERE id = ($1);';
-//     query = client.query(queryCmd, [id]);
-//
-//     query.on('row', function(row, result) {
-//         result.addRow(row.row_to_json);
-//     });
-//     query.on('end', function(result) {
-//         client.end();
-//         res.status(200).send(result);
-//     });
-//   });
-// });
-
 app.get('/logout', function(req, res) {
-    //req.session.destroy();
     req.session.user = undefined;
     res.status(200).send({user: undefined});
 });
