@@ -16,16 +16,17 @@ $(document).ready(function(e) {
 
     // when the shopping cart button on header is clicked
     $('#shopping-cart-btn').on('click', function(){
+        $.ajax({
+            type: 'GET',
+            url: '/cart',
+            success: function(data){
+                $('.shopping-cart').empty();
+                for (i = 0; i < data.length; i++) {
+                    addProductToCartList(data[i]);
+                }
+            }
+        });
         $('.shopping-cart-container').dialog('open');
-        // $.ajax({
-        //     type: 'GET',
-        //     url: '/cart',
-        //     success: function(data){
-        //         for (i = 0; i < data.length; i++) {
-        //             addProductToCartList(data[i]);
-        //         }
-        //     }
-        // });
     });
 
     // selected item is the product id when the button addToCart is clicked
@@ -55,8 +56,6 @@ $(document).ready(function(e) {
     });
 });
 
-// function clearCart() { $('.shopping-cart').empty(); }
-
 function getTotalCart(){
     $.ajax({
         method: 'GET',
@@ -67,12 +66,12 @@ function getTotalCart(){
     });
 }
 
+// add the product to the shopping cart when add to cart button is clicked
 function addProductIntoCart(selectedItem){
     $.ajax({
         method: 'PUT',
         url: '/cart',
         data: JSON.stringify({
-            cartid: shoppingCartNumber,
             id: selectedItem
         }),
         contentType: 'application/json',
@@ -87,12 +86,13 @@ function addProductIntoCart(selectedItem){
     });
 }
 
+// add a product to the shopping cart list
 function addProductToCartList(product) {
     var imagepath = '../'+product.imagepath;
     var cartHTML = '<li class = "shopping-list">';
     cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
     cartHTML += '<label class = "cart-name-label"></label>';
-    cartHTML += '<input type="number" name="quantity" min="1" max="10" value="1">';
+    cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'">';
     cartHTML += '<button class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);

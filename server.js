@@ -46,14 +46,11 @@ app.get('/', function(req, res) {
 });
 
 app.put('/cart', function(req, res) {
-
-    //var cart = req.body.cartid;
     var product = req.body.id;
+    var cart = req.session.cartid;
 
     pg.connect(connectionString, function(err, client, done) {
-        console.log("cartid created = " +req.session.cartid);
         if (err) res.status(500).send('Database connection error');
-        var cart = req.session.cartid;
         var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
             'on conflict (cartid, id) do update ' +
             'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
@@ -97,7 +94,7 @@ app.post('/cart', function(req, res) {
     pg.connect(connectionString, function(err, client, done) {
         if (err) res.status(500).send('Database connection error');
         var user = req.session.user || 'guest';
-        if (req.session.user != undefined) user = req.session.user.email;
+        if (req.session.user != undefined) user = req.session.user.email;  // if the user logged in, then updated
         var insert = client.query('insert into carts values(default, $1) returning cartid', [user]);
         insert.on('error', function(error) { res.status(500).send('Database query error'); });
         insert.on('row', function(row, result) {
@@ -116,7 +113,8 @@ app.post('/cart', function(req, res) {
 
 // get request on shopping cart will get an array of items in the cart
 app.get('/cart', function(req, res) {
-    var cartid = req.query.cartid;
+    //var cartid = req.query.cartid;
+    var cartid = req.session.cartid;
     if (cartid != undefined && cartid !== '') {
         pg.connect(connectionString, function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
