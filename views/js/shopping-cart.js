@@ -1,5 +1,3 @@
-// number to store users shopping cart
-var shoppingCartNumber = undefined;
 $(document).ready(function(e) {
 
     getTotalCart();   // get the total number of items in the cart
@@ -39,8 +37,6 @@ $(document).ready(function(e) {
                 method: 'POST',
                 url: '/cart',
                 success: function(data) {
-                    shoppingCartNumber = data.cartid;
-                    console.log('Shopping cart number = ' + shoppingCartNumber);
                     addProductIntoCart(productId);
                     getTotalCart();
                 },

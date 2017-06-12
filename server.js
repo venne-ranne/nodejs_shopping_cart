@@ -113,7 +113,6 @@ app.post('/cart', function(req, res) {
 
 // get request on shopping cart will get an array of items in the cart
 app.get('/cart', function(req, res) {
-    //var cartid = req.query.cartid;
     var cartid = req.session.cartid;
     if (cartid != undefined && cartid !== '') {
         pg.connect(connectionString, function (err, client, done) {
