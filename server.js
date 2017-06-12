@@ -6,9 +6,9 @@ var fs = require('fs');
 var session = require('express-session');
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
@@ -284,7 +284,7 @@ app.post('/login', function(req, res) {
                 console.log(expectedUser);
                 if (suppliedUser.password === expectedUser.password) {
                     // successful login
-                    updateCarts(suppliedUser);
+                    updateCarts(suppliedUser, req);
                     req.session.user = expectedUser;  // save the logged in user in the session
                     res.send({user: expectedUser});
                     //res.json(expectedUser);
@@ -323,7 +323,7 @@ app.post('/register', function(req, res) {
                 );
                 insert.on('end', function() {
                     client.end();
-                    updateCarts(newUser);
+                    updateCarts(newUser, req);
                     req.session.user = newUser;  // save the logged in user in the session
                     res.send({user: newUser});
                     //res.status(201).send(newUser);
@@ -365,12 +365,13 @@ app.get('/logout', function(req, res) {
     res.status(200).send({user: undefined});
 });
 
-function updateCarts(user) {
+function updateCarts(user, req) {
+    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
     console.log('Updating user ...');
     pg.connect(connectionString, function(err, client, done) {
         var query = client.query(
             'update carts set email = $1 where cartid = $2',
-            [user.email, user.cartid]
+            [user.email, req.session.cartid]
         );
         query.on('end', function(result) {
             console.log('Updating user done.');

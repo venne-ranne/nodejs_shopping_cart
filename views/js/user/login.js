@@ -55,8 +55,7 @@ $(document).ready(function(e) {
         var hashedPassword = CryptoJS.SHA256(saltedPassword).toString();
         var formData = {
             email:username,
-            password:hashedPassword,
-            cartid:shoppingCartNumber
+            password:hashedPassword
         };
         console.log(JSON.stringify(formData));
         // send post request with form data as JSON to /login route
@@ -97,8 +96,7 @@ $(document).ready(function(e) {
             var formData = {
                 email:username,
                 password:hashedPassword,
-                name:realname,
-                cartid:shoppingCartNumber
+                name:realname
             };
             console.log(JSON.stringify(formData));
             // send post request with form data as JSON to /register route
@@ -110,8 +108,6 @@ $(document).ready(function(e) {
                 dataType: 'json',
                 success: function(data) {
                     location.reload();  // change site to reflect logged on status
-                    //$('#login-btn').html(data.name);
-                    //$('#login-dialog').dialog('close');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (errorThrown === 'Conflict') {
