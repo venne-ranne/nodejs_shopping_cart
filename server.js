@@ -6,9 +6,9 @@ var fs = require('fs');
 var session = require('express-session');
 
 // server parameters
-//var connectionString = process.env.DATABASE_URL;
+var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
