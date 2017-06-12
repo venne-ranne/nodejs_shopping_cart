@@ -2,25 +2,7 @@
 var shoppingCartNumber = undefined;
 $(document).ready(function(e) {
 
-    // $.ajax({
-    //     method: 'POST',
-    //     url: '/cart',
-    //     success: function(data) {
-    //         shoppingCartNumber = data.cartid;
-    //         console.log('Shopping cart number = ' + shoppingCartNumber);
-    //     },
-    //     error: function(jqXHR, textStatus, errorThrown) {
-    //         console.log('Server failed to provide shopping cart number');
-    //     }
-    // });
-
-    $.ajax({
-        method: 'GET',
-         url: '/totalcart',
-         success: function(data) {
-            $('#total-num-cart').text("(" + data.total +")");
-         }
-    });
+    getTotalCart();   // get the total number of items in the cart
 
     // pop-up shopping cart dialog box
     $('.shopping-cart-container').dialog({
@@ -48,36 +30,60 @@ $(document).ready(function(e) {
 
     // selected item is the product id when the button addToCart is clicked
     $('.cart-submit').on('click', function(){
-        var selectedItem = this.id;
-        $.ajax({
-            method: 'PUT',
-            url: '/cart',
-            data: JSON.stringify({
-                cartid: shoppingCartNumber,
-                id: selectedItem
-            }),
-            contentType: 'application/json',
-            dataType: 'json',
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('failed to add item to cart');
-            },
-            success: function(data){
-                getTotalCart();
-                console.log('item added to cart');
-            }
-        });
+        var productId = this.id;
+        var total_items = document.getElementById("total-num-cart").innerHTML;
+        // set up the cartid number for the first-timer
+        if (total_items == 0){
+            $.ajax({
+                method: 'POST',
+                url: '/cart',
+                success: function(data) {
+                    shoppingCartNumber = data.cartid;
+                    console.log('Shopping cart number = ' + shoppingCartNumber);
+                    addProductIntoCart(productId);
+                    getTotalCart();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Server failed to provide shopping cart number');
+                }
+            });
+        } else {
+            // put the new added item to the cart
+            addProductIntoCart(productId);
+            getTotalCart();
+        }
     });
 });
 
-function clearCart() { $('.shopping-cart').empty(); }
+// function clearCart() { $('.shopping-cart').empty(); }
 
 function getTotalCart(){
     $.ajax({
         method: 'GET',
          url: '/totalcart',
          success: function(data) {
-            $('#total-num-cart').text("(" + data.total +")");
+            $('#total-num-cart').text(data.total);
          }
+    });
+}
+
+function addProductIntoCart(selectedItem){
+    $.ajax({
+        method: 'PUT',
+        url: '/cart',
+        data: JSON.stringify({
+            cartid: shoppingCartNumber,
+            id: selectedItem
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('failed to add item to cart');
+        },
+        success: function(data){
+            getTotalCart();
+            console.log('item added to cart');
+        }
     });
 }
 

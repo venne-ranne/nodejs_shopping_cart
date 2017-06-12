@@ -46,8 +46,6 @@ app.get('/', function(req, res) {
 });
 
 app.put('/cart', function(req, res) {
-    // set up the cartid number for the first-timer
-    if (req.session.cartid == undefined){createCartId(req);}
 
     //var cart = req.body.cartid;
     var product = req.body.id;
@@ -98,10 +96,12 @@ app.post('/cart', function(req, res) {
     // add row to database for cart
     pg.connect(connectionString, function(err, client, done) {
         if (err) res.status(500).send('Database connection error');
-        var user = req.body.email || 'guest';
+        var user = req.session.user || 'guest';
+        if (req.session.user != undefined) user = req.session.user.email;
         var insert = client.query('insert into carts values(default, $1) returning cartid', [user]);
         insert.on('error', function(error) { res.status(500).send('Database query error'); });
         insert.on('row', function(row, result) {
+            req.session.cartid = row.cartid;
             result.addRow(row);
         });
         insert.on('end', function(result) {
@@ -379,18 +379,5 @@ function updateCarts(user) {
             console.log('Updating user done.');
             client.end();
         });
-    });
-}
-
-function createCartId(req){
-    if (req.session.cartid != undefined) return;
-    pg.connect(connectionString, function(err, client, done) {
-        if (err) res.status(500).send('Create cartid error... Database connection error');
-        var user = req.session.user || 'guest';
-        if (req.session.user != undefined) user = req.session.user.email;
-        var insert = client.query('insert into carts values(default, $1) returning cartid', [user]);
-        insert.on('error', function(error) { res.status(500).send('Create cartid error... Database query error'); });
-        insert.on('row', function(row) { req.session.cartid = row.cartid;});
-        insert.on('end', function() { done(); });
     });
 }
