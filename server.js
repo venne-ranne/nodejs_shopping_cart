@@ -217,7 +217,7 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-agg.get('/login/google', passport.authenticate('google'));
+app.get('/login/google', passport.authenticate('google'));
 
 // login request
 app.post('/login', function(req, res) {
