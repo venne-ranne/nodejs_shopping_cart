@@ -13,7 +13,8 @@ var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 passport.use(new GoogleStrategy({
     clientID: googleClientID,
     clientSecret: googleClientSecret,
-    callbackURL: '/'
+    callbackURL: 'https://guarded-falls-74429.herokuapp.com/',
+    passReqToCallback: true
     },
     function(token, tokenSecret, profile, done) {
         User.findOrCreate({ googleId: profile.id }, function(err, user) {
@@ -217,7 +218,17 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-app.get('/login/google', passport.authenticate('google'));
+app.get('/login/google',
+    passport.authenticate('google', {
+        scope: ['https://www.googleapis.com/auth/userinfo.email']
+    }
+));
+
+app.get('/login/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+}));
 
 // login request
 app.post('/login', function(req, res) {
