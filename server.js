@@ -11,12 +11,12 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 passport.use(new GoogleStrategy({
-    consumerKey: googleClientID,
-    consumerSecret: googleClientSecret,
+    clientID: googleClientID,
+    clientSecret: googleClientSecret,
     callbackURL: '/'
     },
     function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ googleID: profile.id }, function(err, user) {
+        User.findOrCreate({ googleId: profile.id }, function(err, user) {
             return done(err, user);
         });
     }
