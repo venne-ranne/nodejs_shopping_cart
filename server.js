@@ -5,13 +5,29 @@ var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
 
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
+var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
+passport.use(new GoogleStrategy({
+    consumerKey: googleClientID,
+    consumerSecret: googleClientSecret,
+    callbackURL: '/'
+    },
+    function(token, tokenSecret, profile, done) {
+        User.findOrCreate({ googleId: profile.id }, function(err, user) {
+            return done(err, user);
+        });
+    }
+
+));
+
 // server parameters
 var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
-var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
-var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 var salt = 1234567890;
 
 var expressLayouts = require('express-ejs-layouts');
@@ -59,7 +75,7 @@ app.put('/cart', function(req, res) {
         //console.log(cart);
         //console.log(product);
 
-        client.query('UPDATE carts SET total_items = total_items + 1 WHERE cartid = ($1);', [cart]);  // just update the total items in the cart
+        //client.query('UPDATE carts SET total_items = total_items + 1 WHERE cartid = ($1);', [cart]);  // just update the total items in the cart
         var add = client.query(
             //'insert into incarts (cartid, id, quantity) values ($1, $2, 1) on conflict (cartid, id) do update set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1',
             addString,
@@ -74,21 +90,6 @@ app.put('/cart', function(req, res) {
             done();
             req.session.totalcart = req.session.totalcart + 1;
             res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
-            // var p = client.query(
-            //     'select name, description, price, new, sale, stock, category, imagepath, id from products where id=$1',
-            //     [product]
-            // );
-            // p.on('error', function(error) {
-            //     client.end();
-            //     console.log(error);
-            //     res.status(420).send('Database query error');
-            // });
-            // p.on('row', function(row, result) { result.addRow(row); });
-            // p.on('end', function(result) {
-            //     client.end();
-            //     console.log(result.rows);
-            //     req.session.totalcart = req.session.totalcart + 1;
-            //     res.status(201).send(result.rows); });
         });
     });
 });
@@ -142,9 +143,6 @@ app.get('/cart', function(req, res) {
 // root page
 app.get('/collections', function(req, res) {
     var searchPattern = req.query.search;
-    var collection = req.query.collection;
-    var sale = req.query.sale;
-    var newProduct = req.query.new;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
         pg.connect(connectionString, function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
@@ -175,28 +173,6 @@ app.get('/collections', function(req, res) {
         // nothin to search redirect to everything
         res.redirect('/collections/everything');
     }
-
-    // else if (collection != undefined ) {
-    //     // select on collection
-    // } else if (sale) {
-    //     //
-    // } else {
-    //     // nothin to search redirect to everything
-    //     console.log('No search show all');
-    //     pg.connect(connectionString, function(err, client, done) {
-    //         if (err) res.status(500).send('Database connection error');
-    //         var products = client.query(
-    //             'select name, description, price, new, sale, stock, category, imagepath, id from products'
-    //         );
-    //         products.on('error', function(error) { res.status(500).send('Database query error'); });
-    //         products.on('row', function(row, result) { result.addRow(row); });
-    //         products.on('end', function(result) {
-    //             client.end();
-    //             res.status(200).json(result.rows);
-    //         });
-    //     });
-    //     //res.redirect('collections/everything');
-    //}
 });
 
 // retrive all items in stock based on the category name
@@ -239,6 +215,9 @@ app.get('/login', function(req, res) {
     res.json({salt: salt});
     console.log('get request to login');
 });
+
+// request to authenticate using google
+agg.get('/login/google', passport.authenticate('google'));
 
 // login request
 app.post('/login', function(req, res) {

@@ -131,6 +131,16 @@ $(document).ready(function(e) {
 
     $('.google-btn').on('click', function(){
         console.log("Sign in with google button is clicked...");
+        $.ajax({
+            method: 'GET',
+            url: '/login/google',
+            success: function(data) {
+                console.log('Success : ' + data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Error : ' + errorThrown);
+            }
+        });
     });
 }); // end ready
 
