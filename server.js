@@ -8,25 +8,25 @@ var session = require('express-session');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
-var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
-passport.use(new GoogleStrategy({
-    consumerKey: googleClientID,
-    consumerSecret: googleClientSecret,
-    callbackURL: '/'
-    },
-    function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ googleID: profile.id }, function(err, user) {
-            return done(err, user);
-        });
-    }
-
-));
+// var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
+// var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
+// passport.use(new GoogleStrategy({
+//     consumerKey: googleClientID,
+//     consumerSecret: googleClientSecret,
+//     callbackURL: '/'
+//     },
+//     function(token, tokenSecret, profile, done) {
+//         User.findOrCreate({ googleID: profile.id }, function(err, user) {
+//             return done(err, user);
+//         });
+//     }
+//
+// ));
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var salt = 1234567890;
 
@@ -217,7 +217,7 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-agg.get('/login/google', passport.authenticate('google'));
+app.get('/login/google', passport.authenticate('google'));
 
 // login request
 app.post('/login', function(req, res) {
