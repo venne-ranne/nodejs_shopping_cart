@@ -1,3 +1,5 @@
+var subtotal = 0.00;
+
 $(document).ready(function(e) {
 
     // pop-up shopping cart dialog box
@@ -5,7 +7,7 @@ $(document).ready(function(e) {
         modal:true,
         autoOpen:false,
         autoResize:true,
-        minWidth: 400,
+        minWidth: 450,
         resizable: false,
         position: { my: "bottom+120%", at: "right bottom", of: '#shopping-cart-btn' }
     });
@@ -16,10 +18,13 @@ $(document).ready(function(e) {
             type: 'GET',
             url: '/cart',
             success: function(data){
+                subtotal = 0.00;
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
                     addProductToCartList(data[i]);
                 }
+                subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
+                $('.cart-subtotal').text(' $'+subtotal);
             }
         });
         $('.shopping-cart-container').dialog('open');
@@ -35,7 +40,7 @@ $(document).ready(function(e) {
                 method: 'POST',
                 url: '/cart',
                 success: function(data) {
-                    addProductIntoCart(productId);
+                    updateTotalCartNumber(productId);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log('Server failed to provide shopping cart number');
@@ -43,19 +48,38 @@ $(document).ready(function(e) {
             });
         } else {
             // put the new added item to the cart
-            addProductIntoCart(productId);
+            updateTotalCartNumber(productId);
         }
+    });
+
+    $('.shopping-cart').on('click', '.cart-delete', function(){
+        var $deleteItem = $(this);
+        var itemId = parseInt(this.id.substr(4));
+        var quantity = $deleteItem.siblings('.cart-quantity').attr('value');
+        $.ajax({
+            method: 'DELETE',
+            url: '/cart',
+            data: JSON.stringify({ id: itemId, numItems: quantity}),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data){
+                $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
+                subtotal -= quantity*data.products[0].price;
+                subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
+                $('#total-num-cart').text(data.totalcart);
+                $('.cart-subtotal').text(' $'+subtotal);
+                console.log("item deleted from cart.");
+            }
+        });
     });
 });
 
-// add the product to the shopping cart when add to cart button is clicked
-function addProductIntoCart(selectedItem){
+// update the cart total number when an item is added to cart
+function updateTotalCartNumber(selectedItem){
     $.ajax({
         method: 'PUT',
         url: '/cart',
-        data: JSON.stringify({
-            id: selectedItem
-        }),
+        data: JSON.stringify({ id: selectedItem }),
         contentType: 'application/json',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
@@ -72,13 +96,19 @@ function addProductIntoCart(selectedItem){
 function addProductToCartList(product) {
     var imagepath = '../'+product.imagepath;
     var cartHTML = '<li class = "shopping-list">';
+    var total = 0.00;
     cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
     cartHTML += '<label class = "cart-name-label"></label>';
-    cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'">';
-    cartHTML += '<button class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
+    cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
+    cartHTML += '<button id = "btn_'+product.id+'" class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);
     $addProduct.find('.cart-name-label').text(product.name);
-    $addProduct.find('.cart-price-label').text(' $'+product.price);
+    if (product.quantity > 1){
+        total = product.quantity*product.price;
+    } else total = product.price;
+    total = parseFloat(total).toFixed(2);
+    $addProduct.find('.cart-price-label').text(' $'+total);
     $('.shopping-cart').append($addProduct);
+    subtotal += total;
 }

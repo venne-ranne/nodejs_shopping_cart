@@ -367,9 +367,16 @@ header ul a{
 }
 
 .home-features{
-  background-color: brown;
-  height: 300px;
+    background-color: #dcecef;
 }
+
+.home-features img{
+    display: block;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 .shopping-cart{
      list-style: none;
@@ -389,18 +396,24 @@ header ul a{
     background-color: black;
 }
 
-.cart-product-name, .cart-price-label{
+.cart-name-label, .cart-price-label{
     font-family: 'Quattrocento Sans', sans-serif;
-    font-size: 0.8em;
-    width: 48%;
+    font-weight: normal;
+    font-size: 1.0em;
+    width: 52%;
+    padding-left: 5px;
 }
 
 .cart-quantity{
     width: 10%;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .cart-delete-btn{
     width: 10%;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .cart-price-label{

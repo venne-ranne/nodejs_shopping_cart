@@ -75,7 +75,6 @@ app.put('/cart', function(req, res) {
         //console.log(cart);
         //console.log(product);
 
-        //client.query('UPDATE carts SET total_items = total_items + 1 WHERE cartid = ($1);', [cart]);  // just update the total items in the cart
         var add = client.query(
             //'insert into incarts (cartid, id, quantity) values ($1, $2, 1) on conflict (cartid, id) do update set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1',
             addString,
@@ -111,7 +110,6 @@ app.post('/cart', function(req, res) {
         insert.on('end', function(result) {
             client.end();
             // return id to user
-            console.log(result.rows);
             res.status(201).json(result.rows[0]);
         });
     });
@@ -133,14 +131,46 @@ app.get('/cart', function(req, res) {
             });
             query.on('end', function(result) {
                 client.end();
-                console.log(result.rows);
                 res.status(200).send(result.rows);
             });
         });
     }
 });
 
-// root page
+// delete an item from the cart
+app.delete('/cart', function(req, res) {
+    var cartid = req.session.cartid;
+    var quantity = req.body.numItems;
+    var product = req.body.id;
+    if (cartid != undefined && cartid !== '') {
+        pg.connect(connectionString, function (err, client, done) {
+            if (err) res.status(500).send('Database connection error');
+            var query = client.query('DELETE FROM incarts WHERE cartid = $1 AND id = ($2)',[cartid, product], function (err) {
+                        if (err){
+                            done();
+                            console.log(err);
+                            res.status(500).send('Database query error');
+                        }});
+            query = client.query('SELECT id, name, price FROM products WHERE id = ($1)',[product]);
+            query.on('error', function(error) {
+                done();
+                console.log(err);
+                res.status(500).send('Database query error');
+            });
+            query.on('row', function(row, result) {
+                console.log(row);
+                result.addRow(row);
+            });
+            query.on('end', function(result) {
+                done();
+                req.session.totalcart = req.session.totalcart - quantity;
+                res.status(200).send({user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
+            });
+        });
+    }
+});
+
+// collections page
 app.get('/collections', function(req, res) {
     var searchPattern = req.query.search;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
@@ -160,11 +190,9 @@ app.get('/collections', function(req, res) {
             query.on('end', function(result) {
                 client.end();
                 if (result.rowCount == 0) {
-                    console.log('Nothing found show all');
+                    console.log('Nothing FOUND');
                     res.send("NOT FOUND");
-                    //res.redirect('collections/everything');
                 } else {
-                    console.log(result.rows);
                     res.status(200).json(result.rows);
                 }
             });
@@ -177,6 +205,7 @@ app.get('/collections', function(req, res) {
 
 // retrive all items in stock based on the category name
 app.get('/collections/:category', function(req, res) {
+    if (req.session.totalcart == undefined) req.session.totalcart = 0;
     var category = req.params.category;
     var query, queryCmd;
     pg.connect(connectionString, (err, client, done) => {
@@ -196,6 +225,15 @@ app.get('/collections/:category', function(req, res) {
       } else if (category == 'sale'){
           queryCmd = 'SELECT * FROM products WHERE sale = ($1);';
           query = client.query(queryCmd, [true]);
+      } else if (category == 'homewares'){
+          queryCmd = 'SELECT * FROM products WHERE category = ($1);';
+          query = client.query(queryCmd, ['Homewares']);
+      } else if (category == 'homedecor'){
+          queryCmd = 'SELECT * FROM products WHERE category = ($1);';
+          query = client.query(queryCmd, ['Home Decor']);
+      } else if (category == 'arts'){
+          queryCmd = 'SELECT * FROM products WHERE category = ($1);';
+          query = client.query(queryCmd, ['Arts']);
       } else {
           done();
           res.status(500).send('GET collections... CATEGORY NOT FOUND!');
@@ -205,7 +243,6 @@ app.get('/collections/:category', function(req, res) {
       });
       query.on('end', function(result) {
           done();
-          //client.end();
           res.status(200).render('collections.ejs', {user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
       });
     });
@@ -217,7 +254,7 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-agg.get('/login/google', passport.authenticate('google'));
+app.get('/login/google', passport.authenticate('google'));
 
 // login request
 app.post('/login', function(req, res) {
