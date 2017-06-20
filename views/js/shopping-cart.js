@@ -64,8 +64,8 @@ $(document).ready(function(e) {
             dataType: 'json',
             success: function(data){
                 $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
-                subtotal -= quantity*data.products[0].price;
-                subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
+                minusTotal = (quantity*data.products[0].price);
+                subtotal = parseFloat(subtotal-minusTotal).toFixed(2);  // two decimal points
                 $('#total-num-cart').text(data.totalcart);
                 $('.cart-subtotal').text(' $'+subtotal);
                 console.log("item deleted from cart.");

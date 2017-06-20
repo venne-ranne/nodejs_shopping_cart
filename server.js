@@ -258,7 +258,9 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-app.get('/login/google', passport.authenticate('google'));
+
+//app.get('/login/google', passport.authenticate('google'));
+
 app.get('/login/google',
 
     passport.authenticate('google', {
