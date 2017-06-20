@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
-
+//var cors = require('cors');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -21,8 +21,9 @@ passport.use(new GoogleStrategy({
             return done(err, user);
         });
     }
-
 ));
+
+
 
 // server parameters
 var connectionString = process.env.DATABASE_URL;
@@ -35,6 +36,9 @@ var expressLayouts = require('express-ejs-layouts');
 
 // start express application
 var app = express();
+
+// enable cross site requests
+//app.use(cors());
 
 // static files such as css, js, resource files in views folder
 app.use(express.static('./views'));
@@ -56,7 +60,6 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
-
 // root page
 app.get('/', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
@@ -255,10 +258,9 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
-
 app.get('/login/google', passport.authenticate('google'));
-=======
 app.get('/login/google',
+
     passport.authenticate('google', {
         scope: ['https://www.googleapis.com/auth/userinfo.email']
     }

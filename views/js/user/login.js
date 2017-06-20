@@ -134,6 +134,7 @@ $(document).ready(function(e) {
         $.ajax({
             method: 'GET',
             url: '/login/google',
+            crossDomain: true,
             success: function(data) {
                 console.log('Success : ' + data);
             },
