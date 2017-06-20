@@ -367,9 +367,16 @@ header ul a{
 }
 
 .home-features{
-  background-color: brown;
-  height: 300px;
+    background-color: #dcecef;
 }
+
+.home-features img{
+    display: block;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 .shopping-cart{
      list-style: none;
