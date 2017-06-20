@@ -11,12 +11,13 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 passport.use(new GoogleStrategy({
-    consumerKey: googleClientID,
-    consumerSecret: googleClientSecret,
-    callbackURL: '/'
+    clientID: googleClientID,
+    clientSecret: googleClientSecret,
+    callbackURL: 'https://guarded-falls-74429.herokuapp.com/',
+    passReqToCallback: true
     },
     function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ googleID: profile.id }, function(err, user) {
+        User.findOrCreate({ googleId: profile.id }, function(err, user) {
             return done(err, user);
         });
     }
@@ -254,7 +255,21 @@ app.get('/login', function(req, res) {
 });
 
 // request to authenticate using google
+
 app.get('/login/google', passport.authenticate('google'));
+=======
+app.get('/login/google',
+    passport.authenticate('google', {
+        scope: ['https://www.googleapis.com/auth/userinfo.email']
+    }
+));
+
+app.get('/login/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+}));
+
 
 // login request
 app.post('/login', function(req, res) {
