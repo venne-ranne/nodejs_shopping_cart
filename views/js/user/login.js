@@ -66,8 +66,11 @@ $(document).ready(function(e) {
             contentType: 'application/json',
             dataType: 'json',
             success: function(data) {
-                console.log(data);
-                location.reload();  // change site to reflect logged on status
+                if (data.user.role == 'user'){
+                    location.reload();  // change site to reflect logged on status
+                } else {
+                    window.location.href = "/admin"; // redirect to admin
+                }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (errorThrown === 'Unprocessable Entity') {
