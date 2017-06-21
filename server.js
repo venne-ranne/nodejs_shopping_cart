@@ -26,9 +26,9 @@ passport.use(new GoogleStrategy({
 
 
 // server parameters
-//var connectionString = process.env.DATABASE_URL;
+var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var salt = 1234567890;
 
@@ -60,6 +60,7 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
+
 // root page
 app.get('/', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
@@ -287,7 +288,7 @@ app.post('/login', function(req, res) {
         if (err) return res.status(500)
         // attempt to retieve from database
         var check = client.query(
-            'select email, password, name from users where email = $1',
+            'select email, password, name, role from users where email = $1',
             [suppliedUser.email]
         );
         check.on('row', function(row, result) {
@@ -300,13 +301,12 @@ app.post('/login', function(req, res) {
                 console.log('Login attempt with incorrect username');
             } else {
                 var expectedUser = result.rows[0];
+                var role = expectedUser.role;
                 console.log(expectedUser);
                 if (suppliedUser.password === expectedUser.password) {
-                    // successful login
-                    updateCarts(suppliedUser, req);
-                    req.session.user = expectedUser;  // save the logged in user in the session
+                    req.session.user = expectedUser;                     // save the logged in user in the session
+                    if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
                     res.send({user: expectedUser});
-                    //res.json(expectedUser);
                 } else {
                     res.status(403).send('Password is incorrect');
                     console.log('Login attempt with incorrect password');
@@ -314,6 +314,16 @@ app.post('/login', function(req, res) {
             }
         });
     });
+});
+
+app.get('/admin', function(req, res) {
+    if (req.session.user == undefined || req.session.user.role != 'admin'){
+        res.redirect('/');
+    }
+    else {
+        res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
+    }
+
 });
 
 // register request
@@ -344,8 +354,7 @@ app.post('/register', function(req, res) {
                     client.end();
                     updateCarts(newUser, req);
                     req.session.user = newUser;  // save the logged in user in the session
-                    res.send({user: newUser});
-                    //res.status(201).send(newUser);
+                    res.status(201).send({user: newUser});
                 });
             }
         });

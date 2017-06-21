@@ -25,6 +25,12 @@ body {
     display: grid;
 }
 
+h1{
+    font-size: 3.0em;
+    padding-top: 20px;
+    padding-top: 20px;
+}
+
 @font-face {
   font-family: 'ModernPictograms';
   src: url("../fonts/modernpics-webfont.eot");

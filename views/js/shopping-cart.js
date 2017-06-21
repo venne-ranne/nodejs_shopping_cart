@@ -1,6 +1,5 @@
-var subtotal = 0.00;
-
 $(document).ready(function(e) {
+    var subtotal = 0.00;
 
     // pop-up shopping cart dialog box
     $('.shopping-cart-container').dialog({
@@ -22,6 +21,7 @@ $(document).ready(function(e) {
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
                     addProductToCartList(data[i]);
+                    subtotal = subtotal + (data[i].quantity*data[i].price);
                 }
                 subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
                 $('.cart-subtotal').text(' $'+subtotal);
@@ -104,11 +104,8 @@ function addProductToCartList(product) {
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);
     $addProduct.find('.cart-name-label').text(product.name);
-    if (product.quantity > 1){
-        total = product.quantity*product.price;
-    } else total = product.price;
+    total = product.price;
     total = parseFloat(total).toFixed(2);
     $addProduct.find('.cart-price-label').text(' $'+total);
     $('.shopping-cart').append($addProduct);
-    subtotal += total;
 }
