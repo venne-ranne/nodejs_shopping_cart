@@ -60,10 +60,12 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
+
 // root page
 app.get('/', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
+    res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, totalcart: req.session.totalcart});
+    //res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
 });
 
 app.put('/cart', function(req, res) {
