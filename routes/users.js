@@ -22,6 +22,10 @@ passport.use(new GoogleStrategy({
         });
     }
 ));
+router.use(session({
+    secret: 'iloveblackrabbitproject',
+    resave: false,
+    saveUninitialized: true})); // session secret
 
 
 router.get('/login', function(req, res) {
