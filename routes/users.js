@@ -2,7 +2,10 @@ var express = require('express');
 var pg = require('pg');
 var router = express.Router();
 var session = require('express-session');
-
+var bodyParser = require('body-parser');
+// setup body parser to use JSON
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var connectionString = process.env.DATABASE_URL;
@@ -58,7 +61,7 @@ router.post('/login', function(req, res) {
     var suppliedUser = req.body;
     // check if user is in data base
     // make connection to database and attempt to retrieve user
-    res.status(420).send(req.body);
+    res.status(200).send(req.body);
     // pg.connect(connectionString, (err, client, done) => {
     //     if (err) return res.status(500)
     //     // attempt to retieve from database
