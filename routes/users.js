@@ -63,37 +63,37 @@ router.post('/login', function(req, res) {
     var suppliedUser = req.body;
     // check if user is in data base
     // make connection to database and attempt to retrieve user
-    res.status(200).send(req.body);
-    // pg.connect(connectionString, (err, client, done) => {
-    //     if (err) return res.status(500)
-    //     // attempt to retieve from database
-    //     var check = client.query(
-    //         'select email, password, name, role from users where email = $1',
-    //         [suppliedUser.email]
-    //     );
-    //     check.on('row', function(row, result) {
-    //         result.addRow(row);
-    //     });
-    //     check.on('end', function(result) {
-    //         client.end();
-    //         if (result.rowCount == 0) { // nothing found
-    //             res.status(422).send('User does not exist');
-    //             console.log('Login attempt with incorrect username');
-    //         } else {
-    //             var expectedUser = result.rows[0];
-    //             var role = expectedUser.role;
-    //             console.log(expectedUser);
-    //             if (suppliedUser.password === expectedUser.password) {
-    //                 req.session.user = expectedUser;                     // save the logged in user in the session
-    //                 if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
-    //                 res.send({user: expectedUser});
-    //             } else {
-    //                 res.status(403).send('Password is incorrect');
-    //                 console.log('Login attempt with incorrect password');
-    //             }
-    //         }
-    //     });
-    // });
+    //res.status(200).send(req.body);
+    pg.connect(connectionString, (err, client, done) => {
+        if (err) return res.status(500)
+        // attempt to retieve from database
+        var check = client.query(
+            'select email, password, name, role from users where email = $1',
+            [suppliedUser.email]
+        );
+        check.on('row', function(row, result) {
+            result.addRow(row);
+        });
+        check.on('end', function(result) {
+            client.end();
+            if (result.rowCount == 0) { // nothing found
+                res.status(422).send('User does not exist');
+                console.log('Login attempt with incorrect username');
+            } else {
+                var expectedUser = result.rows[0];
+                var role = expectedUser.role;
+                console.log(expectedUser);
+                if (suppliedUser.password === expectedUser.password) {
+                    req.session.user = expectedUser;                     // save the logged in user in the session
+                    if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
+                    res.send({user: expectedUser});
+                } else {
+                    res.status(403).send('Password is incorrect');
+                    console.log('Login attempt with incorrect password');
+                }
+            }
+        });
+    });
 });
 
 router.get('/admin', function(req, res) {
