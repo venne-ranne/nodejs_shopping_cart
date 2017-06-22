@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
+ 
 //var cors = require('cors');
 
 
@@ -25,7 +26,7 @@ var app = express();
 
 // static files such as css, js, resource files in views folder
 app.use(express.static('./views'));
-app.use('routes/users', users);
+app.use(require('./routes/users'));
 //start server listening
 app.listen(port, function() {
     console.log("Server running on port : " + port);
