@@ -3,9 +3,6 @@ var pg = require('pg');
 var router = express.Router();
 var session = require('express-session');
 var bodyParser = require('body-parser');
-// setup body parser to use JSON
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var connectionString = process.env.DATABASE_URL;
@@ -25,6 +22,11 @@ passport.use(new GoogleStrategy({
         });
     }
 ));
+
+// setup body parser to use JSON
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+
 router.use(session({
     secret: 'iloveblackrabbitproject',
     resave: false,
