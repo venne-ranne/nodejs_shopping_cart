@@ -118,6 +118,7 @@ $(document).ready(function(e) {
                     if (errorThrown === 'Conflict') {
                         alert('username already exists');
                     }
+                    console.log('register error');
                 }
             });
         }

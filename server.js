@@ -4,13 +4,14 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
- 
+
 //var cors = require('cors');
 
 
 
 // server parameters
 var connectionString = process.env.DATABASE_URL;
+
 //var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
