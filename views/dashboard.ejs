@@ -2,25 +2,47 @@
 
 </div>
 
-<table class="table table-striped">
- <thead>
-     <tr>
-         <th>Date Added</th>
-         <th>Date Modified</th>
-         <th>Name</th>
-         <th>Cart ID</th>
-         <th>Status</th>
-         <th>Customer Email</th>
-         <th>Total Amount</th>
-         <th>Action</th>
-     </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>Carolina Biggleswade</td>
-        <td>23</td>
-        <td>65</td>
-        <td>Jockey</td>
-    </tr>
-</tbody>
-</table>
+<div class = "order-view-container">
+    <h3 class = "subtitle">Shopping Carts Summary</h3></br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date Added</th>
+                <th>Cart ID</th>
+                <th>Status</th>
+                <th>Customer Email</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i = 0; i < rows.length; i++) {%>
+            <tr class = "order-rows">
+                <td><%= rows[i].date_added %></td>
+                <td class = "row-cart-id"><%= rows[i].cartid %></td>
+                <% if (rows[i].sold == 'true'){%>
+                    <td class = "row-status">COMPLETE</td>
+                <% } else {%>
+                    <td class = "row-status">INCOMPLETE</td>
+                <% } %>
+                <td class = "row-user"><%= rows[i].email %></td>
+                <td>...</td>
+                <td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button><button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <div id = "order-edit-container">
+        <form class = "input-text">
+            <label for="cart-id" id = "edit-cartid"></label></br>
+            <label for="email" id = "edit-email"></label></br>
+            <label for="status" id = "edit-status"></label></br>
+        </form>
+        <div class = "shopping-cart-container">
+            <ul class = "shopping-cart"></ul>
+        </div>
+  </div>
+</div>

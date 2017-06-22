@@ -26,9 +26,9 @@ passport.use(new GoogleStrategy({
 
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 //var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
+var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 var salt = 1234567890;
 
@@ -321,7 +321,17 @@ app.get('/admin', function(req, res) {
         res.redirect('/');
     }
     else {
-        res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
+        pg.connect(connectionString, (err, client, done) => {
+            if (err) res.status(500).json({success: false, data: err});
+            var query = client.query('select cartid, email, date_added, sold from carts;');
+            query.on('row', function(row, result) {
+                result.addRow(row);
+            });
+            query.on('end', function(result) {
+                done();
+                res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, rows: result.rows});
+            });
+        })
     }
 
 });
@@ -364,6 +374,23 @@ app.post('/register', function(req, res) {
 app.get('/logout', function(req, res) {
     req.session.user = undefined;
     res.status(200).send({user: undefined});
+});
+
+app.delete('/cart-row', function(req, res) {
+    var cartid = req.body.cartid;
+    pg.connect(connectionString, function (err, client, done) {
+        if (err) res.status(500).send('Database connection error');
+        var query = client.query('DELETE FROM carts WHERE cartid = $1',[cartid]);
+        query.on('error', function(error) {
+            done();
+            console.log(err);
+            res.status(500).send('Database query error');
+        });
+        query.on('end', function() {
+            done();
+            res.status(200).send({success: 'true'});
+        });
+    });
 });
 
 function updateCarts(user, req) {
