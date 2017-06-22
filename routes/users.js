@@ -4,7 +4,7 @@ var router = express.Router();
 
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
+var connectionString = process.env.DATABASE_URL;
 // parameters
 var salt = 1234567890;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
