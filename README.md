@@ -24,6 +24,7 @@
 |email|character varying(255)|not null|extended|||
 |password|character varying(511)||extended|||
 |name|character varying(255)||extended||||
+|role|character varying(24)||||
 Indexes:  
 "users_pkey" PRIMARY KEY, btree (email)  
 Referenced by:  
@@ -34,6 +35,7 @@ TABLE "carts" CONSTRAINT "carts_email_fkey" FOREIGN KEY (email) REFERENCES users
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |cartid|integer|not null default nextval('carts_cartid_seq'::regclass)|plain|||
 |email|character varying(255)|extended|||||
+|sold|boolean|||||
 Indexes:  
 "carts_pkey" PRIMARY KEY, btree (cartid)  
  Referenced by:  
