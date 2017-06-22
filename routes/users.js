@@ -1,6 +1,7 @@
 var express = require('express');
 var pg = require('pg');
 var router = express.Router();
+var session = require('express-session');
 
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
