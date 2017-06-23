@@ -17,7 +17,7 @@ router.use(session({
 })); // session secret
 
 // collections page
-router.get('/collections', function(req, res) {
+router.get('/', function(req, res) {
     var searchPattern = req.query.search;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
         searchPattern = '%' + searchPattern + '%';
@@ -36,7 +36,7 @@ router.get('/collections', function(req, res) {
 });
 
 // retrive all items in stock based on the category name
-router.get('/collections/:category', function(req, res) {
+router.get('/:category', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
     var category = req.params.category;
     var query, queryCmd;

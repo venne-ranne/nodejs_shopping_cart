@@ -4,20 +4,19 @@ var bodyParser = require('body-parser');
 var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
+var expressLayouts = require('express-ejs-layouts');
 
-//var cors = require('cors');
-
-
+// import routes
+var carts = require('./routes/carts');
+var users = require('./routes/users');
+var collections = require('./routes/collections');
 
 // server parameters
 //var connectionString = process.env.DATABASE_URL;
-
-var connectionString = "postgres://localhost:5432/conor";
+//var connectionString = "postgres://localhost:5432/conor";
 //var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 
-
-var expressLayouts = require('express-ejs-layouts');
 
 // start express application
 var app = express();
@@ -26,14 +25,13 @@ var app = express();
 // static files such as css, js, resource files in views folder
 app.use(express.static('./views'));
 
-// include routes
-
+// use included routes
 // user registration/login
-app.use(require('./routes/users'));
+app.use('/', users);
 // interacting with collections resource
-app.use(require('./routes/collections'));
+app.use('/collections', collections);
 // shopping cart functionality
-app.use(require('.routes/carts'));
+app.use('/carts', carts);
 
 
 //start server listening
@@ -41,9 +39,6 @@ app.listen(port, function() {
     console.log("Server running on port : " + port);
 });
 
-// setup body parser to use JSON
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: 'iloveblackrabbitproject',
     resave: false,
