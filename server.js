@@ -19,9 +19,6 @@ var obj = {
 };
 
 
-
-
-
 // server parameters
 //var connectionString = process.env.DATABASE_URL;
 
@@ -55,9 +52,16 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
 
-https.createServer(obj,app).listen(port, function() {
-    console.log("Server running on port : " + port);
-});
+
+//https used for secure communication however only works local wont work when using heroku
+
+// https.createServer(obj,app).listen(port, function() {
+//     console.log("Server running on port : " + port);
+// });
+
+app.listen(port, function() {
+     console.log("Server running on port : " + port);
+ });
 
 // root page
 app.get('/', function(req, res) {
