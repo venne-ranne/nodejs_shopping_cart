@@ -1,3 +1,6 @@
+/*jslint node: true, unparam: true*/
+/*global __dirname: false */
+"use strict";
 var express = require('express');
 var pg = require('pg');
 var router = express.Router();
@@ -10,6 +13,7 @@ var connectionString = process.env.DATABASE_URL;
 var salt = 1234567890;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
 var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
+
 passport.use(new GoogleStrategy({
     clientID: googleClientID,
     clientSecret: googleClientSecret,

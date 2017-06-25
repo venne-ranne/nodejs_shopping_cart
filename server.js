@@ -1,19 +1,18 @@
 // imports
 var express = require('express');
 var bodyParser = require('body-parser');
-var pg = require('pg');
 var fs = require('fs');
 var session = require('express-session');
 
-//var cors = require('cors');
+// build the connection pool to manage
+var pg = require('./config/database');
+
 
 
 
 // server parameters
-var connectionString = process.env.DATABASE_URL;
+//var connectionString = process.env.DATABASE_URL;
 
-//var connectionString = "postgres://localhost:5432/conor";
-//var connectionString = "postgres://localhost:5432/yappvivi_jdbc";
 var port = process.env.PORT || 8080; ;
 
 
@@ -56,7 +55,7 @@ app.put('/cart', function(req, res) {
     var product = req.body.id;
     var cart = req.session.cartid;
 
-    pg.connect(connectionString, function(err, client, done) {
+    pg.connect(function(err, client, done) {
         if (err) res.status(500).send('Database connection error');
         var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
             'on conflict (cartid, id) do update ' +
@@ -86,7 +85,7 @@ app.put('/cart', function(req, res) {
 // create new shopping cart page
 app.post('/cart', function(req, res) {
     // add row to database for cart
-    pg.connect(connectionString, function(err, client, done) {
+    pg.connect(function(err, client, done) {
         if (err) res.status(500).send('Database connection error');
         var user = req.session.user || 'guest';
         if (req.session.user != undefined) user = req.session.user.email;  // if the user logged in, then updated
@@ -110,7 +109,7 @@ app.post('/cart', function(req, res) {
 app.get('/cart', function(req, res) {
     var cartid = req.session.cartid;
     if (cartid != undefined && cartid !== '') {
-        pg.connect(connectionString, function (err, client, done) {
+        pg.connect(function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
             var query = client.query('select * from products, incarts where products.id = incarts.id and cartid = $1',[cartid]);
             query.on('error', function(error) {
@@ -133,7 +132,7 @@ app.delete('/cart', function(req, res) {
     var quantity = req.body.numItems;
     var product = req.body.id;
     if (cartid != undefined && cartid !== '') {
-        pg.connect(connectionString, function (err, client, done) {
+        pg.connect(function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
             var query = client.query('DELETE FROM incarts WHERE cartid = $1 AND id = ($2)',[cartid, product], function (err) {
                         if (err){
@@ -164,7 +163,7 @@ app.delete('/cart', function(req, res) {
 app.get('/collections', function(req, res) {
     var searchPattern = req.query.search;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
-        pg.connect(connectionString, function (err, client, done) {
+        pg.connect(function (err, client, done) {
             if (err) res.status(500).send('Database connection error');
             searchPattern = '%' + searchPattern + '%';
             var query = client.query( // ilike is case insensitve like
@@ -198,12 +197,12 @@ app.get('/collections/:category', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
     var category = req.params.category;
     var query, queryCmd;
-    pg.connect(connectionString, (err, client, done) => {
+    pg.connect((function (err, client, done) {
       if (err){
-          done();
           res.status(500).send('Database connection error');
           console.log("GET collections error... Database connection error.");
           console.log(err);
+          return done();
       }
 
       if (category == 'everything'){
@@ -235,7 +234,7 @@ app.get('/collections/:category', function(req, res) {
           done();
           res.status(200).render('collections.ejs', {user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
       });
-    });
+    }));
 });
 
 
@@ -243,7 +242,7 @@ app.get('/collections/:category', function(req, res) {
 function updateCarts(user, req) {
     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
     console.log('Updating user ...');
-    pg.connect(connectionString, function(err, client, done) {
+    pg.connect(function(err, client, done) {
         var query = client.query(
             'update carts set email = $1 where cartid = $2',
             [user.email, req.session.cartid]
