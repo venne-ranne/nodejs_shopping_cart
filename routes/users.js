@@ -2,7 +2,9 @@
 /*global __dirname: false */
 "use strict";
 var express = require('express');
-var pg = require('pg');
+//handle client pool
+var pg = require('../config/database');
+
 var router = express.Router();
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -68,7 +70,7 @@ router.post('/login', function(req, res) {
     // check if user is in data base
     // make connection to database and attempt to retrieve user
     //res.status(200).send(req.body);
-    pg.connect(connectionString, (err, client, done) => {
+    pg.connect(function(err, client, done) {
         if (err) return res.status(500)
         // attempt to retieve from database
         var check = client.query(
@@ -116,7 +118,7 @@ router.post('/register', function(req, res) {
     console.log(req.body);
     var newUser = req.body;
     // perform a db lookup on user - if results user exist
-    pg.connect(connectionString, (err, client, done) => {
+    pg.connect(function(err, client, done) {
         if (err) res.status(500).json({success: false, data: err});
         var check = client.query(
             'select email, password, name from users where email = $1',
@@ -150,4 +152,18 @@ router.get('/logout', function(req, res) {
     res.status(200).send({user: undefined});
 });
 
+function updateCarts(user, req) {
+    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
+    console.log('Updating user ...');
+    pg.connect(function(err, client, done) {
+        var query = client.query(
+            'update carts set email = $1 where cartid = $2',
+            [user.email, req.session.cartid]
+        );
+        query.on('end', function(result) {
+            console.log('Updating user done.');
+            client.end();
+        });
+    });
+}
 module.exports = router;

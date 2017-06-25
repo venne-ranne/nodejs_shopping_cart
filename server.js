@@ -1,11 +1,23 @@
 // imports
 var express = require('express');
 var bodyParser = require('body-parser');
-var fs = require('fs');
 var session = require('express-session');
 
 // build the connection pool to manage
 var pg = require('./config/database');
+
+//manage https secure connection
+var https = require("https");
+var fs = require("fs");
+
+var cert = fs.readFileSync("cert.pem");
+var key = fs.readFileSync("key.pem");
+
+var obj = {
+    key:key,
+    cert:cert
+};
+
 
 
 
@@ -28,9 +40,7 @@ var app = express();
 app.use(express.static('./views'));
 app.use(require('./routes/users'));
 //start server listening
-app.listen(port, function() {
-    console.log("Server running on port : " + port);
-});
+
 
 // setup body parser to use JSON
 app.use(bodyParser.json());
@@ -44,6 +54,10 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
+
+https.createServer(obj,app).listen(port, function() {
+    console.log("Server running on port : " + port);
+});
 
 // root page
 app.get('/', function(req, res) {
@@ -239,17 +253,4 @@ app.get('/collections/:category', function(req, res) {
 
 
 
-function updateCarts(user, req) {
-    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-    console.log('Updating user ...');
-    pg.connect(function(err, client, done) {
-        var query = client.query(
-            'update carts set email = $1 where cartid = $2',
-            [user.email, req.session.cartid]
-        );
-        query.on('end', function(result) {
-            console.log('Updating user done.');
-            client.end();
-        });
-    });
-}
+
