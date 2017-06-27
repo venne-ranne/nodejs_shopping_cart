@@ -12,9 +12,9 @@ var https = require("https");
 var fs = require("fs");
 
 // Include route modules
-var users = require('routes/users');
-var collections = require('routes/collections');
-var carts = require('routes/carts');
+var users = require('./routes/users');
+var collections = require('./routes/collections');
+var carts = require('./routes/carts');
 
 var cert = fs.readFileSync("cert.pem");
 var key = fs.readFileSync("key.pem");
