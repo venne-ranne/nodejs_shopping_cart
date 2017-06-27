@@ -3,7 +3,7 @@
  */
 // config/database.js
 const url = require('url');
-const Pool = require('pg-pool');
+const pg = require('pg');
 
 // the local DB URL needs to be changed to your own settings
 //var localDBUrl = "postgres://localhost:5432/conor";
@@ -14,14 +14,30 @@ var params = url.parse(databaseUrl);
 var auth = params.auth.split(':');
 
 var config = {
+    max: 15,
+    idleTimeoutMillis: 30000,
     user: auth[0],
     password: auth[1],
     host: params.hostname,
     port: params.port,
     database: params.pathname.split('/')[1],
     ssl: true   // NOTICE: if connecting on local db, this should be false
+
 };
 
-const pool = new Pool(config);
+const pool = new pg.Pool(config);
 
-module.exports = pool;
+pool.on('error', function (err, client) {
+    console.error('idle client error', err.message, err.stack);
+});
+
+// pass a query to the pool
+module.exports.query = function(text, values, callback) {
+    console.log('query : ', text, values);
+    return pool.query(text, values, callback);
+}
+
+// get a connection from the pool
+module.exports.connect = function (callback) {
+    return pool.connect(callback);
+};
