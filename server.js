@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var expressLayouts = require('express-ejs-layouts');
+//var expressLayouts = require('express-ejs-layouts');
 
 // build the connection pool to manage
 var pg = require('./config/database');
@@ -38,7 +38,7 @@ app.use(express.static('./views'));
 // user registration/login
 app.use('/', users);
 // interacting with collections resource
-app.use('/collections', collections);
+app.use('/', collections);
 // shopping cart functionality
 app.use('/carts', carts);
 
@@ -47,10 +47,10 @@ app.use(session({
     resave: false,
     saveUninitialized: true})); // session secret
 
-// set up template engine
-app.set('view engine', 'ejs');
-app.use(expressLayouts);
-app.set('layout', 'layouts/layout');
+// // set up template engine
+// app.set('view engine', 'ejs');
+// app.use(expressLayouts);
+// app.set('layout', 'layouts/layout');
 
 //https used for secure communication however only works local wont work when using heroku
 
@@ -62,9 +62,3 @@ app.set('layout', 'layouts/layout');
 app.listen(port, function() {
      console.log("Server running on port : " + port);
  });
-
-// root page
-app.get('/', function(req, res) {
-    if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
-});
