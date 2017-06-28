@@ -11,9 +11,9 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 // // set up template engine
-router.set('view engine', 'ejs');
+//router.set('view engine', 'ejs');
 router.use(expressLayouts);
-router.set('layout', 'layouts/layout');
+//router.set('layout', 'layouts/layout');
 
 router.use(session({
     secret: 'iloveblackrabbitproject',
@@ -21,11 +21,7 @@ router.use(session({
     saveUninitialized: true
 })); // session secret
 
-// root page
-router.get('/', function(req, res) {
-    if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
-});
+
 
 // collections page
 router.get('/collections', function(req, res) {
