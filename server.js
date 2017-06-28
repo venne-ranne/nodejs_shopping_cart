@@ -35,10 +35,10 @@ app.use(express.static('./views'));
 
 /* Use Included Routes */
 
-// user registration/login
-app.use('/', users);
 // interacting with collections resource
 app.use('/', collections);
+// user registration/login
+app.use('/', users);
 // shopping cart functionality
 app.use('/carts', carts);
 

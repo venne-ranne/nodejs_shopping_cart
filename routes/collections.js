@@ -10,6 +10,11 @@ var pool = require('../config/database');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
+// // set up template engine
+router.set('view engine', 'ejs');
+router.use(expressLayouts);
+router.set('layout', 'layouts/layout');
+
 router.use(session({
     secret: 'iloveblackrabbitproject',
     resave: false,
