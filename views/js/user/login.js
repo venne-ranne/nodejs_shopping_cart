@@ -174,7 +174,7 @@ function googleLogin(result) {
                 console.log('Error');
             },
             processData: false,
-            data: authResult['code']
+            data: result['code']
         });
     } else {
         console.log('Error');
