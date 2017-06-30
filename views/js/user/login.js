@@ -1,4 +1,11 @@
 var userEmail = undefined;
+function start() {
+    gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+            client_id: '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com'
+        });
+    });
+}
 
 $(document).ready(function(e) {
 
@@ -137,19 +144,42 @@ $(document).ready(function(e) {
 
     $('.google-btn').on('click', function(){
         console.log("Sign in with google button is clicked...");
-        $.ajax({
-            method: 'GET',
-            url: '/login/google',
-            crossDomain: true,
-            success: function(data) {
-                console.log('Success : ' + data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('Error : ' + errorThrown);
-            }
-        });
+        auth2.grantOfflineAccess().then(googleLogin);
+        // $.ajax({
+        //     method: 'GET',
+        //     url: '/login/google',
+        //     crossDomain: true,
+        //     success: function(data) {
+        //         console.log('Success : ' + data);
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         console.log('Error : ' + errorThrown);
+        //     }
+        // });
     });
 }); // end ready
+
+function googleLogin(result) {
+    if (result['code']) {
+        // Send the code to the server
+        console.log(result.toString());
+        $.ajax({
+            type: 'POST',
+            url: '/oauth',
+            contentType: 'application/json',
+            success: function(result) {
+                console.log('Success');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Error');
+            },
+            processData: false,
+            data: authResult['code']
+        });
+    } else {
+        console.log('Error');
+    }
+}
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');
