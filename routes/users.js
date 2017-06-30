@@ -48,11 +48,9 @@ router.get('/login', function(req, res) {
 
     //app.get('/login/google', passport.authenticate('google'));
 
-router.get('/login/google',
-    passport.authenticate('google', {
-        scope: ['https://www.googleapis.com/auth/userinfo.email']
-    }
-));
+router.post('/login/google', function(req, res) {
+    res.status(200).send(req.body);
+});
 
 router.get('/login/google/callback',
     passport.authenticate('google', {

@@ -165,7 +165,7 @@ function googleLogin(result) {
         console.log(result.toString());
         $.ajax({
             type: 'POST',
-            url: '/oauth',
+            url: '/login/google',
             contentType: 'application/json',
             success: function(result) {
                 console.log('Success');
