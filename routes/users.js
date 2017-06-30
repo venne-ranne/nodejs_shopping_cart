@@ -11,6 +11,27 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+var https = require('https');
+
+var google = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
+
+var oauth2Client = new OAuth2(
+    '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com',
+    'sBBXD4cCXY4C3hgLUd-OmFhu',
+    'https://guarded-falls-74429.herokuapp.com/'
+);
+
+var scopes = [
+    'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/calendar'
+];
+
+var url = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes
+});
+
 // parameters
 var salt = 1234567890;
 var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
@@ -49,7 +70,43 @@ router.get('/login', function(req, res) {
     //app.get('/login/google', passport.authenticate('google'));
 
 router.post('/login/google', function(req, res) {
-    res.status(200).send(req.body);
+    var code = req.body.code;
+    console.log(code);
+    oauth2Client.getToken(code, function(error, tokens) {
+        if (!error) {
+            oauth2Client.setCredentials(tokens);
+            console.log(tokens);
+        } else {
+            console.log(error);
+        }
+    });
+    // var code = req.body.code;
+    // var secret = 'sBBXD4cCXY4C3hgLUd-OmFhu';
+    //
+    // var credentials = {
+    //
+    // }
+    //
+    // var options = {
+    //     hostname:
+    //     port:
+    //     path:
+    //     method:
+    // };
+    // var req = https.request(options, function(res) {
+    //     console.log('Status : ' + res.statusCode);
+    //     console.log('Headers : ' + res.headers);
+    //
+    //     res.on('data', function(data) {
+    //         console.log('Data : ' + data);
+    //     });
+    // });
+    //
+    // req.on('error', function(error) {
+    //     console.log('Error : ' + error);
+    // });
+    //
+    // res.status(200).send(req.body);
 });
 
 router.get('/login/google/callback',

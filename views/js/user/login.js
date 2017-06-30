@@ -162,19 +162,21 @@ $(document).ready(function(e) {
 function googleLogin(result) {
     if (result['code']) {
         // Send the code to the server
-        console.log(result.toString());
+        var code = {
+            code: result.code
+        }
         $.ajax({
             type: 'POST',
             url: '/login/google',
             contentType: 'application/json',
             success: function(result) {
-                console.log('Success');
+                console.log('Success : ' + JSON.stringify(result));
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('Error');
             },
             processData: false,
-            data: result['code']
+            data: JSON.stringify(code)
         });
     } else {
         console.log('Error');
