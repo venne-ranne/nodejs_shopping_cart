@@ -4,6 +4,174 @@
 - [Vivienne Yapp](@yappvivi)
 - [Conor Foran](@forancono)
 
+# API
+
+## Users
+---
+`GET -> /login`  
+Server sends a salt(number) as JSON for the client to append to it's passwords before hashing.  
+eg.  
+```
+{
+  salt: 987654321
+}
+```
+---
+`POST -> /login`  
+Send the server a login attempt with email and hashed password in JSON.  
+eg .
+```
+{
+  email: "user@email.com",
+  password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b"
+}
+```
+
+The server will attempt to find the user and if found and passwords match,  
+will return a JSON object with the user
+```
+{
+  user : {
+    email: "user@email.com",
+    password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b",
+    name: "Helen Clark"
+    role: "Admin"
+  }
+}
+```
+If user is not found server responds with status 422 Unprocessable Entity.  
+If passwords do not match the server responds with status 403 Forbidden.
+
+---
+`GET -> /admin`  
+If the user is admin render the admin dashboard HTML,
+Else redirect to homepage
+
+---
+`POST -> /register`  
+Send the server a new user to add to users in JSON.
+eg.  
+```
+{
+  name: "Helen Clark",
+  email: "user@email.com",
+  password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b"
+}
+```
+
+If the request is well formed the server will respond with a JSON user object the same as a successful post request to /login.
+If the username is already taken the server will respond with status 409 Conflict.
+
+---
+`GET -> /logout`  
+Will return an undefined user
+
+## Carts
+All shopping cart functionality uses session to link users to their carts.  
+Session object must contain cartid.
+
+---  
+`GET -> /carts`  
+Get all items currently in your cart. Returns an array of product objects.
+```
+[
+  {
+    name:
+    description:
+    price:
+    new:
+    sale:
+    category:
+    imagepath:
+    id:
+  },
+  {
+    name:
+    description:
+    price:
+    new:
+    sale:
+    category:
+    imagepath:
+    id:
+  },
+]
+```
+
+---
+`PUT -> /carts`  
+Add an item to your cart. Request should be a JSON request of a product id.
+```
+{
+  id: 1
+}
+```
+The server respond with the new total number of items in the cart.
+```
+{
+  totalcart: 1
+}
+```
+If the product does not exist the server will respond with status 500 server error.
+
+---
+`POST -> /carts`  
+Request the server to make a new shopping cart. No data payload needs to be sent.  
+The server with respond with the id number of the cart.
+```
+{
+  cartid: 42
+}
+```
+
+---
+`DELETE -> /carts`   
+Request the server to remove an item from your cart.  Request must include the product id and how many removed.
+```
+{
+  id: 32,
+  numItems: 1
+}
+```
+The server will respond with the user and list of products deleted.
+```
+{
+  user: {
+
+  },
+  products: [{
+    id: ,
+
+  }],
+  totalcart: 1
+}
+```
+
+## Collections
+
+---
+`GET -> /collections`  
+Return all items in products.  
+A query can be added to perform a case insensitve search of products.  
+eg. `GET -> /collections?search="searchPattern"`  
+For a successful search (results found) the products are returned as a JSON array.
+```
+[
+    {
+        name: "",
+        description: "",
+        ...
+    }, ...
+]
+```
+In the case of a search with no results the server sends status 204 No Content
+
+---
+`GET -> /collections/:category="category"`
+Return all products within a given category.
+
+# Databse table schemas
+
 ## Table "public.products"
 
 |Column|Type|Modifiers|Storage| Statstarget|Description|

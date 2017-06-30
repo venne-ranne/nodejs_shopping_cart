@@ -37,8 +37,12 @@ router.get('/', function(req, res) {
                 else res.status(200).json(result.rows);
         });
     } else {
-        // nothin to search redirect to everything
-        res.redirect('/collections/everything');
+        // nothin to search show everything
+        pool.query('select name, description, price, new, sale, stock, category, imagepath, id from products',
+            [], function (error, result) {
+                if (error) res.status(500).send('Database query error');
+                else res.status(200).json(result.rows);
+        });
     }
 });
 
