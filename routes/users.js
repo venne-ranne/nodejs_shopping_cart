@@ -87,7 +87,7 @@ router.post('/login/google', function(req, res) {
                     }
                     console.log(JSON.stringify(user));
                     // check if user exists in db
-                    pool.connect(function(error, client done) {
+                    pool.connect(function(error, client, done) {
                         if (error) res.status(500).send('Database connection error');
                         client.query(
                             'select name, email, role from users where email = $1',
