@@ -157,7 +157,7 @@ $(document).ready(function(e) {
                     success: function(result) {
                         console.log('Success : ' + JSON.stringify(result));
                         // login successful - result object contains user
-                        if (data.user.role == 'user'){
+                        if (result.user.role == 'user'){
                             location.reload();  // change site to reflect logged on status
                         } else {
                             window.location.href = "/admin"; // redirect to admin
@@ -172,7 +172,7 @@ $(document).ready(function(e) {
             } else {
                 console.log('Error');
             }
-        }); 
+        });
     }); // end click
 }); // end ready
 
