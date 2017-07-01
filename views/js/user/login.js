@@ -144,44 +144,40 @@ $(document).ready(function(e) {
 
     $('.google-btn').on('click', function(){
         console.log("Sign in with google button is clicked...");
-        auth2.grantOfflineAccess().then(googleLogin);
-        // $.ajax({
-        //     method: 'GET',
-        //     url: '/login/google',
-        //     crossDomain: true,
-        //     success: function(data) {
-        //         console.log('Success : ' + data);
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {
-        //         console.log('Error : ' + errorThrown);
-        //     }
-        // });
-    });
+        auth2.grantOfflineAccess().then(function (result) {
+            if (result['code']) {
+                // Send the code to the server
+                var code = {
+                    code: result.code
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/google',
+                    contentType: 'application/json',
+                    success: function(result) {
+                        console.log('Success : ' + JSON.stringify(result));
+                        // login successful - result object contains user
+                        if (data.user.role == 'user'){
+                            location.reload();  // change site to reflect logged on status
+                        } else {
+                            window.location.href = "/admin"; // redirect to admin
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log('Error');
+                    },
+                    processData: false,
+                    data: JSON.stringify(code)
+                });
+            } else {
+                console.log('Error');
+            }
+        }); 
+    }); // end click
 }); // end ready
 
-function googleLogin(result) {
-    if (result['code']) {
-        // Send the code to the server
-        var code = {
-            code: result.code
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/login/google',
-            contentType: 'application/json',
-            success: function(result) {
-                console.log('Success : ' + JSON.stringify(result));
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('Error');
-            },
-            processData: false,
-            data: JSON.stringify(code)
-        });
-    } else {
-        console.log('Error');
-    }
-}
+
+
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');

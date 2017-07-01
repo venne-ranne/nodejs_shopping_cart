@@ -4,18 +4,14 @@
 var express = require('express');
 //handle client pool
 var pool = require('../config/database');
-
 var router = express.Router();
 var session = require('express-session');
 var bodyParser = require('body-parser');
-// var passport = require('passport');
-// var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-var https = require('https');
-
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
+var hash = require('crypto').createHash('sha256');
 
+// OAuth credentials
 var oauth2Client = new OAuth2(
     '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com',
     'sBBXD4cCXY4C3hgLUd-OmFhu',
@@ -23,32 +19,11 @@ var oauth2Client = new OAuth2(
     //'http://localhost:8080'
 );
 
-var scopes = [
-    'https://www.googleapis.com/auth/plus.me',
-    'https://www.googleapis.com/auth/calendar'
-];
-
+// Level of access being requested
 var url = oauth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: scopes
+    scope: ['https://www.googleapis.com/auth/plus.me']
 });
-
-// parameters
-var salt = 1234567890;
-// var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
-// var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
-
-// passport.use(new GoogleStrategy({
-//     clientID: googleClientID,
-//     clientSecret: googleClientSecret,
-//     callbackURL: 'https://guarded-falls-74429.herokuapp.com/',
-//     passReqToCallback: true},
-//     function(token, tokenSecret, profile, done) {
-//         User.findOrCreate({ googleId: profile.id }, function(err, user) {
-//             return done(err, user);
-//         });
-//     }
-// ));
 
 // setup body parser to use JSON
 router.use(bodyParser.json());
@@ -60,11 +35,13 @@ router.use(session({
     saveUninitialized: true}
 )); // session secret
 
-
+// Send a salt to client for them to append to passwords
+var salt = 1234567890;
 router.get('/login', function(req, res) {
     res.json({salt: salt});
     console.log('get request to login');
 });
+
 
 // request to authenticate using google
 // user has recieved a access code which is to be exchanged for tokens
@@ -88,32 +65,25 @@ router.post('/login/google', function(req, res) {
                     }
                     console.log(JSON.stringify(user));
                     // check if user exists in db
-                    pool.connect(function(error, client, done) {
-                        if (error) res.status(500).send('Database connection error');
-                        client.query(
-                            'select name, email, role from users where email = $1',
-                            [user.email],
-                            function(err, result) {
-                                if (err) res.status(500).send('Database query error');
-
-                                if (result.rows.length == 1) { // user exists
-                                    user.role = result.rows[0].role;
-                                    req.session.user = user;
-                                    res.status(200).send({user: user});
-                                } else { // new user
-                                    client.query(
-                                        'insert into users values($1, $2, $3)',
-                                        [user.email, 'password', user.name],
-                                        function(err, result) {
-                                            if (err) res.status(500).send('Database query error');
-                                            done(err);
-                                            updateCarts(user, req);
-                                            req.session.user = user;  // save the logged in user in the session
-                                            res.status(201).send({user: user});
-                                        }
-                                    )
-                                }
-                        });
+                    pool.query(
+                        'select name, email, role from users where email = $1',
+                        [user.email],
+                        function(err, result) {
+                            if (err) res.status(500).send('Database query error');
+                            if (result.rows.length == 1) {
+                                // user exists trust google and log them in
+                                user.role = result.rows[0].role;
+                                req.session.user = user;
+                                res.status(200).send({user: user});
+                            } else {
+                                // new user make up password
+                                hash.update(user.name + user.email + salt);
+                                user.password = hash.digest('hex');
+                                addNewUser(user);
+                                updateCarts(user, req);
+                                req.session.user = user;  // save the logged in user in the session
+                                res.status(201).send({user: user});
+                            }
                     });
                 }
             });
@@ -174,24 +144,18 @@ router.post('/register', function(req, res) {
     console.log(req.body);
     var newUser = req.body;
     // perform a db lookup on user - if results user exist
-    pool.connect(function (err, client, done) {
-        if (err) res.status(500).json({success: false, data: err});
-        client.query('select email, password, name from users where email = $1',
-            [newUser.email],
-            function(selectError, result) {
-                if (result.rowCount > 0) { // username already exists
-                    client.end();
-                    res.status(409).send('Username already exists');
-                } else {
-                    client.query('insert into users values($1, $2, $3)',
-                    [newUser.email, newUser.password, newUser.name],
-                    function(insertError, result) {
-                        done(err);
-                        updateCarts(newUser, req);
-                        req.session.user = newUser;  // save the logged in user in the session
-                        res.status(201).send({user: newUser});
-                    });
-                }
+    pool.query(
+        'select email, password, name from users where email = $1',
+        [newUser.email],
+        function(error, result) {
+            if (result.rows.length > 0) { // username already exists
+                res.status(409).send('Username already exists');
+            } else {
+                addNewUser(newUser);
+                updateCarts(newUser, req);
+                req.session.user = newUser;  // save the logged in user in the session
+                res.status(201).send({user: newUser});
+            }
         });
     });
 });
@@ -200,6 +164,16 @@ router.get('/logout', function(req, res) {
     req.session.user = undefined;
     res.status(200).send({user: undefined});
 });
+
+// This function assumes a check has been done if a user exists
+// Sets role to user
+function addNewUser(user) {
+    pool.query(
+        'insert into users values($1, $2, $3, $4)',
+        [user.email, user.password, user.name, 'user']
+    );
+
+}
 
 function updateCarts(user, req) {
     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
