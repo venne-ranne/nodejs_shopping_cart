@@ -156,7 +156,6 @@ router.post('/register', function(req, res) {
                 req.session.user = newUser;  // save the logged in user in the session
                 res.status(201).send({user: newUser});
             }
-        });
     });
 });
 
