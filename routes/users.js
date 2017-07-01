@@ -98,7 +98,7 @@ router.post('/login/google', function(req, res) {
                                 if (result.rows.length == 1) { // user exists
                                     user.role = result.rows[0].role;
                                     req.session.user = user;
-                                    res.status(200).send{user: user};
+                                    res.status(200).send({user: user});
                                 } else { // new user
                                     client.query(
                                         'insert into users values($1, $2, $3)',
