@@ -8,8 +8,8 @@ var pool = require('../config/database');
 var router = express.Router();
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+// var passport = require('passport');
+// var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 var https = require('https');
 
@@ -19,7 +19,7 @@ var OAuth2 = google.auth.OAuth2;
 var oauth2Client = new OAuth2(
     '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com',
     'sBBXD4cCXY4C3hgLUd-OmFhu',
-    'https://guarded-falls-74429.herokuapp.com/'
+    'http://localhost:8080'
 );
 
 var scopes = [
@@ -34,20 +34,20 @@ var url = oauth2Client.generateAuthUrl({
 
 // parameters
 var salt = 1234567890;
-var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
-var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
+// var googleClientID = '529872489200-j1bfbmtusgon8q8hat64pguokitqh6j6.apps.googleusercontent.com';
+// var googleClientSecret = 'VTUS2aQdug6oKtDzSt4m6g_3'
 
-passport.use(new GoogleStrategy({
-    clientID: googleClientID,
-    clientSecret: googleClientSecret,
-    callbackURL: 'https://guarded-falls-74429.herokuapp.com/',
-    passReqToCallback: true},
-    function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ googleId: profile.id }, function(err, user) {
-            return done(err, user);
-        });
-    }
-));
+// passport.use(new GoogleStrategy({
+//     clientID: googleClientID,
+//     clientSecret: googleClientSecret,
+//     callbackURL: 'https://guarded-falls-74429.herokuapp.com/',
+//     passReqToCallback: true},
+//     function(token, tokenSecret, profile, done) {
+//         User.findOrCreate({ googleId: profile.id }, function(err, user) {
+//             return done(err, user);
+//         });
+//     }
+// ));
 
 // setup body parser to use JSON
 router.use(bodyParser.json());
@@ -65,57 +65,64 @@ router.get('/login', function(req, res) {
     console.log('get request to login');
 });
 
-    // request to authenticate using google
-
-    //app.get('/login/google', passport.authenticate('google'));
-
+// request to authenticate using google
+// user has recieved a access code which is to be exchanged for tokens
 router.post('/login/google', function(req, res) {
     var code = req.body.code;
-    console.log(code);
+    console.log('Code : ' + code);
     oauth2Client.getToken(code, function(error, tokens) {
         if (!error) {
             oauth2Client.setCredentials(tokens);
-            console.log(tokens);
+            console.log('Authentication Success : ' + tokens);
+            // use tokens to retrieve users email and name
+            google.plus('v1').people.get({
+                userId: 'me',
+                auth: oauth2Client
+            }, function (error, res) {
+                if (error) console.log('Error : ' + error);
+                else {
+                    var user = {
+                        email: res.emails[0].value,
+                        name: res.name.givenName
+                    }
+                    console.log(JSON.stringify(user));
+                    // check if user exists in db
+                    pool.connect(function(error, client done) {
+                        if (error) res.status(500).send('Database connection error');
+                        client.query(
+                            'select name, email, role from users where email = $1',
+                            [user.email],
+                            function(err, result) {
+                                if (err) res.status(500).send('Database query error');
+
+                                if (result.rows.length == 1) { // user exists
+                                    user.role = result.rows[0].role;
+                                    req.session.user = user;
+                                    res.status(200).send{user: user};
+                                } else { // new user
+                                    client.query(
+                                        'insert into users values($1, $2, $3)',
+                                        [user.email, 'password', user.name],
+                                        function(err, result) {
+                                            if (err) res.status(500).send('Database query error');
+                                            done(err);
+                                            updateCarts(user, req);
+                                            req.session.user = user;  // save the logged in user in the session
+                                            res.status(201).send({user: user});
+                                        }
+                                    )
+                                }
+                        });
+                    });
+                }
+            });
         } else {
-            console.log(error);
+            console.log('Error : ' + error);
+            res.status(403).send(error);
         }
     });
-    // var code = req.body.code;
-    // var secret = 'sBBXD4cCXY4C3hgLUd-OmFhu';
-    //
-    // var credentials = {
-    //
-    // }
-    //
-    // var options = {
-    //     hostname:
-    //     port:
-    //     path:
-    //     method:
-    // };
-    // var req = https.request(options, function(res) {
-    //     console.log('Status : ' + res.statusCode);
-    //     console.log('Headers : ' + res.headers);
-    //
-    //     res.on('data', function(data) {
-    //         console.log('Data : ' + data);
-    //     });
-    // });
-    //
-    // req.on('error', function(error) {
-    //     console.log('Error : ' + error);
-    // });
-    //
-    // res.status(200).send(req.body);
+
 });
-
-router.get('/login/google/callback',
-    passport.authenticate('google', {
-        successRedirect: '/',
-        failureRedirect: '/login'
-    }
-));
-
 
 // login request
 router.post('/login', function(req, res) {
