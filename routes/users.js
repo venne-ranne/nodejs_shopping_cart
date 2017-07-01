@@ -19,7 +19,7 @@ var OAuth2 = google.auth.OAuth2;
 var oauth2Client = new OAuth2(
     '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com',
     'sBBXD4cCXY4C3hgLUd-OmFhu',
-    'https://guarded-falls-74429.herokuapp.com/'
+    'https://guarded-falls-74429.herokuapp.com/login/google'
     //'http://localhost:8080'
 );
 
