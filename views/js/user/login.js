@@ -1,4 +1,11 @@
 var userEmail = undefined;
+function start() {
+    gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+            client_id: '529872489200-7p4rr06g8ari4q01ti122kfbrntmnkp2.apps.googleusercontent.com'
+        });
+    });
+}
 
 $(document).ready(function(e) {
 
@@ -22,11 +29,13 @@ $(document).ready(function(e) {
     // login button on the header
     $('#login-btn').on('click', function(){
         // request salt from server
+
         $.ajax({
             method: 'GET',
             url: '/login',
             success: function(data) {
                 salt = data.salt;
+                console.log(salt);
             }
         });
         $('#login-dialog').dialog('open');
@@ -116,6 +125,7 @@ $(document).ready(function(e) {
                     if (errorThrown === 'Conflict') {
                         alert('username already exists');
                     }
+                    console.log('register error');
                 }
             });
         }
@@ -134,19 +144,40 @@ $(document).ready(function(e) {
 
     $('.google-btn').on('click', function(){
         console.log("Sign in with google button is clicked...");
-        $.ajax({
-            method: 'GET',
-            url: '/login/google',
-            crossDomain: true,
-            success: function(data) {
-                console.log('Success : ' + data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('Error : ' + errorThrown);
+        auth2.grantOfflineAccess().then(function (result) {
+            if (result['code']) {
+                // Send the code to the server
+                var code = {
+                    code: result.code
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/login/google',
+                    contentType: 'application/json',
+                    success: function(result) {
+                        console.log('Success : ' + JSON.stringify(result));
+                        // login successful - result object contains user
+                        if (result.user.role == 'user'){
+                            location.reload();  // change site to reflect logged on status
+                        } else {
+                            window.location.href = "/admin"; // redirect to admin
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log('Error');
+                    },
+                    processData: false,
+                    data: JSON.stringify(code)
+                });
+            } else {
+                console.log('Error');
             }
         });
-    });
+    }); // end click
 }); // end ready
+
+
+
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');

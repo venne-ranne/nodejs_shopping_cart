@@ -21,7 +21,9 @@ $(document).ready(function(e) {
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
                     addProductToCartList(data[i]);
-                    subtotal = subtotal + (data[i].quantity*data[i].price);
+                    subtotal = subtotal+(data[i].quantity*data[i].price);
+                    subtotal = parseFloat(subtotal).toFixed(2);
+
                 }
                 subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
                 $('.cart-subtotal').text(' $'+subtotal);
