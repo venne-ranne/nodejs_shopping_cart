@@ -16,7 +16,6 @@ $(document).ready(function(e) {
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
         var $cartid = $parent.find(".row-cart-id").text();
-        console.log($cartid);
         // remove a row in carts table
         $.ajax({
             type: 'DELETE',
@@ -36,19 +35,19 @@ $(document).ready(function(e) {
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
         var $cartid = $parent.find(".row-cart-id").text();
+        console.log($cartid);
         // need to get all the products in the cart to the edit dialog
-        $("#edit-cartid").text("Cart-id: "+$cartid);
-        $("#edit-email").text("Email: "+ $parent.find(".row-user").text());
-        $("#edit-status").text("Status: "+ $parent.find(".row-status").text());
         $.ajax({
             type: 'GET',
-            url: '/cart',
-            data: JSON.stringify({ cartid: $cartid}),
+            url: '/cart?parameter=' + $cartid,
             contentType: 'application/json',
             dataType: 'json',
             success: function(data){
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
+                    $("#edit-cartid").text("Cart-id: "+$cartid);
+                    $("#edit-email").text("Email: "+ $parent.find(".row-user").text());
+                    $("#edit-status").text("Status: "+ $parent.find(".row-status").text());
                     var product = data[i];
                     var imagepath = '../'+product.imagepath;
                     var cartHTML = '<li class = "shopping-list">';
