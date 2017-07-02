@@ -76,23 +76,23 @@ $(document).ready(function(e) {
     });
 });
 
-// update the cart total number when an item is added to cart
-function updateTotalCartNumber(selectedItem){
-    $.ajax({
-        method: 'PUT',
-        url: '/cart',
-        data: JSON.stringify({ id: selectedItem }),
-        contentType: 'application/json',
-        dataType: 'json',
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log('failed to add item to cart');
-        },
-        success: function(data){
-            $('#total-num-cart').text(data.totalcart);
-            console.log('item added to cart');
-        }
-    });
-}
+// // update the cart total number when an item is added to cart
+// function updateTotalCartNumber(selectedItem){
+//     $.ajax({
+//         method: 'PUT',
+//         url: '/cart',
+//         data: JSON.stringify({ id: selectedItem }),
+//         contentType: 'application/json',
+//         dataType: 'json',
+//         error: function(jqXHR, textStatus, errorThrown) {
+//             console.log('failed to add item to cart');
+//         },
+//         success: function(data){
+//             $('#total-num-cart').text(data.totalcart);
+//             console.log('item added to cart');
+//         }
+//     });
+// }
 
 // add a product to the shopping cart list
 function addProductToCartList(product) {
