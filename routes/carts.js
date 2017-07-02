@@ -87,7 +87,18 @@ router.delete('/', function(req, res) {
     }
 });
 
-
+// update the quantity of a product in cart
+router.put('/quantity', function(req, res) {
+    var product = req.body.id;
+    var quantity = req.body.quantity;
+    var cart = req.session.cartid;
+    var updateString = 'update incarts set quantity = ($1) where cartid=($2) and id=($3)';
+    pool.query(updateString [quantity, cart, product], function(error, result) {
+        if (error) res.status(500).send('Database query error');
+        req.session.totalcart = req.session.totalcart + quantity;
+        res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+    });
+});
 
 module.exports.updateCarts = function(user, req) {
     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
