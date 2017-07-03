@@ -1,4 +1,8 @@
 $(document).ready(function(e) {
+  console.log("amin adsdsdn");
+    if (localStorage.role === 'admin' && localStorage.userName !== undefined){
+      $('.replace-container').empty();
+    }
     $('#order-edit-container').dialog({
         modal:true,
         autoOpen:false,

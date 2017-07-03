@@ -8,12 +8,16 @@ function start() {
 }
 
 $(document).ready(function(e) {
-  console.log('name ' +localStorage.userName);
     if (localStorage.userName !== undefined){
       $('#login-li').hide();
       $('#logout-li').show();
-      $('#logout-button').text("Hi, "+localStorage.userName + "!");
-
+      $('.admin-container').hide();
+      $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+      if (localStorage.role === 'admin'){
+          $('#shopping-cart-li').hide();
+          $('#checkout-li').hide();
+          //window.location.href = "/admin";
+      }
     } else {
       $('#logout-li').hide();
     }
@@ -91,16 +95,14 @@ $(document).ready(function(e) {
                 console.log('Email : ' + localStorage.userEmail);
                 $('#login-li').hide();
                 $('#logout-li').show();
-                if (data.user.role === 'user'){
-                    console.log(data.user.role);
-                    $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
-                    //location.reload();  // change site to reflect logged on status
-                } else {
+                $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                if (data.user.role === 'admin'){
+                    //indow.location.href = "/admin"; // redirect to admin
                     $('#shopping-cart-li').hide();
                     $('#checkout-li').hide();
-                    //window.location.href = "/admin"; // redirect to admin
+                    $('.replace-container').empty();
                 }
-                  $('#login-dialog').dialog('close');
+                $('#login-dialog').dialog('close');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (errorThrown === 'Unprocessable Entity') {

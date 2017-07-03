@@ -136,7 +136,7 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/admin', function(req, res) {
-    if (req.session.user == undefined || req.session.user.role != 'admin'){
+    if (req.get('userName') == undefined || req.get('role') != 'admin'){
         res.redirect('/');
     } else {
         pool.query('select * from products', function(error, result) {
