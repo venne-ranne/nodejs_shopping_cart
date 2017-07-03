@@ -78,38 +78,56 @@ $(document).ready(function(e) {
         });
     });
 
-});
-
-function admin_dashboard(){
-    $('.products-list').empty();
-    $('#shopping-cart-li').hide();
-    $('#checkout-li').hide();
-    $('.replace-container').hide();
-    $('.nav-container').hide();
-    $('#search-box').hide();
-    $('.admin-container').show();
-    $.ajax({
-        type: 'GET',
-        url: '/carts/all',
-        success: function(data){
-            for (i = 0; i < data.length; i++) {
-                var product = data[i];
-                var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
-                var rowHTML = '<tr class = "order-rows">';
-                rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
-                rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
-                rowHTML += '<td class = "row-status">'+status+'</td>';
-                rowHTML += '<td class = "row-user">'+product.email+'</td>';
-                rowHTML += '<td class = "row-total"></td>';
-                rowHTML += '<td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button>';
-                rowHTML += '<button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
-                rowHTML += '</tr>';
-                $('.table-body').append(rowHTML);
+    if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
+        $.ajax({
+            method: 'POST',
+            url: '/collections/new',
+            success: function(data) {
+                $('.products-list').empty();   // removed the previous content
+                // get json array of products which match query in some way
+                $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+                for (i = 0; i < 4; i++) {
+                    addProductToList(data[i]);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Error!!!!');
             }
+        });
+    }
 
-        }
-    });
-}
+});
+//
+// function admin_dashboard(){
+//     $('.products-list').empty();
+//     $('#shopping-cart-li').hide();
+//     $('#checkout-li').hide();
+//     $('.replace-container').hide();
+//     $('.nav-container').hide();
+//     $('#search-box').hide();
+//     $('.admin-container').show();
+//     $.ajax({
+//         type: 'GET',
+//         url: '/carts/all',
+//         success: function(data){
+//             for (i = 0; i < data.length; i++) {
+//                 var product = data[i];
+//                 var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
+//                 var rowHTML = '<tr class = "order-rows">';
+//                 rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
+//                 rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
+//                 rowHTML += '<td class = "row-status">'+status+'</td>';
+//                 rowHTML += '<td class = "row-user">'+product.email+'</td>';
+//                 rowHTML += '<td class = "row-total"></td>';
+//                 rowHTML += '<td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button>';
+//                 rowHTML += '<button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
+//                 rowHTML += '</tr>';
+//                 $('.table-body').append(rowHTML);
+//             }
+//
+//         }
+//     });
+// }
 
 // app.get('/cart', function(req, res) {
 //     var cartid = req.session.cartid;

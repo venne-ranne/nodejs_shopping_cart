@@ -58,7 +58,10 @@ router.put('/', function(req, res) {
 
 // return all rows in carts table along with sub-total
 router.get('/all', function(req, res) {
-    pool.query('select * from carts',
+    var queryString = 'SELECT cartid, email, total_items, date_added,'+
+    '(SELECT SUM( incarts.quantity * (SELECT price FROM products WHERE id = incarts.id) ) FROM incarts WHERE cartid = carts.cartid)' +
+    'AS subtotal FROM carts';
+    pool.query(queryString,
         function(error, result) {
             if (error) res.status(500).send('Database query error');
             res.status(200).send(result.rows);
