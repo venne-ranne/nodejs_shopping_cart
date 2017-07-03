@@ -18,9 +18,9 @@ router.use(session({
 
 router.use(function(req, res, next) {
     console.log('Request to carts');
-    var user = req.get('cartid');
+    console.log(req.get('userName'));
+    next();
 
-    console.log(user);
 });
 
 // add a product to a cart
