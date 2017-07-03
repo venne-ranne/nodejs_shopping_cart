@@ -123,8 +123,8 @@ router.post('/login', function(req, res) {
                     if (suppliedUser.password === expectedUser.password) {   // check passwords
                         //req.session.user = expectedUser;                     // save the logged in user in the session
                         if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
-                        res.set('userEmail', expectedUser.email);
-                        res.set('userName', expectedUser.name);
+                        res.set('email', expectedUser.email);
+                        res.set('name', expectedUser.name);
                         res.send({user: expectedUser});
                     } else {
                         res.status(403).send('Password is incorrect');
@@ -136,7 +136,7 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/admin', function(req, res) {
-    if (req.get('userName') == undefined || req.get('role') != 'admin'){
+    if (req.get('name') == undefined || req.get('role') != 'admin'){
         res.redirect('/');
     } else {
         pool.query('select * from products', function(error, result) {
@@ -165,8 +165,8 @@ router.post('/register', function(req, res) {
             } else {
                 addNewUser(newUser);
                 updateCarts(newUser, req);
-                res.set('userEmail', user.email);
-                res.set('userName', user.name);
+                res.set('email', user.email);
+                res.set('name', user.name);
                 //req.session.user = newUser;  // save the logged in user in the session
                 res.status(201).send({user: newUser});
             }

@@ -1,14 +1,6 @@
 $(document).ready(function(e) {
-    // $.ajaxSetup({
-    //     beforeSend: function(xhr, settings) {
-    //         xhr.setRequestHeader('userName', localStorage.userName);
-    //         xhr.setRequestHeader('userEmail', localStorage.userEmail);
-    //         xhr.setRequestHeader('userRole', localStorage.userRole);
-    //         xhr.setRequestHeader('cartid', localStorage.cartid);
-    //     }
-    // });
     var subtotal = 0.00;
-
+    //localStorage.cartid = 42;
     // pop-up shopping cart dialog box
     $('.shopping-cart-container').dialog({
         modal:true,
@@ -24,7 +16,7 @@ $(document).ready(function(e) {
         $.ajax({
             type: 'GET',
             url: '/carts',
-            success: function(data){
+            success: function(data, textStatus, response){
                 subtotal = 0.00;
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
@@ -42,22 +34,7 @@ $(document).ready(function(e) {
     $('.cart-submit').on('click', function(){
         var productId = this.id;
         var total_items = document.getElementById("total-num-cart").innerHTML;
-        // set up the cartid number for the first-timer
-        if (total_items == 0){
-            $.ajax({
-                method: 'POST',
-                url: '/carts',
-                success: function(data) {
-                    updateTotalCartNumber(productId);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log('Server failed to provide shopping cart number');
-                }
-            });
-        } else {
-            // put the new added item to the cart
-            updateTotalCartNumber(productId);
-        }
+        updateTotalCartNumber(productId);
     });
 
     $('.shopping-cart').on('click', '.cart-delete', function(){
@@ -70,7 +47,7 @@ $(document).ready(function(e) {
             data: JSON.stringify({ id: itemId, numItems: quantity}),
             contentType: 'application/json',
             dataType: 'json',
-            success: function(data){
+            success: function(data, textStatus, response){
                 $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
                 minusTotal = (quantity*data.products[0].price);
                 subtotal = parseFloat(subtotal-minusTotal).toFixed(2);  // two decimal points
@@ -91,7 +68,7 @@ $(document).ready(function(e) {
             data: JSON.stringify({ id: itemId, quantity: changeValue}),
             contentType: 'application/json',
             dataType: 'json',
-            success: function(data){
+            success: function(data, textStatus, response){
                 console.log("effdsf");
                 $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
                 minusTotal = (quantity*data.products[0].price);
@@ -115,7 +92,7 @@ function updateTotalCartNumber(selectedItem){
         error: function(jqXHR, textStatus, errorThrown) {
             console.log('failed to add item to cart');
         },
-        success: function(data){
+        success: function(data, textStatus, response){
             $('#total-num-cart').text(data.totalcart);
             console.log('item added to cart');
         }
@@ -143,9 +120,10 @@ function addProductToCartList(product) {
     $('.shopping-cart').append($addProduct);
 }
 
-function setHeaders(req) {
-    console.log('Setting headers');
-    req.setRequestHeaders('cartid', 10);
-    req.setRequestHeaders('userName', localStorage.userName);
-    req.setRequestHeaders('userEmail', localStorage.userEmail);
+function getHeaders(res) {
+    localStorage.userName = res.getResponseHeader('name');
+    localStorage.userEmail = res.getResponseHeader('email');
+    localStorage.role = res.getResponseHeader('role');
+    localStorage.cartid = res.getResponseHeader('cartid');
+
 }

@@ -3,9 +3,9 @@
 $(document).ready(function(e) {
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader('userName', localStorage.userName);
-            xhr.setRequestHeader('userEmail', localStorage.userEmail);
-            xhr.setRequestHeader('userRole', localStorage.userRole);
+            xhr.setRequestHeader('name', localStorage.name);
+            xhr.setRequestHeader('email', localStorage.email);
+            xhr.setRequestHeader('role', localStorage.role);
             xhr.setRequestHeader('cartid', localStorage.cartid);
         }
     });

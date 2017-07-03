@@ -8,11 +8,11 @@ function start() {
 }
 
 $(document).ready(function(e) {
-    if (localStorage.userName !== undefined){
+    if (localStorage.name !== undefined){
       $('#login-li').hide();
       $('#admin-container').hide();
       $('#logout-li').show();
-      $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+      $('#logout-button').text("Hi, "+localStorage.name + "! logout");
       if (localStorage.role === 'admin'){
           $('#shopping-cart-li').hide();
           $('#checkout-li').hide();
@@ -91,14 +91,14 @@ $(document).ready(function(e) {
             contentType: 'application/json',
             dataType: 'json',
             success: function(data, textStatus, response) {
-                localStorage.userEmail = response.getResponseHeader('userEmail');
-                localStorage.userName = response.getResponseHeader('userName');
+                localStorage.email = response.getResponseHeader('email');
+                localStorage.name = response.getResponseHeader('name');
                 localStorage.role = data.user.role;
-                console.log('Name : ' + localStorage.userName);
-                console.log('Email : ' + localStorage.userEmail);
+                console.log('Name : ' + localStorage.name);
+                console.log('Email : ' + localStorage.email);
                 $('#login-li').hide();
                 $('#logout-li').show();
-                $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                $('#logout-button').text("Hi, "+localStorage.name + "! logout");
                 if (data.user.role === 'admin'){
                     //indow.location.href = "/admin"; // redirect to admin
                     $('#shopping-cart-li').hide();
@@ -145,7 +145,7 @@ $(document).ready(function(e) {
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 dataType: 'json',
-                success: function(data) {
+                success: function(data, textStatus, response) {
                     location.reload();  // change site to reflect logged on status
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -164,8 +164,8 @@ $(document).ready(function(e) {
             method: 'GET',
             url: '/logout',
             success: function(data, textStatus, request) {
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userName') ;
+                localStorage.removeItem('email');
+                localStorage.removeItem('name') ;
                 localStorage.removeItem('role');
                 location.reload();
             }
@@ -184,7 +184,7 @@ $(document).ready(function(e) {
                     type: 'POST',
                     url: '/login/google',
                     contentType: 'application/json',
-                    success: function(result) {
+                    success: function(result, textStatus, response) {
                         console.log('Success : ' + JSON.stringify(result));
                         // login successful - result object contains user
                         if (result.user.role == 'user'){

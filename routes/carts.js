@@ -18,51 +18,47 @@ router.use(session({
 
 router.use(function(req, res, next) {
     console.log('Request to carts');
-    console.log('User name : ' + req.get('userName'));
-    console.log('User email : ' + req.get('userEmail'));
-    console.log('User role : ' + req.get('userRole'));
+    console.log('User name : ' + req.get('name'));
+    console.log('User email : ' + req.get('email'));
+    console.log('User role : ' + req.get('role'));
     console.log('Cart ID : ' + req.get('cartid'));
     var cartid = req.get('cartid');
-    var user = req.get('userName');
-    
-    next();
-
+    var user = req.get('name');
+    if (cartid == undefined) { // need new cart id
+        pool.query('insert into carts values(default, $1) returning cartid', [user],
+        function(error, result) {
+            if (!error) {
+                var row = result.rows[0];
+                // addCart to response headers
+                res.set('cartid', row.cartid);
+                //res.status(201).json(result.rows[0]);
+            }
+            next();
+        });
+    } else {
+        // has cart do nothing
+        next();
+    }
 });
 
 // add a product to a cart
 router.put('/', function(req, res) {
     var product = req.body.id;
-    var cart = req.session.cartid;
+    var cart = req.get('cartid');
     var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
         'on conflict (cartid, id) do update ' +
         'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
     pool.query(addString, [cart, product], function(error, result) {
-        if (error) res.status(500).send('Database query error');
-        req.session.totalcart = req.session.totalcart + 1;
-        res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+        if (!error) {
+            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+        } else res.status(500).send('Database query error');
     });
 });
 
-// create new shopping cart page
-router.post('/', function(req, res) {
-    // add row to database for cart
-    var user = req.session.user || 'guest';
-    if (req.session.user != undefined) user = req.session.user.email;  // if the user logged in, then updated
-    pool.query('insert into carts values(default, $1) returning cartid', [user],
-        function(error, result) {
-            if (error) res.status(500).send('Database query error');
-            var row = result.rows[0];
-            req.session.cartid = row.cartid;
-            req.session.totalcart = 0;
-            // return cart number back to users
-            res.status(201).json(result.rows[0]);
-    });
-});
-
-// return all rows in carts table
+// return all rows in carts table along with sub-total
 router.get('/all', function(req, res) {
 
-})
+});
 
 // get request on shopping cart will get an array of items in the cart
 router.get('/', function(req, res) {
