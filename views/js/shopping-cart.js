@@ -34,6 +34,24 @@ $(document).ready(function(e) {
     $('.cart-submit').on('click', function(){
         var productId = this.id;
         var total_items = document.getElementById("total-num-cart").innerHTML;
+        //set up the cartid number for the first-timer
+        // if (total_items == 0){
+        //     $.ajax({
+        //         method: 'POST',
+        //         url: '/carts',
+        //         success: function(data) {
+        //             console.log(data);
+        //             updateTotalCartNumber(productId);
+        //         },
+        //         error: function(jqXHR, textStatus, errorThrown) {
+        //             console.log('Server failed to provide shopping cart number');
+        //         }
+        //     });
+        // } else {
+        //     // put the new added item to the cart
+        //     updateTotalCartNumber(productId);
+        // }
+
         updateTotalCartNumber(productId);
     });
 
