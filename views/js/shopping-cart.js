@@ -79,6 +79,18 @@ $(document).ready(function(e) {
             }
         });
     });
+
+    $('#cart-checkout-submit').on('click', function(){
+        console.log("Checkout is clicked....");
+        $.ajax({
+            type: 'POST',
+            url: '/carts/checkout',
+            success: function(data){
+                $('.replace-container').empty();
+            }
+        });
+        $('.shopping-cart-container').dialog('close');
+    });
 });
 
 // update the cart total number when an item is added to cart

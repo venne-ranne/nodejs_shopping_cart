@@ -23,30 +23,29 @@ $(document).ready(function(e) {
         }
     });
 
-    $('.order-rows').on('click', '.row-delete-btn', function(){
+    $('.table-body').on('click', '.row-delete-btn', function(){
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
-        var $cartid = $parent.find(".row-cart-id").text();
+        var $cartid = $parent.find(".row-cartid").text();
+        console.log($cartid);
         // remove a row in carts table
         $.ajax({
             type: 'DELETE',
-            url: '/cart-row',
+            url: '/carts/all/row',
             data: JSON.stringify({ cartid: $cartid}),
             contentType: 'application/json',
             dataType: 'json',
             success: function(data){
                 console.log("remove successful...");
-                parent.remove();
-                //$('#order-edit-container').dialog('open');
+                $parent.remove();
             }
         });
     });
 
-    $('.order-rows').on('click', '.row-edit-btn', function(){
+    $('.table-body').on('click', '.row-edit-btn', function(){
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
         var $cartid = $parent.find(".row-cart-id").text();
-        console.log($cartid);
         // need to get all the products in the cart to the edit dialog
         $.ajax({
             type: 'GET',
@@ -92,7 +91,6 @@ function admin_dashboard(){
         type: 'GET',
         url: 'carts/all',
         success: function(data){
-            console.log(data.length);
             for (i = 0; i < data.length; i++) {
                 var product = data[i];
                 var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
