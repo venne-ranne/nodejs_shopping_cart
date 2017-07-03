@@ -18,7 +18,12 @@ router.use(session({
 
 router.use(function(req, res, next) {
     console.log('Request to carts');
-    console.log(req.get('userName'));
+    console.log('User name : ' + req.get('userName'));
+    console.log('User email : ' + req.get('userEmail'));
+    console.log('User role : ' + req.get('userRole'));
+    console.log('Cart ID : ' + req.get('cartid'));
+    var cartid = req.get('cartid');
+    
     next();
 
 });
@@ -55,7 +60,7 @@ router.post('/', function(req, res) {
 
 // get request on shopping cart will get an array of items in the cart
 router.get('/', function(req, res) {
-    var cartid = req.session.cartid;
+    var cartid = req.get('cartid');
     if (cartid != undefined && cartid !== '') {
         pool.query(
             'select * from products, incarts where products.id = incarts.id and cartid = $1',
