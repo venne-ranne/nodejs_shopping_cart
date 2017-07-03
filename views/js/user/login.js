@@ -10,12 +10,15 @@ function start() {
 $(document).ready(function(e) {
     if (localStorage.userName !== undefined){
       $('#login-li').hide();
+      $('#admin-container').hide();
       $('#logout-li').show();
-      $('.admin-container').hide();
       $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
       if (localStorage.role === 'admin'){
           $('#shopping-cart-li').hide();
           $('#checkout-li').hide();
+          $('.replace-container').empty();
+          $('.admin-container').show();
+
           //window.location.href = "/admin";
       }
     } else {
@@ -101,6 +104,7 @@ $(document).ready(function(e) {
                     $('#shopping-cart-li').hide();
                     $('#checkout-li').hide();
                     $('.replace-container').empty();
+                    $('.admin-container').show();
                 }
                 $('#login-dialog').dialog('close');
             },

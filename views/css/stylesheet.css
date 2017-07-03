@@ -527,3 +527,7 @@ header ul a{
     font-size: 2em;
     color: #191970;
 }
+
+.admin-container{
+  display: none;
+}

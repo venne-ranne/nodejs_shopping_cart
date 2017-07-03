@@ -33,7 +33,7 @@ var app = express();
 // static files such as css, js, resource files in views folder
 // set length of time to cache
 app.use(express.static('./views', {
-    maxAge: maxCacheTime
+//  maxAge: maxCacheTime
 }));
 
 /* Use Included Routes */
