@@ -24,7 +24,7 @@ router.use(function(req, res, next) {
     console.log('Cart ID : ' + req.get('cartid'));
     var cartid = req.get('cartid');
     var user = req.get('userName');
-    
+
     next();
 
 });
@@ -61,7 +61,11 @@ router.post('/', function(req, res) {
 
 // return all rows in carts table
 router.get('/all', function(req, res) {
-
+    pool.query('select * from incarts',
+        function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            res.status(200).send(result.rows);
+    });
 })
 
 // get request on shopping cart will get an array of items in the cart

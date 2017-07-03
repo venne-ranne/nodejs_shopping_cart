@@ -8,22 +8,6 @@ function start() {
 }
 
 $(document).ready(function(e) {
-    if (localStorage.userName !== undefined){
-      $('#login-li').hide();
-      $('#admin-container').hide();
-      $('#logout-li').show();
-      $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
-      if (localStorage.role === 'admin'){
-          $('#shopping-cart-li').hide();
-          $('#checkout-li').hide();
-          $('.replace-container').empty();
-          $('.admin-container').show();
-
-          //window.location.href = "/admin";
-      }
-    } else {
-      $('#logout-li').hide();
-    }
 
     var login_btn = document.getElementById('signin-btn');
     var register_btn = document.getElementById('register-btn');
@@ -101,10 +85,7 @@ $(document).ready(function(e) {
                 $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
                 if (data.user.role === 'admin'){
                     //indow.location.href = "/admin"; // redirect to admin
-                    $('#shopping-cart-li').hide();
-                    $('#checkout-li').hide();
-                    $('.replace-container').empty();
-                    $('.admin-container').show();
+                    admin_dashboard();
                 }
                 $('#login-dialog').dialog('close');
             },
@@ -146,7 +127,13 @@ $(document).ready(function(e) {
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(data) {
-                    location.reload();  // change site to reflect logged on status
+                    localStorage.userEmail = response.getResponseHeader('userEmail');
+                    localStorage.userName = response.getResponseHeader('userName');
+                    localStorage.role = data.user.role;
+                    $('#login-li').hide();
+                    $('#logout-li').show();
+                    $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                    //location.reload();  // change site to reflect logged on status
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (errorThrown === 'Conflict') {
@@ -187,11 +174,14 @@ $(document).ready(function(e) {
                     success: function(result) {
                         console.log('Success : ' + JSON.stringify(result));
                         // login successful - result object contains user
-                        if (result.user.role == 'user'){
-                            location.reload();  // change site to reflect logged on status
-                        } else {
-                            window.location.href = "/admin"; // redirect to admin
-                        }
+                        // if (result.user.role == 'user'){
+                        //     location.reload();  // change site to reflect logged on status
+                        // } else {
+                        //     window.location.href = "/admin"; // redirect to admin
+                        // }
+                        $('#login-li').hide();
+                        $('#logout-li').show();
+                        $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log('Error');
@@ -205,9 +195,6 @@ $(document).ready(function(e) {
         });
     }); // end click
 }); // end ready
-
-
-
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');

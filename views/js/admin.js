@@ -1,7 +1,14 @@
 $(document).ready(function(e) {
-  console.log("amin adsdsdn");
-    if (localStorage.role === 'admin' && localStorage.userName !== undefined){
-      $('.replace-container').empty();
+    if (localStorage.userName !== undefined){
+      $('#login-li').hide();
+      $('#admin-container').hide();
+      $('#logout-li').show();
+      $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+      if (localStorage.role === 'admin'){
+          admin_dashboard();
+      }
+    } else {
+      $('#logout-li').hide();
     }
     $('#order-edit-container').dialog({
         modal:true,
@@ -74,6 +81,35 @@ $(document).ready(function(e) {
 
 });
 
+function admin_dashboard(){
+    $('#shopping-cart-li').hide();
+    $('#checkout-li').hide();
+    $('.replace-container').hide();
+    $('.nav-container').hide();
+    $('#search-box').hide();
+    $('.admin-container').show();
+    $.ajax({
+        type: 'GET',
+        url: 'carts/all',
+        success: function(data){
+            console.log(data.length);
+            for (i = 0; i < data.length; i++) {
+                var product = data[i];
+                var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
+                var rowHTML = '<tr class = "order-rows">';
+                rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
+                rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
+                rowHTML += '<td class = "row-status">'+status+'</td>';
+                rowHTML += '<td class = "row-user">'+product.email+'</td>';
+                rowHTML += '<td class = "row-total"></td>';
+                rowHTML += '<td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button>';
+                rowHTML += '<button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
+                rowHTML += '</tr>';
+                $('.table-body').append(rowHTML);
+            }
+        }
+    });
+}
 
 // app.get('/cart', function(req, res) {
 //     var cartid = req.session.cartid;
