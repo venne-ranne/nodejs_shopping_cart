@@ -166,8 +166,13 @@ router.post('/register', function(req, res) {
             } else {
                 addNewUser(newUser);
                 updateCarts(newUser, req);
-                res.set('email', user.email);
-                res.set('name', user.name);
+                res.set('email', newUser.email);
+                res.set('name', newUser.name);
+                // res.set({
+                //     'Content-Type': 'text/plain',
+                //     'email': newUser.email,
+                //     'name': newUser.name
+                // });
                 //req.session.user = newUser;  // save the logged in user in the session
                 res.status(201).send({user: newUser});
             }

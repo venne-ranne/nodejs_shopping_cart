@@ -140,12 +140,15 @@ $(document).ready(function(e) {
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(data, textStatus, response) {
-                    localStorage.userEmail = response.getResponseHeader('userEmail');
-                    localStorage.userName = response.getResponseHeader('userName');
+                    localStorage.email = response.getResponseHeader('email');
+                    localStorage.name = response.getResponseHeader('name');
                     localStorage.role = data.user.role;
+                    console.log('Name : ' + localStorage.name);
+                    console.log('Email : ' + localStorage.email);
                     $('#login-li').hide();
                     $('#logout-li').show();
-                    $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                    $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+                    $('#login-dialog').dialog('close');
                     //location.reload();  // change site to reflect logged on status
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -193,9 +196,11 @@ $(document).ready(function(e) {
                         // } else {
                         //     window.location.href = "/admin"; // redirect to admin
                         // }
+                        localStorage.email = response.getResponseHeader('email');
+                        localStorage.name = response.getResponseHeader('name');
                         $('#login-li').hide();
                         $('#logout-li').show();
-                        $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                        $('#logout-button').text("Hi, "+localStorage.name + "! logout");
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log('Error');
