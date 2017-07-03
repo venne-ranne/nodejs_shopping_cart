@@ -1,7 +1,14 @@
 
 
 $(document).ready(function(e) {
-
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader('userName', localStorage.userName);
+            xhr.setRequestHeader('userEmail', localStorage.userEmail);
+            xhr.setRequestHeader('userRole', localStorage.userRole);
+            xhr.setRequestHeader('cartid', localStorage.cartid);
+        }
+    });
     var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
     var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); };
     var topbarML = function() { $('.header').fadeTo(fadeSpeed,fadeTo);};

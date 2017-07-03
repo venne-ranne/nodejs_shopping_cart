@@ -1,4 +1,12 @@
 $(document).ready(function(e) {
+    // $.ajaxSetup({
+    //     beforeSend: function(xhr, settings) {
+    //         xhr.setRequestHeader('userName', localStorage.userName);
+    //         xhr.setRequestHeader('userEmail', localStorage.userEmail);
+    //         xhr.setRequestHeader('userRole', localStorage.userRole);
+    //         xhr.setRequestHeader('cartid', localStorage.cartid);
+    //     }
+    // });
     var subtotal = 0.00;
 
     // pop-up shopping cart dialog box
@@ -16,10 +24,13 @@ $(document).ready(function(e) {
         $.ajax({
             type: 'GET',
             url: '/carts',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('userName', 'conor');
-            },
+            // beforeSend: function(xhr, settings) {
+            //     xhr.setRequestHeader('userName', 'conor');
+            // },
             // headers: {
+            //     'userName': 'conor'
+            // },
+            //headers: {
             //     'cartid': localStorage.cartid;
             //     'userName': localStorage.userName;
             //     'userEmail': localStorage.userEmail;
