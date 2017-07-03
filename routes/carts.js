@@ -23,6 +23,7 @@ router.use(function(req, res, next) {
     console.log('User role : ' + req.get('userRole'));
     console.log('Cart ID : ' + req.get('cartid'));
     var cartid = req.get('cartid');
+    var user = req.get('userName');
     
     next();
 
@@ -57,6 +58,11 @@ router.post('/', function(req, res) {
             res.status(201).json(result.rows[0]);
     });
 });
+
+// return all rows in carts table
+router.get('/all', function(req, res) {
+
+})
 
 // get request on shopping cart will get an array of items in the cart
 router.get('/', function(req, res) {

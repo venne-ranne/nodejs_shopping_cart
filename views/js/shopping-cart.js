@@ -24,25 +24,12 @@ $(document).ready(function(e) {
         $.ajax({
             type: 'GET',
             url: '/carts',
-            // beforeSend: function(xhr, settings) {
-            //     xhr.setRequestHeader('userName', 'conor');
-            // },
-            // headers: {
-            //     'userName': 'conor'
-            // },
-            //headers: {
-            //     'cartid': localStorage.cartid;
-            //     'userName': localStorage.userName;
-            //     'userEmail': localStorage.userEmail;
-            // },
             success: function(data){
                 subtotal = 0.00;
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
                     addProductToCartList(data[i]);
                     subtotal = subtotal+(data[i].quantity*data[i].price);
-                    //subtotal = parseFloat(subtotal).toFixed(2);
-
                 }
                 subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
                 $('.cart-subtotal').text(' $'+subtotal);
