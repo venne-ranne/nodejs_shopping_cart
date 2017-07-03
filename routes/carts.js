@@ -1,14 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var expressLayouts = require('express-ejs-layouts');
 var session = require('express-session');
+var expressLayouts = require('express-ejs-layouts');
 
 // postgres database pool
 var pool = require('../config/database');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
+router.use(expressLayouts);
 
 router.use(session({
     secret: 'iloveblackrabbitproject',
@@ -61,12 +62,22 @@ router.post('/', function(req, res) {
 
 // return all rows in carts table
 router.get('/all', function(req, res) {
-    pool.query('select * from incarts',
+    pool.query('select * from carts',
         function(error, result) {
             if (error) res.status(500).send('Database query error');
             res.status(200).send(result.rows);
     });
-})
+});
+
+// detele a row in carts table
+router.delete('/all/row', function(req, res) {
+    var cart = req.body.cartid;
+    pool.query('DELETE FROM carts WHERE cartid = $1', [cart],
+        function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            res.status(200).send({status: "success"});
+    });
+});
 
 // get request on shopping cart will get an array of items in the cart
 router.get('/', function(req, res) {
@@ -120,6 +131,10 @@ router.put('/quantity', function(req, res) {
         req.session.totalcart = req.session.totalcart + quantity;
         res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
     });
+});
+
+router.post('/checkout', function(req, res) {
+    
 });
 
 module.exports.updateCarts = function(user, req) {

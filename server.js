@@ -64,10 +64,10 @@ app.set('layout', 'layouts/layout');
 // root page
 app.get('/', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
+    res.render('index.ejs', { totalcart: req.session.totalcart});
 });
 
 //start server listening
 app.listen(port, function() {
      console.log("Server running on port : " + port);
- });
+});
