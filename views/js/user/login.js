@@ -171,7 +171,7 @@ $(document).ready(function(e) {
                 localStorage.removeItem('name') ;
                 localStorage.removeItem('role');
                 after_logout_display();
-                location.reload();
+              //  location.reload();
             }
         });
     });
@@ -201,6 +201,7 @@ $(document).ready(function(e) {
                         $('#login-li').hide();
                         $('#logout-li').show();
                         $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+                        $('#login-dialog').dialog('close');
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log('Error');
