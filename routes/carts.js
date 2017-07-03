@@ -16,6 +16,13 @@ router.use(session({
     saveUninitialized: true
 })); // session secretgit
 
+router.use(function(req, res, next) {
+    console.log()
+    var user = req.get('user');
+
+    console.log(user);
+});
+
 // add a product to a cart
 router.put('/', function(req, res) {
     var product = req.body.id;

@@ -73,7 +73,8 @@ router.post('/login/google', function(req, res) {
                             if (result.rows.length == 1) {
                                 // user exists trust google and log them in
                                 user.role = result.rows[0].role;
-                                req.session.user = user;
+                                res.set('userEmail', user.email);
+                                res.set('userName', user.name);
                                 res.status(200).send({user: user});
                             } else {
                                 // new user make up password
@@ -81,7 +82,9 @@ router.post('/login/google', function(req, res) {
                                 user.password = hash.digest('hex');
                                 addNewUser(user);
                                 updateCarts(user, req);
-                                req.session.user = user;  // save the logged in user in the session
+                                res.set('userEmail', user.email);
+                                res.set('userName', user.name);
+                                //req.session.user = user;  // save the logged in user in the session
                                 res.status(201).send({user: user});
                             }
                     });
@@ -118,8 +121,10 @@ router.post('/login', function(req, res) {
                     var role = expectedUser.role;
                     console.log(expectedUser);
                     if (suppliedUser.password === expectedUser.password) {   // check passwords
-                        req.session.user = expectedUser;                     // save the logged in user in the session
+                        //req.session.user = expectedUser;                     // save the logged in user in the session
                         if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
+                        res.set('userEmail', expectedUser.email);
+                        res.set('userName', expectedUser.name);
                         res.send({user: expectedUser});
                     } else {
                         res.status(403).send('Password is incorrect');
@@ -160,14 +165,16 @@ router.post('/register', function(req, res) {
             } else {
                 addNewUser(newUser);
                 updateCarts(newUser, req);
-                req.session.user = newUser;  // save the logged in user in the session
+                res.set('userEmail', user.email);
+                res.set('userName', user.name);
+                //req.session.user = newUser;  // save the logged in user in the session
                 res.status(201).send({user: newUser});
             }
     });
 });
 
 router.get('/logout', function(req, res) {
-    req.session.user = undefined;
+    //req.session.user = undefined;
     res.status(200).send({user: undefined});
 });
 

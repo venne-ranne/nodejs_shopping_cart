@@ -74,7 +74,11 @@ $(document).ready(function(e) {
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
-            success: function(data) {
+            success: function(data, textStatus, response) {
+                localStorage.userEmail = response.getResponseHeader('userEmail');
+                localStorage.userName = response.getResponseHeader('userName');
+                console.log('Name : ' + localStorage.userName);
+                console.log('Email : ' + localStorage.userEmail);
                 if (data.user.role == 'user'){
                     location.reload();  // change site to reflect logged on status
                 } else {
@@ -136,7 +140,9 @@ $(document).ready(function(e) {
         $.ajax({
             method: 'GET',
             url: '/logout',
-            success: function(data) {
+            success: function(data, textStatus, request) {
+                localStorage.remove('userEmail');
+                localStorage.remove('userName') ;
                 location.reload();
             }
         });

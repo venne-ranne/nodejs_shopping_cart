@@ -25,13 +25,16 @@ var obj = {
 };
 
 var port = process.env.PORT || 8080; ;
-
+var maxCacheTime = 1000 * 60 * 2;
 
 // start express application
 var app = express();
 
 // static files such as css, js, resource files in views folder
-app.use(express.static('./views'));
+// set length of time to cache
+app.use(express.static('./views', {
+    maxAge: maxCacheTime
+}));
 
 /* Use Included Routes */
 
