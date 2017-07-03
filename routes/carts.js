@@ -57,8 +57,12 @@ router.put('/', function(req, res) {
 
 // return all rows in carts table along with sub-total
 router.get('/all', function(req, res) {
-
-});
+    pool.query('select * from incarts',
+        function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            res.status(200).send(result.rows);
+    });
+})
 
 // get request on shopping cart will get an array of items in the cart
 router.get('/', function(req, res) {

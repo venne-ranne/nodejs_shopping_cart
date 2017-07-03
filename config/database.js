@@ -8,8 +8,8 @@ const pg = require('pg');
 // the local DB URL needs to be changed to your own settings
 //var localDBUrl = "postgres://localhost:5432/conor";
 //var localDBUrl = "postgres://localhost:5432/yappvivi_jdbc";
-var localDBUrl = "postgres://tzoqkrwdfkcpjk:218d44fac9bfeaa3024a91549b7d51edb57435498757eda751de43663882bee3@ec2-23-21-220-188.compute-1.amazonaws.com:5432/d321mldt4f912o";
-var databaseUrl = process.env.DATABASE_URL || localDBUrl;
+//var localDBUrl = "postgres://tzoqkrwdfkcpjk:218d44fac9bfeaa3024a91549b7d51edb57435498757eda751de43663882bee3@ec2-23-21-220-188.compute-1.amazonaws.com:5432/d321mldt4f912o";
+var databaseUrl = process.env.DATABASE_URL;// || localDBUrl;
 var params = url.parse(databaseUrl);
 var auth = params.auth.split(':');
 

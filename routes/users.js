@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 var hash = require('crypto').createHash('sha256');
+var expressLayouts = require('express-ejs-layouts');
 
 // OAuth credentials
 var oauth2Client = new OAuth2(
@@ -136,18 +137,18 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/admin', function(req, res) {
-    if (req.get('name') == undefined || req.get('role') != 'admin'){
-        res.redirect('/');
-    } else {
-        pool.query('select * from products', function(error, result) {
-            res.status(200).render('admin.ejs',
-                {
-                    products: result.rows,
-                }
-            );
-        });
-        //res.render('admin.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
-    }
+    // if (req.get('userName') === undefined || req.get('userRole') != 'admin'){
+    //     //res.redirect('/');
+    // } else {
+    //     //console.log("fdfdf");
+    //     pool.query('select * from products', function(error, result) {
+    //         res.status(200).render('admin.ejs',
+    //             {
+    //                 products: result.rows,
+    //             }
+    //         );
+    //     });
+    // }
 });
 
 // register request
