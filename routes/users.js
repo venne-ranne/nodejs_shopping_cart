@@ -74,8 +74,8 @@ router.post('/login/google', function(req, res) {
                             if (result.rows.length == 1) {
                                 // user exists trust google and log them in
                                 user.role = result.rows[0].role;
-                                res.set('userEmail', user.email);
-                                res.set('userName', user.name);
+                                res.set('email', user.email);
+                                res.set('name', user.name);
                                 res.status(200).send({user: user});
                             } else {
                                 // new user make up password
