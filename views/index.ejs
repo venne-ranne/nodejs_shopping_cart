@@ -1,16 +1,15 @@
+
 <div class = "replace-container">
 <div class = "home-features">
     <a href="/collections/arts"><img src="../resources/homefeature.png" id = "homefeature-photo" alt="NEW ARRIVALS"/></a>
-    </div>
+</div>
 </div>
 
 <div class = "products-list-wrap">
    <h3 class = "result-label"></h3>
    <div class = "products-list">
    </div>
-</div>
-
-<div class = "admin-container">
+</div><div class = "admin-container">
 <h1>Admin Dashboard</h1>
 <div class = "order-view-container">
     <h3 class = "subtitle">Shopping Carts Summary</h3></br>
@@ -43,3 +42,22 @@
   </div>
 </div>
 </div>
+<script>
+    if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
+        $.ajax({
+            method: 'POST',
+            url: '/collections/new',
+            success: function(data) {
+                $('.products-list').empty();   // removed the previous content
+                // get json array of products which match query in some way
+                $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+                for (i = 0; i < 4; i++) {
+                    addProductToList(data[i]);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Error!!!!');
+            }
+        });
+    }
+</script>

@@ -29,6 +29,38 @@ $(document).ready(function(e) {
             inside = false;
         }
     });
+        // 
+        // $.ajax({
+        //     method: 'POST',
+        //     url: '/collections/new',
+        //     success: function(data) {
+        //         $('.products-list').empty();   // removed the previous content
+        //         // get json array of products which match query in some way
+        //         $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+        //         for (i = 0; i < 4; i++) {
+        //             addProductToList(data[i]);
+        //         }
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         console.log('Error!!!!');
+        //     }
+        // });
+        //
+        // $.ajax({
+        //     method: 'POST',
+        //     url: '/collections/new',
+        //     success: function(data) {
+        //         $('.products-list').empty();   // removed the previous content
+        //         // get json array of products which match query in some way
+        //         $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+        //         for (i = 0; i < 4; i++) {
+        //             addProductToList(data[i]);
+        //         }
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         console.log('Error!!!!');
+        //     }
+        // });
 
     // $('#menu-new').on('click', function(e){
     //     //$('.replace-container').load('collections.ejs');

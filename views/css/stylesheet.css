@@ -292,7 +292,8 @@ header ul a{
 
 .products-list-wrap{
   position: relative;
-  display: inline-block;
+  display:inline-grid;
+  align-content: center;
 }
 
 .products-list{
@@ -530,4 +531,9 @@ header ul a{
 
 .admin-container{
   display: none;
+}
+
+.title-name{
+    font-family: 'Quattrocento Sans', sans-serif;
+    font-size: 1.5em;
 }

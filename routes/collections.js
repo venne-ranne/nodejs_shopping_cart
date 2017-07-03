@@ -46,6 +46,16 @@ router.get('/', function(req, res) {
     }
 });
 
+// items to put on index.ejs
+router.post('/new', function(req, res) {
+    pool.query('select * from products where new = $1',[true],
+        function (error, result) {
+            if (error) res.status(500).send('Database query error');
+            if (result.rowCount == 0) res.status(204).send("NOT FOUND");
+            else res.status(200).json(result.rows);
+    });
+});
+
 // retrive all items in stock based on the category name
 router.get('/:category', function(req, res) {
     if (req.session.totalcart == undefined) req.session.totalcart = 0;

@@ -81,6 +81,7 @@ $(document).ready(function(e) {
 });
 
 function admin_dashboard(){
+    $('.products-list').empty();
     $('#shopping-cart-li').hide();
     $('#checkout-li').hide();
     $('.replace-container').hide();
@@ -89,7 +90,7 @@ function admin_dashboard(){
     $('.admin-container').show();
     $.ajax({
         type: 'GET',
-        url: 'carts/all',
+        url: '/carts/all',
         success: function(data){
             for (i = 0; i < data.length; i++) {
                 var product = data[i];
@@ -105,6 +106,7 @@ function admin_dashboard(){
                 rowHTML += '</tr>';
                 $('.table-body').append(rowHTML);
             }
+
         }
     });
 }

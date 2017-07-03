@@ -97,7 +97,9 @@ $(document).ready(function(e) {
                 if (data.user.role === 'admin'){
                     //indow.location.href = "/admin"; // redirect to admin
                     admin_dashboard();
+
                 }
+                //location.reload();
                 $('#login-dialog').dialog('close');
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -166,7 +168,7 @@ $(document).ready(function(e) {
                 localStorage.removeItem('name') ;
                 localStorage.removeItem('role');
                 after_logout_display();
-                //location.reload();
+                location.reload();
             }
         });
     });
@@ -209,6 +211,7 @@ $(document).ready(function(e) {
 }); // end ready
 
 function after_logout_display(){
+    $('.products-list').show();
     $('#shopping-cart-li').show();
     $('#checkout-li').show();
     $('.replace-container').show();

@@ -25,7 +25,7 @@ router.use(function(req, res, next) {
     console.log('Cart ID : ' + req.get('cartid'));
     var cartid = req.get('cartid');
     var user = req.get('name');
-    if (cartid == undefined) { // need new cart id
+    if (cartid == undefined && user != 'admin') { // need new cart id
         pool.query('insert into carts values(default, $1) returning cartid', [user],
         function(error, result) {
             if (!error) {
@@ -130,7 +130,7 @@ router.put('/quantity', function(req, res) {
 });
 
 router.post('/checkout', function(req, res) {
-    
+
 });
 
 module.exports.updateCarts = function(user, req) {
