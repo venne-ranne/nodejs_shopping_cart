@@ -8,23 +8,18 @@ function start() {
 }
 
 $(document).ready(function(e) {
-    if (localStorage.name !== undefined){
+    if (localStorage.name == undefined){
+        $('#logout-li').hide();
+        $('#admin-container').hide();
+    } else {
       $('#login-li').hide();
-      $('#admin-container').hide();
       $('#logout-li').show();
       $('#logout-button').text("Hi, "+localStorage.name + "! logout");
-      if (localStorage.role === 'admin'){
-          $('#shopping-cart-li').hide();
-          $('#checkout-li').hide();
-          $('.replace-container').empty();
-          $('.admin-container').show();
-
+      if (localStorage.role == 'admin'){
+          admin_dashboard();
           //window.location.href = "/admin";
       }
-    } else {
-      $('#logout-li').hide();
     }
-
     var login_btn = document.getElementById('signin-btn');
     var register_btn = document.getElementById('register-btn');
     var salt = -1;
@@ -170,7 +165,8 @@ $(document).ready(function(e) {
                 localStorage.removeItem('email');
                 localStorage.removeItem('name') ;
                 localStorage.removeItem('role');
-                location.reload();
+                after_logout_display();
+                //location.reload();
             }
         });
     });
@@ -211,6 +207,17 @@ $(document).ready(function(e) {
         });
     }); // end click
 }); // end ready
+
+function after_logout_display(){
+    $('#shopping-cart-li').show();
+    $('#checkout-li').show();
+    $('.replace-container').show();
+    $('.nav-container').show();
+    $('#search-box').show();
+    $('.admin-container').hide();
+    $('#logout-li').hide();
+    $('#login-li').show();
+}
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');

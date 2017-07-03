@@ -1,15 +1,15 @@
 $(document).ready(function(e) {
-    if (localStorage.userName !== undefined){
-      $('#login-li').hide();
-      $('#admin-container').hide();
-      $('#logout-li').show();
-      $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
-      if (localStorage.role === 'admin'){
-          admin_dashboard();
-      }
-    } else {
-      $('#logout-li').hide();
-    }
+    // if (localStorage.userName !== undefined){
+    //   //$('#login-li').hide();
+    //   $('#admin-container').hide();
+    //   //$('#logout-li').show();
+    //   $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+    //   if (localStorage.role === 'admin'){
+    //       admin_dashboard();
+    //   }
+    // } else {
+    //   $('#logout-li').hide();
+    // }
     $('#order-edit-container').dialog({
         modal:true,
         autoOpen:false,
