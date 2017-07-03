@@ -139,7 +139,14 @@ router.get('/admin', function(req, res) {
     if (req.session.user == undefined || req.session.user.role != 'admin'){
         res.redirect('/');
     } else {
-        res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
+        pool.query('select * from products', function(error, result) {
+            res.status(200).render('admin.ejs',
+                {
+                    products: result.rows,
+                }
+            );
+        });
+        //res.render('admin.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
     }
 });
 

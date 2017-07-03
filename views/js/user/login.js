@@ -8,6 +8,15 @@ function start() {
 }
 
 $(document).ready(function(e) {
+  console.log('name ' +localStorage.userName);
+    if (localStorage.userName !== undefined){
+      $('#login-li').hide();
+      $('#logout-li').show();
+      $('#logout-button').text("Hi, "+localStorage.userName + "!");
+
+    } else {
+      $('#logout-li').hide();
+    }
 
     var login_btn = document.getElementById('signin-btn');
     var register_btn = document.getElementById('register-btn');
@@ -77,13 +86,21 @@ $(document).ready(function(e) {
             success: function(data, textStatus, response) {
                 localStorage.userEmail = response.getResponseHeader('userEmail');
                 localStorage.userName = response.getResponseHeader('userName');
+                localStorage.role = data.user.role;
                 console.log('Name : ' + localStorage.userName);
                 console.log('Email : ' + localStorage.userEmail);
-                if (data.user.role == 'user'){
-                    location.reload();  // change site to reflect logged on status
+                $('#login-li').hide();
+                $('#logout-li').show();
+                if (data.user.role === 'user'){
+                    console.log(data.user.role);
+                    $('#logout-button').text("Hi, "+localStorage.userName + "! logout");
+                    //location.reload();  // change site to reflect logged on status
                 } else {
-                    window.location.href = "/admin"; // redirect to admin
+                    $('#shopping-cart-li').hide();
+                    $('#checkout-li').hide();
+                    //window.location.href = "/admin"; // redirect to admin
                 }
+                  $('#login-dialog').dialog('close');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (errorThrown === 'Unprocessable Entity') {
@@ -135,14 +152,15 @@ $(document).ready(function(e) {
         }
     });
 
-    $('#logout-btn').on('click', function(){
+    $('#logout-button').on('click', function(){
         console.log("Logout btn is clicked..");
         $.ajax({
             method: 'GET',
             url: '/logout',
             success: function(data, textStatus, request) {
-                localStorage.remove('userEmail');
-                localStorage.remove('userName') ;
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName') ;
+                localStorage.removeItem('role');
                 location.reload();
             }
         });

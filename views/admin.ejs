@@ -1,7 +1,19 @@
-<div class = "admin-search">
-
-</div>
-
+<head>
+    <meta charset="UTF-8">
+    <title>Black Rabbit</title>
+    <link href="https://fonts.googleapis.com/css?family=Quattrocento+Sans|Quicksand" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="../css/stylesheet.css" rel="stylesheet">
+    <link href="../css/jquery-ui.css" rel="stylesheet">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery-ui.js"></script>
+    <!-- cryptographic javascript libraries-->
+    <script src="../js/user/login.js"></script>
+    <script src="../js/admin.js"></script>
+</head>
+<h1>Admin Dashboard</h1>
 <div class = "order-view-container">
     <h3 class = "subtitle">Shopping Carts Summary</h3></br>
     <table class="table table-striped">
@@ -16,16 +28,16 @@
             </tr>
         </thead>
         <tbody>
-            <% for (var i = 0; i < rows.length; i++) {%>
+            <% for (var i = 0; i < products.length; i++) {%>
             <tr class = "order-rows">
-                <td><%= rows[i].date_added %></td>
-                <td class = "row-cart-id"><%= rows[i].cartid %></td>
-                <% if (rows[i].sold == 'true'){%>
+                <td><%= products[i].date_added %></td>
+                <td class = "row-cart-id"><%= products[i].cartid %></td>
+                <% if (products[i].sold == 'true'){%>
                     <td class = "row-status">COMPLETE</td>
                 <% } else {%>
                     <td class = "row-status">INCOMPLETE</td>
                 <% } %>
-                <td class = "row-user"><%= rows[i].email %></td>
+                <td class = "row-user"><%= products[i].email %></td>
                 <td>...</td>
                 <td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button><button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>
             </tr>

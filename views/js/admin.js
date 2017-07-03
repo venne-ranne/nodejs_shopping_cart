@@ -69,3 +69,23 @@ $(document).ready(function(e) {
     });
 
 });
+
+
+// app.get('/cart', function(req, res) {
+//     var cartid = req.session.cartid;
+//     var cartid;
+//     if (req.session.user.role == 'admin') cartid = req.query.parameter;
+//     else cartid = req.session.cartid;
+//     console.log(cartid);
+//     console.log(req.query);
+//     if (cartid != undefined && cartid !== '') {
+//         pg.connect(connectionString, function (err, client, done) {
+//             if (err) res.status(500).send('Database connection error');
+//             });
+//             query.on('end', function(result) {
+//                 done();
+//                 res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, rows: result.rows});
+//                 res.render('admin.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, rows: result.rows});
+//             });
+//         })
+//     }

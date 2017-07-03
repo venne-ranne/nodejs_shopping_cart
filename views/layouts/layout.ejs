@@ -24,7 +24,11 @@
 </head>
 
 <body>
-    <% include template/header %>
+    <% if (user != undefined && user.role == 'admin') { %>
+        <% include template/header-admin %>
+    <% } else {%>
+        <% include template/header %>
+    <% } %>    
     <div class = "container-content">
         <% include template/navigation %>
         <%- body %>
