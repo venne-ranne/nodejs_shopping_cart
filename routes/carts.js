@@ -17,8 +17,8 @@ router.use(session({
 })); // session secretgit
 
 router.use(function(req, res, next) {
-    console.log()
-    var user = req.get('user');
+    console.log('Request to carts');
+    var user = req.get('cartid');
 
     console.log(user);
 });

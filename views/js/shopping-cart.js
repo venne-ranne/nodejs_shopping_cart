@@ -16,6 +16,7 @@ $(document).ready(function(e) {
         $.ajax({
             type: 'GET',
             url: '/carts',
+            beforeSend: function(req) { setHeaders(req); },
             success: function(data){
                 subtotal = 0.00;
                 $('.shopping-cart').empty();
@@ -110,4 +111,11 @@ function addProductToCartList(product) {
     total = parseFloat(total).toFixed(2);
     $addProduct.find('.cart-price-label').text(' $'+total);
     $('.shopping-cart').append($addProduct);
+}
+
+function setHeaders(req) {
+    console.log('Setting headers');
+    req.setRequestHeaders('cartid', 10);
+    req.setRequestHeaders('userName', localStorage.userName);
+    req.setRequestHeaders('userEmail', localStorage.userEmail);
 }
