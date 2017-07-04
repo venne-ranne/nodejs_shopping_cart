@@ -80,7 +80,6 @@ $(document).ready(function(e) {
             contentType: 'application/json',
             dataType: 'json',
             success: function(data, textStatus, response){
-                console.log(data);
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
                     add_admin_cart_list(data[i], $item_status );
@@ -118,7 +117,6 @@ $(document).ready(function(e) {
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
         var $cartid = $parent.find(".row-cartid").text();
-        console.log($cartid);
         // remove a row in carts table
         $.ajax({
             type: 'DELETE',
@@ -214,11 +212,11 @@ function admin_dashboard(){
         success: function(data){
             for (i = 0; i < data.length; i++) {
                 var product = data[i];
-                console.log(product.sold);
                 var status = product.sold ? 'SOLD' : 'INCOMPLETE';
                 var total = product.subtotal == null ? 0.00 : product.subtotal;
+                var date = product.date_added.substring(0, 10) + "   " + product.date_added.substring(11, 19);
                 var rowHTML = '<tr class = "order-rows">';
-                rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
+                rowHTML += '<td class = "row-date">'+date+'</td>';
                 rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
                 rowHTML += '<td class = "row-status">'+status+'</td>';
                 rowHTML += '<td class = "row-user">'+product.email+'</td>';

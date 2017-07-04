@@ -86,7 +86,7 @@ router.post('/', function(req, res) {
 router.get('/all', function(req, res) {
     var queryString = 'SELECT cartid, email, sold, total_items, date_added,'+
     '(SELECT SUM( incarts.quantity * (SELECT price FROM products WHERE id = incarts.id) ) FROM incarts WHERE cartid = carts.cartid)' +
-    'AS subtotal FROM carts';
+    'AS subtotal FROM carts ORDER BY date_added DESC';
     pool.query(queryString,
         function(error, result) {
             if (error) res.status(500).send('Database query error');
