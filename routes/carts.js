@@ -15,12 +15,12 @@ router.use(expressLayouts);
 // middleware for geting custom headers on request and making sure they are on the response
 const headers = ['name', 'email', 'role', 'cartid'];
 router.use(function(req, res, next) {
-    console.log('Request to carts, getting/setting headers');
+    //console.log('Request to carts, getting/setting headers');
     for (var a = 0; a < headers.length; ++ a) {
         var header = req.get(headers[a]);
         if (header !== null) {
             res.set(headers[a], header);
-            console.log(headers[a] + ' : ' + req.get(headers[a]));
+            //console.log(headers[a] + ' : ' + req.get(headers[a]));
         }
     }
     next();
@@ -157,27 +157,27 @@ router.put('/quantity', function(req, res) {
         var updateString = 'update incarts set quantity = ($1) where cartid=($2) and id=($3)';
         pool.query(updateString [quantity, cart, product], function(error, result) {
             if (error) res.status(500).send('Database query error');
-            req.session.totalcart = req.session.totalcart + quantity;
-            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+            else res.status(201).send();
         });
     } else res.status(400).send('cartid header must be set');
 });
 
 router.post('/checkout', function(req, res) {
-
+    res.set('cartid', 'null');
+    res.status(200).send();
 });
 
-module.exports.updateCarts = function(user, req) {
-    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-    console.log('Updating user ...');
-    pool.query(
-        'update carts set email = $1 where cartid = $2',
-        [user.email, req.session.cartid],
-        function(error, result) {
-            console.log('Updating user done.');
-        }
-
-    )
-}
+// module.exports.updateCarts = function(user, req) {
+//     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
+//     console.log('Updating user ...');
+//     pool.query(
+//         'update carts set email = $1 where cartid = $2',
+//         [user.email, req.session.cartid],
+//         function(error, result) {
+//             console.log('Updating user done.');
+//         }
+//
+//     )
+// }
 
 module.exports = router;

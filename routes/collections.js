@@ -18,12 +18,12 @@ router.use(expressLayouts);
 // Middleware for geting custom headers on request and making sure they are on the response
 const headers = ['name', 'email', 'role', 'cartid'];
 router.use(function(req, res, next) {
-    console.log('Request to users getting/setting headers');
+    //console.log('Request to users getting/setting headers');
     for (var a = 0; a < headers.length; ++ a) {
         var header = req.get(headers[a])
         if (header !== null) {
             res.set(headers[a], header);
-            console.log(headers[a] + ' : ' + req.get(headers[a]));
+            //console.log(headers[a] + ' : ' + req.get(headers[a]));
         }
     }
     next();
