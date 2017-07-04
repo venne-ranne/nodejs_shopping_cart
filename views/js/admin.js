@@ -177,10 +177,10 @@ $(document).ready(function(e) {
       $('.users-view-container').hide();
       $('.order-view-container').show();
     });
-    //
+
     // $.ajax({
     //     method: 'GET',
-    //     url: 'users/all',
+    //     url: '/users/all',
     //     success: function(data) {
     //       for (i = 0; i < data.length; i++) {
     //           var user = data[i];
@@ -272,7 +272,7 @@ function admin_dashboard(){
 //             });
 //         })
 //     }
-// 
+//
 // <!--<script>
 //     if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
 //         $.ajax({

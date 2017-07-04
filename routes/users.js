@@ -137,7 +137,9 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/users/all', function(req, res) {
-  pool.query('SELECT * FROM users',
+  pool.query(
+      'SELECT * FROM users',
+      [],
       function(error, result) {
           if (error) res.status(500).send('Database query error');
           res.status(200).send(result.rows);
