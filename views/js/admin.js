@@ -66,13 +66,13 @@ $(document).ready(function(e) {
         $item_cartid = $item_parent.find(".row-cartid").text();
         $item_date = $item_parent.find(".row-date").text();
         $item_email = $item_parent.find(".row-user").text();
+        $item_status = $item_parent.find(".row-status").text();
         $('.item-edit-cartid').prop('readonly', true);
         $('.item-edit-email').prop('readonly', true);
         $('.item-edit-date').prop('readonly', true);
         $('.item-edit-cartid').val($item_cartid);
         $('.item-edit-email').val($item_email);
         $('.item-edit-date').val($item_date);
-        console.log($item_cartid);
         subtotal = 0.0;
         $.ajax({
             type: 'POST',
@@ -84,7 +84,7 @@ $(document).ready(function(e) {
                 console.log(data);
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
-                    add_admin_cart_list(data[i])
+                    add_admin_cart_list(data[i], $item_status );
                     subtotal = subtotal+(data[i].quantity*data[i].price);
                 }
                 subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
@@ -165,6 +165,19 @@ $(document).ready(function(e) {
       $('.order-view-container').show();
     });
 
+    $('#save-table-btn').on('click', function(){
+      $.ajax({
+          method: 'GET',
+          url: '/users/save',
+          success: function(data) {
+              console.log("sdsds");
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+              console.log('Error saving users table to file!!!!');
+          }
+      });
+    });
+
     // if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
     //     $.ajax({
     //         method: 'POST',
@@ -202,7 +215,8 @@ function admin_dashboard(){
         success: function(data){
             for (i = 0; i < data.length; i++) {
                 var product = data[i];
-                var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
+                console.log(product.sold);
+                var status = product.sold ? 'SOLD' : 'INCOMPLETE';
                 var total = product.subtotal == null ? 0.00 : product.subtotal;
                 var rowHTML = '<tr class = "order-rows">';
                 rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
@@ -242,14 +256,16 @@ function admin_dashboard(){
 }
 
 // add a product to the shopping cart list
-function add_admin_cart_list(product) {
+function add_admin_cart_list(product, status) {
     var imagepath = '../'+product.imagepath;
     var cartHTML = '<li class = "shopping-list">';
     var total = 0.00;
     cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
     cartHTML += '<label class = "cart-name-label"></label>';
     cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
-    cartHTML += '<button id = "btn_'+product.id+'" class = "admin-cart-delete"><span  class = "modern-pic-icon">x</span></button>';
+    if (status !== 'SOLD'){
+        cartHTML += '<button id = "btn_'+product.id+'" class = "admin-cart-delete"><span  class = "modern-pic-icon">x</span></button>';
+    }
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);
     $addProduct.find('.cart-name-label').text(product.name);

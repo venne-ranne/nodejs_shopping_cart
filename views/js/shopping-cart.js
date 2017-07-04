@@ -8,8 +8,15 @@ $(document).ready(function(e) {
     var subtotal = 0.00;
 
     $('#cart-checkout-submit').on('click', function() {
-        localStorage.removeItem('cartid');
-        $('.shopping-cart-container').dialog('close');
+        $.ajax({
+            type: 'POST',
+            url: '/carts/checkout',
+            success: function(data, textStatus, response){
+                localStorage.removeItem('cartid');
+                $('.shopping-cart-container').dialog('close');
+                location.reload();
+            }
+        });
     });
 
     // pop-up shopping cart dialog box
