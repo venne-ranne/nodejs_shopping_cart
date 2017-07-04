@@ -109,7 +109,7 @@ $(document).ready(function(e) {
                  minusTotal = (quantity*data.products[0].price);
                  subtotal = parseFloat(subtotal-minusTotal).toFixed(2);  // two decimal points
                  $('.cart-subtotal').text(' $'+subtotal);
-                 $item_parent.find(".row-total").text(subtotal);
+                 $item_parent.find(".row-total").text(' $ sss'+subtotal);
                  console.log("item deleted from cart.");
              }
          });
