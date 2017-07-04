@@ -177,27 +177,27 @@ $(document).ready(function(e) {
       $('.order-view-container').show();
     });
 
-    $.ajax({
-        method: 'GET',
-        url: 'users/all',
-        success: function(data) {
-          for (i = 0; i < data.length; i++) {
-              var user = data[i];
-              var rowHTML = '<tr class = "order-rows">';
-              rowHTML += '<td class = "row-user-email">'+user.email+'</td>';
-              rowHTML += '<td class = "row-user-password">'+user.password+'</td>';
-              rowHTML += '<td class = "row-user-name">'+user.name+'</td>';
-              rowHTML += '<td class = "row-user-role">'+user.role+'</td>';
-              rowHTML += '<td><button class = "row-user-edit-btn"><span class = "modern-pic-icon">V</span></button>';
-              rowHTML += '<button class = "row-user-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
-              rowHTML += '</tr>';
-              $('.user-table-body').append(rowHTML);
-          }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log('Error getting users table!!!!');
-        }
-    });
+    // $.ajax({
+    //     method: 'GET',
+    //     url: '/users/all',
+    //     success: function(data) {
+    //       for (i = 0; i < data.length; i++) {
+    //           var user = data[i];
+    //           var rowHTML = '<tr class = "order-rows">';
+    //           rowHTML += '<td class = "row-user-email">'+user.email+'</td>';
+    //           rowHTML += '<td class = "row-user-password">'+user.password+'</td>';
+    //           rowHTML += '<td class = "row-user-name">'+user.name+'</td>';
+    //           rowHTML += '<td class = "row-user-role">'+user.role+'</td>';
+    //           rowHTML += '<td><button class = "row-user-edit-btn"><span class = "modern-pic-icon">V</span></button>';
+    //           rowHTML += '<button class = "row-user-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
+    //           rowHTML += '</tr>';
+    //           $('.user-table-body').append(rowHTML);
+    //       }
+    //     },
+    //     error: function(jqXHR, textStatus, errorThrown) {
+    //         console.log('Error getting users table!!!!');
+    //     }
+    // });
 
     if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
         $.ajax({

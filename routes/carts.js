@@ -35,6 +35,7 @@ router.get('/size', function(req, res) {
 
 // add a product to a cart
 router.put('/', function(req, res) {
+    console.log('Adding an item to cart');
     var product = req.body.id;
     var cart = req.get('cartid');
     var user = req.get('email') || 'guest';
@@ -55,6 +56,7 @@ router.put('/', function(req, res) {
 
 // Has no cart yet, Make cart
 router.post('/', function(req, res) {
+    console.log('Making a new cart');
     var user = req.get('email');
     pool.query(
         'insert into carts (email) values($1) returning cartid',
@@ -74,7 +76,7 @@ router.get('/all', function(req, res) {
     pool.query(queryString,
         function(error, result) {
             if (error) res.status(500).send('Database query error');
-            res.status(200).send(result.rows);
+            else res.status(200).send(result.rows);
     });
 });
 
