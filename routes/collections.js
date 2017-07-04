@@ -15,13 +15,19 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(expressLayouts);
 //router.set('layout', 'layouts/layout');
 
-router.use(session({
-    secret: 'iloveblackrabbitproject',
-    resave: false,
-    saveUninitialized: true
-})); // session secret
-
-
+// Middleware for geting custom headers on request and making sure they are on the response
+const headers = ['name', 'email', 'role', 'cartid'];
+router.use(function(req, res, next) {
+    //console.log('Request to users getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        var header = req.get(headers[a])
+        if (header !== null) {
+            res.set(headers[a], header);
+            //console.log(headers[a] + ' : ' + req.get(headers[a]));
+        }
+    }
+    next();
+});
 
 // collections page
 router.get('/', function(req, res) {
@@ -58,7 +64,7 @@ router.get('/', function(req, res) {
 
 // retrive all items in stock based on the category name
 router.get('/:category', function(req, res) {
-    if (req.session.totalcart == undefined) req.session.totalcart = 0;
+    //if (req.session.totalcart == undefined) req.session.totalcart = 0;
     var category = req.params.category;
     var query, queryCmd;
 
@@ -92,9 +98,9 @@ router.get('/:category', function(req, res) {
     pool.query(qString, qParameters, function(error, result) {
         res.status(200).render('collections.ejs',
             {
-                user: req.session.user,
+                user: req.get('name'),
                 products: result.rows,
-                totalcart: req.session.totalcart
+                totalcart: 0
             }
         );
     });

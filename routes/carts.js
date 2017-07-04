@@ -123,7 +123,7 @@ router.get('/', function(req, res) {
 
 // delete an item from the cart
 router.delete('/', function(req, res) {
-    var cartid = req.session.cartid;
+    var cartid = req.get('cartid');
     var quantity = req.body.numItems;
     var product = req.body.id;
     if (cartid != undefined && cartid !== '') {
@@ -141,8 +141,8 @@ router.delete('/', function(req, res) {
                 function(err, result) {
                     done(err);
                     if (err) res.status(500).send('Database query error');
-                    req.session.totalcart = req.session.totalcart - quantity;
-                    res.status(200).send({user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
+                    //req.session.totalcart = req.session.totalcart - quantity;
+                    res.status(200).send({user: req.get('name'), products:result.rows});
             });
         });
     }
@@ -157,27 +157,27 @@ router.put('/quantity', function(req, res) {
         var updateString = 'update incarts set quantity = ($1) where cartid=($2) and id=($3)';
         pool.query(updateString [quantity, cart, product], function(error, result) {
             if (error) res.status(500).send('Database query error');
-            req.session.totalcart = req.session.totalcart + quantity;
-            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+            else res.status(201).send();
         });
     } else res.status(400).send('cartid header must be set');
 });
 
 router.post('/checkout', function(req, res) {
-
+    res.set('cartid', 'null');
+    res.status(200).send();
 });
 
-module.exports.updateCarts = function(user, req) {
-    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-    console.log('Updating user ...');
-    pool.query(
-        'update carts set email = $1 where cartid = $2',
-        [user.email, req.session.cartid],
-        function(error, result) {
-            console.log('Updating user done.');
-        }
-
-    )
-}
+// module.exports.updateCarts = function(user, req) {
+//     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
+//     console.log('Updating user ...');
+//     pool.query(
+//         'update carts set email = $1 where cartid = $2',
+//         [user.email, req.session.cartid],
+//         function(error, result) {
+//             console.log('Updating user done.');
+//         }
+//
+//     )
+// }
 
 module.exports = router;
