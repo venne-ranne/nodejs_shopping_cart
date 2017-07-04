@@ -121,7 +121,7 @@ router.post('/login/google', function(req, res) {
 
 });
 
-// login request
+// Login request
 router.post('/login', function(req, res) {
     // request body consists of JSON with email and hashed password
     console.log(req.body);
@@ -158,6 +158,7 @@ router.post('/login', function(req, res) {
     });
 });
 
+// Get all users
 router.get('/users/all', function(req, res) {
   pool.query(
       'SELECT * FROM users',
@@ -168,6 +169,7 @@ router.get('/users/all', function(req, res) {
   });
 });
 
+// Delete a user
 router.delete('/users/row', function(req, res) {
   var email = req.body.email;
   pool.query('DELETE FROM users WHERE email= $1', [email],
@@ -177,6 +179,7 @@ router.delete('/users/row', function(req, res) {
   });
 });
 
+// Change a users details
 router.put('/users/row', function(req, res) {
   var email = req.body.email;
   var name = req.body.name;
@@ -188,8 +191,7 @@ router.put('/users/row', function(req, res) {
       });
 });
 
-
-
+// Saves all the users to a json file on the server and sends it for download to the client
 router.get('/users/save', function(req, res) {
     // get all users
     pool.query(
@@ -205,12 +207,11 @@ router.get('/users/save', function(req, res) {
                     filename,
                     users,
                     function(error) {
+                        // serve file for download
                         res.sendFile(filename);
                     });
-                // serve file for download
             }
     });
-
 });
 
 router.get('/admin', function(req, res) {
@@ -228,7 +229,7 @@ router.get('/admin', function(req, res) {
     // }
 });
 
-// register request
+// Register request
 router.post('/register', function(req, res) {
     // request body is JSON with email, password and name
     console.log(req.body);
@@ -256,9 +257,12 @@ router.post('/register', function(req, res) {
     });
 });
 
+// Logout the current user
 router.get('/logout', function(req, res) {
     console.log('Request to logout');
-    //req.session.user = undefined;
+    for (var a = 0; a < headers.length; ++ a) {
+        res.set(headers[a], 'null');
+    }
     res.status(200).send({user: undefined});
 });
 
@@ -272,6 +276,7 @@ function addNewUser(user) {
     );
 }
 
+// Asigning a user post login to a preowned cart
 function updateCarts(user, req) {
     if (req.get('cartid') != undefined) {
         console.log('Updating user...');

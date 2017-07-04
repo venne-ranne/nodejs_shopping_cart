@@ -95,14 +95,12 @@ Update a users details with the new name and role given along with the the users
 ```
 Response will be a database error with status 500 or for a success status 200
 
-`GET -> /users/save`
+`GET -> /users/save`  
+Saves all the users to a json file located on the server and sends it for download.
 
----
 `GET -> /admin`  
-If the user is admin render the admin dashboard HTML,
-Else redirect to homepage
+Currently does nothing
 
----
 `POST -> /register`  
 Send the server a new user to add to users in JSON.
 eg.  
@@ -117,13 +115,11 @@ eg.
 If the request is well formed the server will respond with a JSON user object the same as a successful post request to /login.
 If the username is already taken the server will respond with status 409 Conflict.
 
----
 `GET -> /logout`  
-Will return an undefined user
+Will set all response headers to null and return an undefined user
 
-## Carts
-All shopping cart functionality uses session to link users to their carts.  
-Session object must contain cartid.
+## `routes/carts.js`
+
 
 ---  
 `GET -> /carts`  
