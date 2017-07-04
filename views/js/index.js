@@ -7,7 +7,7 @@ $(document).ready(function(e) {
             xhr.setRequestHeader('email', localStorage.email);
             xhr.setRequestHeader('role', localStorage.role);
             //console.log('Cart ID : ' + localStorage.cart);
-            xhr.setRequestHeader('cartid', localStorage.cartid);
+            
         }
     });
     var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;

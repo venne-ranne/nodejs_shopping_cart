@@ -19,7 +19,7 @@ router.use(function(req, res, next) {
 
 router.get('/size', function(req, res) {
     var cartid = req.get('cartid');
-    console.log(cartid);
+    //console.log(cartid);
     if (cartid == undefined || isNaN(cartid)) {
         res.status(200).send({total: 0});
     } else {
@@ -28,6 +28,7 @@ router.get('/size', function(req, res) {
         [cartid],
         function(error, result) {
             if (!error) {
+                console.log('Hello');
                 console.log(result.rows[0]);
                 res.status(200).send({total :result.rows[0]});
             } else {
@@ -51,7 +52,7 @@ router.put('/', function(req, res) {
         [cart, product],
         function(error, result) {
             if (!error) {
-                res.status(201).send({});
+                res.status(201).send({total:});
             } else {
                 res.status(500).send('Adding item to cart Error : ' + error);
             }

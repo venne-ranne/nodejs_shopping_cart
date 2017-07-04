@@ -53,7 +53,7 @@ $(document).ready(function(e) {
         var total_items = document.getElementById("total-num-cart").innerHTML;
         // set up the cartid number for the first-timer
         console.log('Adding item to cart, total:' + total_items);
-        if (total_items == 0){
+        if (localStorage.cartid == undefined){
             console.log('No items making new cart');
             var user = localStorage.email || 'guest';
             $.ajax({
@@ -132,18 +132,24 @@ function updateTotalCartNumber(selectedItem, total_items){
         data: JSON.stringify({ id: selectedItem }),
         contentType: 'application/json',
         dataType: 'json',
-        beforeSend: function(req) {
+        beforeSend: function(reqb) {
             console.log('Setting cartid header : ' + localStorage.cartid);
-            req.setRequestHeader('cartid', localStorage.cartid);
+            reqb.setRequestHeader('cartid', localStorage.cartid);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log('failed to add item to cart');
         },
         success: function(data, textStatus, response){
-            getHeaders(response);
+            console.log(localStorage.cartid);
+            //getHeaders(response);
+
             $.ajax({
                 method: 'GET',
                 url: '/carts/size',
+                beforeSend: function(reqa) {
+                    console.log('Setting cartid header : ' + localStorage.cartid);
+                    reqa.setRequestHeader('cartid', localStorage.cartid);
+                },
                 success: function(data, textStatus, response) {
                     $('#total-num-cart').text(data.total);
                 }
