@@ -52,6 +52,17 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/layout');
 
+
+// // force http to https
+app.use(function (request, response, next) {
+    if (!request.headers.host.startsWith("localhost") && request.headers['x-forwarded-proto'] !== 'https') {
+        var httpsUrl = ['https://guarded-falls-74429.herokuapp.com/', request.url].join('');
+        return response.redirect(httpsUrl);
+    }
+
+    return next();
+});
+
 //https used for secure communication however only works local wont work when using heroku
 
 /*

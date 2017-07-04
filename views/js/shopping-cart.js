@@ -8,7 +8,8 @@ $(document).ready(function(e) {
     var subtotal = 0.00;
 
     $('#cart-checkout-submit').on('click', function() {
-        localStorage.removeItem(cartid);
+        localStorage.removeItem('cartid');
+        $('.shopping-cart-container').dialog('close');
     });
 
     // pop-up shopping cart dialog box
