@@ -6,7 +6,7 @@ $(document).ready(function(e) {
             xhr.setRequestHeader('name', localStorage.name);
             xhr.setRequestHeader('email', localStorage.email);
             xhr.setRequestHeader('role', localStorage.role);
-            console.log('Cart ID : ' + localStorage.cart);
+            //console.log('Cart ID : ' + localStorage.cart);
             xhr.setRequestHeader('cartid', localStorage.cartid);
         }
     });
