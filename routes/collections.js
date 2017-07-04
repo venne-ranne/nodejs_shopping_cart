@@ -29,13 +29,16 @@ router.use(function(req, res, next) {
     next();
 });
 
+// Query for retriving all products
+const productSelect = 'select name, description, price, new, sale, stock, category, imagepath, id from products';
+
 // collections page
 router.get('/', function(req, res) {
     var searchPattern = req.query.search;
     if (searchPattern != undefined && searchPattern !== '') { // there is a search string and it's not empty
         searchPattern = '%' + searchPattern + '%';
         // ilike is case insensitve like
-        pool.query('select name, description, price, new, sale, stock, category, imagepath, id from products where name ilike $1 or description ilike $1',
+        pool.query(productSelect + ' where name ilike $1 or description ilike $1',
             [searchPattern],
             function (error, result) {
                 if (error) res.status(500).send('Database query error');
@@ -44,7 +47,7 @@ router.get('/', function(req, res) {
         });
     } else {
         // nothin to search show everything
-        pool.query('select name, description, price, new, sale, stock, category, imagepath, id from products',
+        pool.query(productSelect,
             [], function (error, result) {
                 if (error) res.status(500).send('Database query error');
                 else res.status(200).json(result.rows);
@@ -54,7 +57,7 @@ router.get('/', function(req, res) {
 
 // items to put on index.ejs
 router.post('/index/new', function(req, res) {
-    pool.query('select * from products where new = $1',[true],
+    pool.query(productSelect + ' where new = $1', [true],
         function (error, result) {
             if (error) res.status(500).send('Database query error');
             if (result.rowCount == 0) res.status(204).send("NOT FOUND");
@@ -72,27 +75,27 @@ router.get('/:category', function(req, res) {
     var qParameters;
     switch (category) {
         case 'new' :
-            qString = 'select * from products where new = $1';
+            qString = productSelect + ' where new = $1';
             qParameters = [true];
             break;
         case 'sale' :
-            qString = 'select * from products where sale = $1';
+            qString = productSelect + ' where sale = $1';
             qParameters = [true];
             break;
         case 'homewares' :
-            qString = 'select * from products where category = $1';
+            qString = productSelect + ' where category = $1';
             qParameters = ['Homewares'];
             break;
         case 'homedecor' :
-            qString = 'select * from products where category = $1';
+            qString = productSelect + ' where category = $1';
             qParameters = ['Home Decor'];
             break;
         case 'arts' :
-            qString = 'select * from products where category = $1';
+            qString = productSelect + ' where category = $1';
             qParameters = ['Arts'];
             break;
         default :
-            qString = 'select *  from products';
+            qString = productSelect;
             qParameters = [];
     }
     pool.query(qString, qParameters, function(error, result) {
