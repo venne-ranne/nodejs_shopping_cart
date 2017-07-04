@@ -5,7 +5,7 @@ $(document).ready(function(e) {
         autoOpen:false,
         autoResize:true,
         minHeight: 380,
-        minWidth: 500,
+        minWidth: 600,
         close: function(){  // to reset the textfield to the default values
             $('#order-edit-container [type=text]').val('');
         }
@@ -73,14 +73,23 @@ $(document).ready(function(e) {
         $('.item-edit-cartid').val($item_cartid);
         $('.item-edit-email').val($item_email);
         $('.item-edit-date').val($item_date);
+        console.log($item_cartid);
+        var subtotal = 0.0;
         $.ajax({
-            type: 'GET',
-            url: '/carts',
-            data: JSON.stringify({
-              cartid: $item_cartid,
-          }),
-            success: function(data){
-                console.log("get all carts successful...");
+            type: 'POST',
+            url: '/carts/admin/cart',
+            data: JSON.stringify({cartid: $item_parent.find(".row-cartid").text()}),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data, textStatus, response){
+                console.log(data);
+                $('.shopping-cart').empty();
+                for (i = 0; i < data.length; i++) {
+                    addProductToCartList(data[i]);
+                    subtotal = subtotal+(data[i].quantity*data[i].price);
+                }
+                subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
+                $('.cart-subtotal').text(' $'+subtotal);
             }
         });
     });

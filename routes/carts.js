@@ -162,6 +162,19 @@ router.put('/quantity', function(req, res) {
     } else res.status(400).send('cartid header must be set');
 });
 
+// get request on shopping cart will get an array of items in the cart
+router.post('/admin/cart', function(req, res) {
+    var cid = req.body.cartid;
+    console.log("dsdsd "+cid);
+    pool.query(
+        'select * from products, incarts where products.id = incarts.id and cartid = $1',
+        [cid],
+        function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            res.status(200).send(result.rows);
+    });
+});
+
 router.post('/checkout', function(req, res) {
     res.set('cartid', 'null');
     res.status(200).send();
