@@ -5,9 +5,24 @@
 - [Conor Foran](@forancono)
 
 # API
+The application is divided across route modules each defining related functionality.
+All routes use a middleware which passes along the custom headers in the request back to the response.
+In this way the client is responsible for maintaining the session.
 
-## Users
 ---
+## `server.js`
+
+The main file of our application, this defines the express application and starts the server listening.  
+
+`GET -> /`
+The server renders and sends the main page of the application.
+
+---
+
+## `routes/users.js`
+
+User related functionality login/register etc.
+
 `GET -> /login`  
 Server sends a salt(number) as JSON for the client to append to it's passwords before hashing.  
 eg.  
@@ -16,31 +31,66 @@ eg.
   salt: 987654321
 }
 ```
----
+
 `POST -> /login`  
 Send the server a login attempt with email and hashed password in JSON.  
 eg .
 ```
 {
-  email: "user@email.com",
-  password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b"
+    email: "user@email.com",
+    password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b"
 }
 ```
 
 The server will attempt to find the user and if found and passwords match,  
-will return a JSON object with the user
+will set the correct response headers and return a JSON object with the user
 ```
 {
-  user : {
-    email: "user@email.com",
-    password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b",
-    name: "Helen Clark"
-    role: "Admin"
-  }
+    user : {
+        email: "user@email.com",
+        password: "210dd29b4ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c460a9b",
+        name: "Helen Clark"
+        role: "Admin"
+    }
 }
 ```
 If user is not found server responds with status 422 Unprocessable Entity.  
 If passwords do not match the server responds with status 403 Forbidden.
+
+
+`POST -> /login/google`  
+User has received an access code which is to be exchanged for tokens with google.
+Using these tokens then make a request to the google+ api for creepy details of the user.  
+Taking these details a user account is made if it does not exist and the user is logged in.  
+In the initial request:  
+```
+{
+    code: ca6785b68f0ebf82a2b42ee823548d173ae8fb92fc8417c0c
+}
+```
+The server will set the response headers to the logged in user.
+In the case that a user was created the response status is 201 else it's 200.  
+Otherwise in both cases the user object is returned the same as a regular login.
+
+`GET -> /users/all`  
+The server sends the users table as an array of user objects.
+
+`DELETE -> /users/row`  
+An email is sent to the server for removal from the table.  
+```
+{
+    email: example@email.com
+}
+```
+A database error with status 500 or for a success status 200
+
+`PUT -> /users/row`  
+Update a users details with the new name and role given along with the the users current email.  
+```
+{
+    email: example.com,
+    name: John Doe,
+}
 
 ---
 `GET -> /admin`  

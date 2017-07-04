@@ -40,13 +40,12 @@ $(document).ready(function(e) {
     // login button on the header
     $('#login-btn').on('click', function(){
         // request salt from server
-
         $.ajax({
             method: 'GET',
             url: '/login',
             success: function(data) {
                 salt = data.salt;
-                console.log(salt);
+                //console.log(salt);
             }
         });
         $('#login-dialog').dialog('open');
@@ -143,8 +142,6 @@ $(document).ready(function(e) {
                     localStorage.email = response.getResponseHeader('email');
                     localStorage.name = response.getResponseHeader('name');
                     localStorage.role = data.user.role;
-                    console.log('Name : ' + localStorage.name);
-                    console.log('Email : ' + localStorage.email);
                     $('#login-li').hide();
                     $('#logout-li').show();
                     $('#logout-button').text("Hi, "+localStorage.name + "! logout");

@@ -5,9 +5,9 @@ $(document).ready(function(e) {
     // Set headers to be sent on all ajax requests
     $.ajaxSetup({
         beforeSend: function(req) {
-            console.log('Setting headers');
+            //console.log('Setting headers');
             for (var a = 0; a < headers.length; ++ a) {
-                console.log(headers[a] + ':' + localStorage.getItem(headers[a]));
+                //console.log(headers[a] + ':' + localStorage.getItem(headers[a]));
                 req.setRequestHeader(headers[a], localStorage.getItem(headers[a]));
             }
         }
