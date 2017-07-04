@@ -7,6 +7,8 @@ var expressLayouts = require('express-ejs-layouts');
 // postgres database pool
 var pool = require('../config/database');
 
+var cartid_global = undefined;
+
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(expressLayouts);
@@ -23,36 +25,71 @@ router.use(function(req, res, next) {
     console.log('User email : ' + req.get('email'));
     console.log('User role : ' + req.get('role'));
     console.log('Cart ID : ' + req.get('cartid'));
-    var cartid = req.get('cartid');
-    var user = req.get('name');
-    if (cartid == undefined && user != 'admin') { // need new cart id
-        pool.query('insert into carts values(default, $1) returning cartid', [user],
-        function(error, result) {
-            if (!error) {
-                var row = result.rows[0];
-                // addCart to response headers
-                res.set('cartid', row.cartid);
-                //res.status(201).json(result.rows[0]);
-            }
+    if (req.get('role') !== 'admin') {
+        var cartid = req.get('cartid');
+        var user = req.get('name');
+        if (cartid == undefined || isNaN(cartid) && user != 'admin') { // need new cart id
+            // pool.connect(function(connError, client, done) {
+            //     client.query(
+            //         '',
+            //         [],
+            //         function(insError, result) {
+            //             client.query(
+            //                 '',
+            //                 [],
+            //                 function(selError, result) {
+            //
+            //             });
+            //     });
+            // });
+            pool.query('insert into carts (email) values($1) returning cartid', [user],
+            function(error, result) {
+                if (!error) {
+                    console.log('Result : ' + JSON.stringify(result.rows));
+                    var row = result.rows[0];
+                    console.log(JSON.stringify(row));
+                    // addCart to response headers
+                    console.log(row.cartid);
+                    res.set('cartid', row.cartid);
+                    cartid_global = row.cartid;
+                    //res.status(201).json(result.rows[0]);
+                }
+                next();
+            });
+        } else {
+            // has cart do nothing
             next();
-        });
+        }
     } else {
-        // has cart do nothing
+        // is admin do nothing
         next();
     }
+});
+
+router.get('/size', function(req, res) {
+    var cartid = req.get('cartid');
+    pool.query(
+        'select SUM(incarts.quantity) from incarts where cartid = $1',
+        [cartid],
+        function(error, result) {
+            console.log(result.rows[0]);
+    });
 });
 
 // add a product to a cart
 router.put('/', function(req, res) {
     var product = req.body.id;
-    var cart = req.get('cartid');
+    var cart = cartid_global;
+    console.log(cartid_global);
+    cartid_global = undefined;
+    console.log(cart);
     var addString = 'insert into incarts (cartid, id, quantity) values ($1, $2, 1) ' +
         'on conflict (cartid, id) do update ' +
         'set quantity = (select quantity from incarts where cartid=$1 and id=$2) + 1';
     pool.query(addString, [cart, product], function(error, result) {
         if (!error) {
-            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
-        } else res.status(500).send('Database query error');
+            res.status(201).send({}); // just return the total # cart
+        } else res.status(500).send('Inserting a product Database query error');
     });
 });
 
