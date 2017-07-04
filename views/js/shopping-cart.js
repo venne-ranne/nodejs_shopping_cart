@@ -7,7 +7,7 @@ $(document).ready(function(e) {
             method: 'GET',
             url: '/carts/size',
             success: function(data, textStatus, response) {
-                $('#total-num-cart').text(data.total);
+                $('#total-num-cart').text(data.total.sum);
             },
         });
     }
@@ -142,7 +142,7 @@ function updateTotalCartNumber(selectedItem, total_items){
                 url: '/carts/size',
 
                 success: function(data, textStatus, response) {
-                    
+
                     $('#total-num-cart').text(data.total.sum);
                 }
             });
