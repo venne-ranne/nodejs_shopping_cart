@@ -134,7 +134,8 @@ Returns the size of the users cart.
 Add an item to your cart. Request should be a JSON request of a product id.
 ```
 {
-    id: 1
+    id: 1,
+    cartid: 42
 }
 ```
 The server respond with the new total number of items in the cart.
