@@ -175,6 +175,31 @@ router.post('/admin/cart', function(req, res) {
     });
 });
 
+// delete an item from the cart
+router.delete('/admin/cart', function(req, res) {
+    var cartid = req.body.cartid;
+    var quantity = req.body.numItems;
+    var product = req.body.id;
+    pool.connect(function (error, client, done) {
+        if (error) res.status(500).send('Database connection error');
+        client.query(
+            'DELETE FROM incarts WHERE cartid = $1 AND id = ($2)',
+            [cartid, product],
+            function (err, result) {
+                if (err) res.status(500).send('Database query error');
+        });
+        client.query(
+            'SELECT id, name, price FROM products WHERE id = ($1)',
+            [product],
+            function(err, result) {
+                done(err);
+                if (err) res.status(500).send('Database query error');
+                //req.session.totalcart = req.session.totalcart - quantity;
+                res.status(200).send({user: req.get('name'), products:result.rows});
+        });
+    });
+});
+
 router.post('/checkout', function(req, res) {
     res.set('cartid', 'null');
     res.status(200).send();

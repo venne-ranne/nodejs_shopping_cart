@@ -1,5 +1,4 @@
 $(document).ready(function(e) {
-
     $('#order-edit-container').dialog({
         modal:true,
         autoOpen:false,
@@ -74,7 +73,7 @@ $(document).ready(function(e) {
         $('.item-edit-email').val($item_email);
         $('.item-edit-date').val($item_date);
         console.log($item_cartid);
-        var subtotal = 0.0;
+        subtotal = 0.0;
         $.ajax({
             type: 'POST',
             url: '/carts/admin/cart',
@@ -92,6 +91,28 @@ $(document).ready(function(e) {
                 $('.cart-subtotal').text(' $'+subtotal);
             }
         });
+    });
+
+    $('.shopping-cart').on('click', '.admin-cart-delete', function(e){
+         e.preventDefault();
+         var $deleteItem = $(this);
+         var itemId = parseInt(this.id.substr(4));
+         var quantity = $deleteItem.siblings('.cart-quantity').attr('value');
+         $.ajax({
+             method: 'DELETE',
+             url: '/carts/admin/cart',
+             data: JSON.stringify({ id: itemId, numItems: quantity, cartid: $item_cartid}),
+             contentType: 'application/json',
+             dataType: 'json',
+             success: function(data, textStatus, response){
+                 $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
+                 minusTotal = (quantity*data.products[0].price);
+                 subtotal = parseFloat(subtotal-minusTotal).toFixed(2);  // two decimal points
+                 $('.cart-subtotal').text(' $'+subtotal);
+                 $item_parent.find(".row-total").text(subtotal);
+                 console.log("item deleted from cart.");
+             }
+         });
     });
 
     $('.table-body').on('click', '.row-delete-btn', function(){
@@ -132,10 +153,6 @@ $(document).ready(function(e) {
                 $parent.remove();
             }
         });
-    });
-
-    $('.shopping-cart').on('click', '.admin-cart-delete', function(e){
-         e.preventDefault();
     });
 
     $('#users-table-btn').on('click', function(){
@@ -231,9 +248,7 @@ function add_admin_cart_list(product) {
     var total = 0.00;
     cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
     cartHTML += '<label class = "cart-name-label"></label>';
-    //cartHTML += '<button class = "cart-plus">+</button>';
     cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
-    //cartHTML += '<button class = "cart-minus">+</button>';
     cartHTML += '<button id = "btn_'+product.id+'" class = "admin-cart-delete"><span  class = "modern-pic-icon">x</span></button>';
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);
@@ -246,25 +261,6 @@ function add_admin_cart_list(product) {
     $('.cart-quantity').attr("readonly", true);
 }
 
-// app.get('/cart', function(req, res) {
-//     var cartid = req.session.cartid;
-//     var cartid;
-//     if (req.session.user.role == 'admin') cartid = req.query.parameter;
-//     else cartid = req.session.cartid;
-//     console.log(cartid);
-//     console.log(req.query);
-//     if (cartid != undefined && cartid !== '') {
-//         pg.connect(connectionString, function (err, client, done) {
-//             if (err) res.status(500).send('Database connection error');
-//             });
-//             query.on('end', function(result) {
-//                 done();
-//                 res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, rows: result.rows});
-//                 res.render('admin.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user, rows: result.rows});
-//             });
-//         })
-//     }
-//
 // <!--<script>
 //     if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
 //         $.ajax({
