@@ -76,7 +76,7 @@ router.post('/', function(req, res) {
         function(error, result) {
             var cart = result.rows[0].cartid;
             console.log(cart);
-            res.set('cartid') = cart;
+            res.set('cartid', cart);
             res.status(201).send(JSON.stringify({cartid : cart}));
     });
 });
@@ -151,13 +151,15 @@ router.delete('/', function(req, res) {
 router.put('/quantity', function(req, res) {
     var product = req.body.id;
     var quantity = req.body.quantity;
-    var cart = req.session.cartid;
-    var updateString = 'update incarts set quantity = ($1) where cartid=($2) and id=($3)';
-    pool.query(updateString [quantity, cart, product], function(error, result) {
-        if (error) res.status(500).send('Database query error');
-        req.session.totalcart = req.session.totalcart + quantity;
-        res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
-    });
+    var cart = req.get('cartid');
+    if (cart != undefined) {
+        var updateString = 'update incarts set quantity = ($1) where cartid=($2) and id=($3)';
+        pool.query(updateString [quantity, cart, product], function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            req.session.totalcart = req.session.totalcart + quantity;
+            res.status(201).send({totalcart: req.session.totalcart}); // just return the total # cart
+        });
+    } else res.status(400).send('cartid header must be set');
 });
 
 router.post('/checkout', function(req, res) {

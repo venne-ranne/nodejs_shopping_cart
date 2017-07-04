@@ -226,25 +226,21 @@ router.get('/logout', function(req, res) {
 // This function assumes a check has been done if a user exists
 // Sets role to user
 function addNewUser(user) {
+    console.log('Adding new user...')
     pool.query(
         'insert into users values($1, $2, $3, $4)',
         [user.email, user.password, user.name, 'user']
     );
-
 }
 
 function updateCarts(user, req) {
-    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-    console.log('Updating user ...');
-    pool.connect(function(err, client, done) {
-        var query = client.query(
+    if (req.get('cartid') != undefined) {
+        console.log('Updating user...');
+        pool.query(
             'update carts set email = $1 where cartid = $2',
-            [user.email, req.session.cartid]
+            [user.email, req.get('cartid')],
+            function(error, result) {}
         );
-        query.on('end', function(result) {
-            console.log('Updating user done.');
-            client.end();
-        });
-    });
+    }
 }
 module.exports = router;
