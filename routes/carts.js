@@ -12,11 +12,18 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.use(expressLayouts);
 
+// middleware for geting custom headers on request and making sure they are on the response
+const headers = ['name', 'email', 'role', 'cartid'];
 router.use(function(req, res, next) {
-    console.log('Request to carts');
+    console.log('Request to carts, getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        res.set(req.get(headers[a]));
+        console.log(headers[a] + ' : ' + req.get(headers[a]));
+    }
     next();
 });
 
+// Returns the size of a users cart given a cartid
 router.get('/size', function(req, res) {
     var cartid = req.get('cartid');
     //console.log(cartid);
@@ -52,7 +59,7 @@ router.put('/', function(req, res) {
         [cart, product],
         function(error, result) {
             if (!error) {
-                res.status(201).send({total:});
+                res.status(201).send({total:0});
             } else {
                 res.status(500).send('Adding item to cart Error : ' + error);
             }
@@ -69,6 +76,7 @@ router.post('/', function(req, res) {
         function(error, result) {
             var cart = result.rows[0].cartid;
             console.log(cart);
+            res.set('cartid') = cart;
             res.status(201).send(JSON.stringify({cartid : cart}));
     });
 });

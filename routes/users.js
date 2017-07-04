@@ -5,7 +5,6 @@ var express = require('express');
 //handle client pool
 var pool = require('../config/database');
 var router = express.Router();
-var session = require('express-session');
 var bodyParser = require('body-parser');
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
@@ -30,11 +29,16 @@ var url = oauth2Client.generateAuthUrl({
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.use(session({
-    secret: 'iloveblackrabbitproject',
-    resave: false,
-    saveUninitialized: true}
-)); // session secret
+// Middleware for geting custom headers on request and making sure they are on the response
+const headers = ['name', 'email', 'role', 'cartid'];
+router.use(function(req, res, next) {
+    console.log('Request to users getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        res.set(req.get(headers[a]));
+        //console.log(headers[a] + ' : ' + req.get(headers[a]));
+    }
+    next();
+});
 
 // Send a salt to client for them to append to passwords
 var salt = 1234567890;
@@ -44,8 +48,8 @@ router.get('/login', function(req, res) {
 });
 
 
-// request to authenticate using google
-// user has recieved a access code which is to be exchanged for tokens
+// Request to authenticate using google
+// User has recieved a access code which is to be exchanged for tokens
 router.post('/login/google', function(req, res) {
     var code = req.body.code;
     console.log('Code : ' + code);
@@ -83,8 +87,8 @@ router.post('/login/google', function(req, res) {
                                 user.password = hash.digest('hex');
                                 addNewUser(user);
                                 updateCarts(user, req);
-                                res.set('userEmail', user.email);
-                                res.set('userName', user.name);
+                                res.set('email', user.email);
+                                res.set('name', user.name);
                                 //req.session.user = user;  // save the logged in user in the session
                                 res.status(201).send({user: user});
                             }
@@ -166,6 +170,10 @@ router.put('/users/row', function(req, res) {
       });
 });
 
+router.get('/users/save', function(req, res) {
+
+});
+
 router.get('/admin', function(req, res) {
     // if (req.get('userName') === undefined || req.get('userRole') != 'admin'){
     //     //res.redirect('/');
@@ -210,6 +218,7 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
+    console.log('Request to logout');
     //req.session.user = undefined;
     res.status(200).send({user: undefined});
 });

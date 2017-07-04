@@ -45,7 +45,6 @@ app.use('/collections', collections);
 // shopping cart functionality
 app.use('/carts', carts);
 
-
 // set up template engine
 app.set('view engine', 'ejs');
 app.use(expressLayouts);

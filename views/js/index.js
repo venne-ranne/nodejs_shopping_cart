@@ -1,15 +1,19 @@
-
+const headers = ['name', 'email', 'role', 'cartid'];
 
 $(document).ready(function(e) {
+
+    // Set headers to be sent on all ajax requests
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader('name', localStorage.name);
-            xhr.setRequestHeader('email', localStorage.email);
-            xhr.setRequestHeader('role', localStorage.role);
-            //console.log('Cart ID : ' + localStorage.cart);
-            
+        beforeSend: function(req) {
+            console.log('Setting headers');
+            for (var a = 0; a < headers.length; ++ a) {
+                console.log(localStorage.getItem(headers[a]));
+                req.setRequestHeader(headers[a], localStorage.getItem(headers[a]));
+            }
         }
     });
+
+
     var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
     var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); };
     var topbarML = function() { $('.header').fadeTo(fadeSpeed,fadeTo);};

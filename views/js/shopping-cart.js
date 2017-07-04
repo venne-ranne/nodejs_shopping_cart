@@ -183,8 +183,8 @@ function addProductToCartList(product) {
 
 function getHeaders(res) {
     console.log('Getting response headers');
-    localStorage.userName = res.getResponseHeader('name');
-    localStorage.userEmail = res.getResponseHeader('email');
+    localStorage.name = res.getResponseHeader('name');
+    localStorage.email = res.getResponseHeader('email');
     localStorage.role = res.getResponseHeader('role');
     localStorage.cartid = res.getResponseHeader('cartid');
 }
