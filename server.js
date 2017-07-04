@@ -45,10 +45,6 @@ app.use('/collections', collections);
 // shopping cart functionality
 app.use('/carts', carts);
 
-app.use(session({
-    secret: 'iloveblackrabbitproject',
-    resave: false,
-    saveUninitialized: true})); // session secret
 
 // set up template engine
 app.set('view engine', 'ejs');
