@@ -12,8 +12,8 @@
 
 <div class = "admin-container">
 <h1>Admin Dashboard</h1></br>
-<button id = "users-btn">USERS</button>
-<button id = "users-btn">SHOPPING CARTS</button>
+<button id = "users-table-btn">USERS</button>
+<button id = "carts-table-btn">SHOPPING CARTS</button>
 <div class = "order-view-container">
     <h3 class = "subtitle">Shopping Carts Summary</h3></br>
     <table class="table table-striped">
@@ -32,6 +32,22 @@
     </table>
 </div>
 
+<div class = "users-view-container">
+    <h3 class = "subtitle">All Users Summary</h3></br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody class = "user-table-body">
+        </tbody>
+    </table>
+</div>
+
 <div>
     <div id = "order-edit-container">
         <form class = "input-text">
@@ -44,9 +60,28 @@
         </div>
   </div>
 </div>
+
+<div>
+    <div id = "user-edit-container">
+        <form class = "input-text">
+            <label for="email">EMAIL</label></br>
+				    <input type="text" name="user-edit-email" class="user-edit-email">
+            <label for="password">PASSWORD</label></br>
+            <input type="text" name="user-edit-password" class="user-edit-password">
+            <label for="name">NAME</label></br>
+            <input type="text" name="user-edit-name" class="user-edit-name">
+            <label for="role">ROLE</label></br>
+            <input type="text" name="user-edit-role" class="user-edit-role">
+            <button id = "user-save-btn">SUBMIT</button>
+        </form>
+        <div class = "shopping-cart-container">
+            <ul class = "shopping-cart"></ul>
+        </div>
+  </div>
 </div>
-<script src="../js/admin.js"></script>
-<!--<script>
+
+</div>
+<script>
     if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
         $.ajax({
             method: 'POST',
@@ -64,4 +99,4 @@
             }
         });
     }
-</script>-->
+</script>

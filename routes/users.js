@@ -136,6 +136,34 @@ router.post('/login', function(req, res) {
     });
 });
 
+router.get('/users/all', function(req, res) {
+  pool.query('SELECT * FROM users',
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send(result.rows);
+  });
+});
+
+router.delete('/users/row', function(req, res) {
+  var email = req.body.email;
+  pool.query('DELETE FROM users WHERE email= $1', [email],
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send({status: "success"});
+  });
+});
+
+router.put('/users/row', function(req, res) {
+  var email = req.body.email;
+  var name = req.body.name;
+  var role = req.body.role;
+  pool.query('UPDATE users SET name = $1, role = $2 WHERE email= $3', [name, role, email],
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send({status: "success"});
+      });
+});
+
 router.get('/admin', function(req, res) {
     // if (req.get('userName') === undefined || req.get('userRole') != 'admin'){
     //     //res.redirect('/');

@@ -234,36 +234,3 @@ function activate_tabs(button1 , button2){
     button2.style.background = '#3c43a4';
     button2.style.color = 'white';
 }
-
-
-function admin_dashboard(){
-    $('.products-list').empty();
-    $('#shopping-cart-li').hide();
-    $('#checkout-li').hide();
-    $('.replace-container').hide();
-    $('.nav-container').hide();
-    $('#search-box').hide();
-    $('.admin-container').show();
-    $.ajax({
-        type: 'GET',
-        url: '/carts/all',
-        success: function(data){
-            for (i = 0; i < data.length; i++) {
-                var product = data[i];
-                var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
-                var total = product.subtotal == null ? 0.00 : product.subtotal;
-                var rowHTML = '<tr class = "order-rows">';
-                rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
-                rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
-                rowHTML += '<td class = "row-status">'+status+'</td>';
-                rowHTML += '<td class = "row-user">'+product.email+'</td>';
-                rowHTML += '<td class = "row-total">$ '+total+'</td>';
-                rowHTML += '<td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button>';
-                rowHTML += '<button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
-                rowHTML += '</tr>';
-                $('.table-body').append(rowHTML);
-            }
-
-        }
-    });
-}

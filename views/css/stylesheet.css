@@ -519,7 +519,7 @@ header ul a{
     width: 100%;
 }
 
-.order-view-container{
+.order-view-container, .users-view-container{
     font-family: 'Quattrocento Sans', sans-serif;
     padding-top: 50px;
 }
