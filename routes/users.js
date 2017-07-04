@@ -94,7 +94,7 @@ router.post('/login/google', function(req, res) {
         } else {
             console.log('Error : ' + error);
             res.status(403).send(error);
-        }
+        }{}
     });
 
 });

@@ -1,5 +1,5 @@
 $(document).ready(function(e) {
-    if (localStorage.cartid == undefined) {
+    if (localStorage.cartid == undefined || localStorage.cartid === 'null') {
         $('#total-num-cart').text(0);
     } else {
         $.ajax({
