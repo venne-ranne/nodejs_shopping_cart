@@ -54,9 +54,11 @@ app.set('layout', 'layouts/layout');
 
 //https used for secure communication however only works local wont work when using heroku
 
-// https.createServer(obj,app).listen(port, function() {
-//     console.log("Server running on port : " + port);
-// });
+/*
+ https.createServer(obj,app).listen(port, function() {
+     console.log("Server running on port : " + port);
+ });
+*/
 
 // root page
 app.get('/', function(req, res) {
