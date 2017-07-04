@@ -26,6 +26,20 @@ router.use(function(req, res, next) {
     next();
 });
 
+// Check if the user is admin or not
+router.use('/all', function(req, res, next) {
+    console.log('Is Admin?')
+    var role = req.get('role');
+    if (role != undefined && role === 'admin') {
+        console.log('Admin - request ok');
+        next();
+    } else {
+        console.log('Not Admin - bad request');
+        res.status(403).send();
+        next('router');
+    }
+});
+
 // Returns the size of a users cart given a cartid
 router.get('/size', function(req, res) {
     var cartid = req.get('cartid');

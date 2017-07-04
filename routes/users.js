@@ -53,8 +53,8 @@ router.use('/users', function(req, res, next) {
         next();
     } else {
         console.log('Not Admin - bad request');
-        res.status(403);
-        next();
+        res.status(403).send();
+        next('router');
     }
 });
 
