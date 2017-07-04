@@ -85,7 +85,7 @@ $(document).ready(function(e) {
                 console.log(data);
                 $('.shopping-cart').empty();
                 for (i = 0; i < data.length; i++) {
-                    addProductToCartList(data[i]);
+                    add_admin_cart_list(data[i])
                     subtotal = subtotal+(data[i].quantity*data[i].price);
                 }
                 subtotal = parseFloat(subtotal).toFixed(2);  // two decimal points
@@ -133,78 +133,10 @@ $(document).ready(function(e) {
             }
         });
     });
-    //
-    // $('.user-table-body').on('click', '.row-user-delete-btn', function(){
-    //     var $selectedRow = $(this);
-    //     var $parent = $selectedRow.closest("tr");
-    //     var $email = $parent.find(".row-user-email").text();
-    //     // remove a row in carts table
-    //     $.ajax({
-    //         type: 'DELETE',
-    //         url: '/carts/all/row',
-    //         data: JSON.stringify({ email:  $email}),
-    //         contentType: 'application/json',
-    //         dataType: 'json',
-    //         success: function(data){
-    //             console.log("user removed successful...");
-    //             $parent.remove();
-    //         }
-    //     });
-    // });
 
-    // $('.table-body').on('click', '.row-user-delete-btn', function(){
-    //   var $selectedRow = $(this);
-    //   var $parent = $selectedRow.closest("tr");
-    //   var $cartid = $parent.find(".row-user-email").text();
-    //   console.log($cartid);
-    //   // remove a row in carts table
-    //   $.ajax({
-    //       type: 'DELETE',
-    //       url: '/carts/all/row',
-    //       data: JSON.stringify({ cartid: $cartid}),
-    //       contentType: 'application/json',
-    //       dataType: 'json',
-    //       success: function(data){
-    //           console.log("remove successful...");
-    //           $parent.remove();
-    //       }
-    //   });
-    // });
-
-    // $('.table-body').on('click', '.row-user-delete-btn', function(){
-    //     var $selectedRow = $(this);
-    //     var $parent = $selectedRow.closest("tr");
-    //     var $cartid = $parent.find(".row-user-email").text();
-    //     // need to get all the products in the cart to the edit dialog
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: '/cart?parameter=' + $cartid,row-user-password
-    //         success: function(data){
-    //             $('.shopping-cart').empty();
-    //             for (i = 0; i < data.length; i++) {
-    //                 $("#edit-cartid").text("Cart-id: "+$cartid);
-    //                 $("#edit-email").text("Email: "+ $parent.find(".row-user").text());
-    //                 $("#edit-status").text("Status: "+ $parent.find(".row-status").text());
-    //                 var product = data[i];
-    //                 var imagepath = '../'+product.imagepath;
-    //                 var cartHTML = '<li class = "shopping-list">';
-    //                 cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
-    //                 cartHTML += '<label class = "cart-name-label"></label>';
-    //                 cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
-    //                 cartHTML += '<button id = "btn_'+product.id+'" class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
-    //                 cartHTML += '<label class = "cart-price-label"></label></li>';
-    //                 var $addProduct = $(cartHTML);
-    //                 $addProduct.find('.cart-name-label').text(product.name);
-    //                 var total = product.price;
-    //                 total = parseFloat(total).toFixed(2);
-    //                 $addProduct.find('.cart-price-label').text(' $'+total);
-    //                 $('.shopping-cart').append($addProduct);
-    //             }
-    //             $('#order-edit-container').dialog('open');
-    //         }
-    //     });
-    // });
-
+    $('.shopping-cart').on('click', '.admin-cart-delete', function(e){
+         e.preventDefault();
+    });
 
     $('#users-table-btn').on('click', function(){
       $('.order-view-container').hide();
@@ -290,6 +222,28 @@ function admin_dashboard(){
             console.log('Error getting users table!!!!');
         }
     });
+}
+
+// add a product to the shopping cart list
+function add_admin_cart_list(product) {
+    var imagepath = '../'+product.imagepath;
+    var cartHTML = '<li class = "shopping-list">';
+    var total = 0.00;
+    cartHTML += '<img class = "cart-image" src ="'+imagepath+'" width = "50px" height = "50px">';
+    cartHTML += '<label class = "cart-name-label"></label>';
+    //cartHTML += '<button class = "cart-plus">+</button>';
+    cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
+    //cartHTML += '<button class = "cart-minus">+</button>';
+    cartHTML += '<button id = "btn_'+product.id+'" class = "admin-cart-delete"><span  class = "modern-pic-icon">x</span></button>';
+    cartHTML += '<label class = "cart-price-label"></label></li>';
+    var $addProduct = $(cartHTML);
+    $addProduct.find('.cart-name-label').text(product.name);
+    total = product.price;
+    total = parseFloat(total).toFixed(2);
+    $addProduct.find('.cart-price-label').text(' $'+total);
+    $('.shopping-cart').append($addProduct);
+    $('.cart-quantity').attr("disabled", true);
+    $('.cart-quantity').attr("readonly", true);
 }
 
 // app.get('/cart', function(req, res) {
