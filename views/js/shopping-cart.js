@@ -166,17 +166,16 @@ function addProductToCartList(product) {
     //cartHTML += '<button class = "cart-plus">+</button>';
     cartHTML += '<input type="number" name="quantity" min="1" max="10" value="'+product.quantity+'" class = "cart-quantity">';
     //cartHTML += '<button class = "cart-minus">+</button>';
-    cartHTML += '<button id = "btn_'+product.id+'" class = "cart-delete"><span  class = "modern-pic-icon">x</span></button>';
+    cartHTML += '<button id = "btn_'+product.id+'" class = "cart-delete" ><span  class = "modern-pic-icon">x</span></button>';
     cartHTML += '<label class = "cart-price-label"></label></li>';
     var $addProduct = $(cartHTML);
     $addProduct.find('.cart-name-label').text(product.name);
     total = product.price;
     total = parseFloat(total).toFixed(2);
     $addProduct.find('.cart-price-label').text(' $'+total);
-    $('.cart-quantity').attr("disabled", true);
     $('.shopping-cart').append($addProduct);
+    $('.cart-quantity').attr("disabled", true);
 }
-
 
 function getHeaders(res) {
     console.log('Getting response headers');

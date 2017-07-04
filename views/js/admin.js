@@ -275,23 +275,3 @@ function add_admin_cart_list(product, status) {
     $('.cart-quantity').attr("disabled", true);
     $('.cart-quantity').attr("readonly", true);
 }
-
-// <!--<script>
-//     if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
-//         $.ajax({
-//             method: 'POST',
-//             url: '/collections/new',
-//             success: function(data) {
-//                 $('.products-list').empty();   // removed the previous content
-//                 // get json array of products which match query in some way
-//                 $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
-//                 for (i = 0; i < 4; i++) {
-//                     addProductToList(data[i]);
-//                 }
-//             },
-//             error: function(jqXHR, textStatus, errorThrown) {
-//                 console.log('Error!!!!');
-//             }
-//         });
-//     }
-// </script>-->

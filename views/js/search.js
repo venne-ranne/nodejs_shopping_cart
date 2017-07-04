@@ -39,13 +39,43 @@ $(document).ready(function(e) {
     }); //END blur()
 });
 
+function addToCart(pid){
+    var productId = pid;
+    var total_items = document.getElementById("total-num-cart").innerHTML;
+    // set up the cartid number for the first-timer
+    console.log('Adding item to cart, total:' + total_items);
+    if (localStorage.cartid == undefined){
+        console.log('No items making new cart');
+        var user = localStorage.email || 'guest';
+        $.ajax({
+            method: 'POST',
+            url: '/carts',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({email:user}),
+            success: function(data, textStatus, res) {
+                getHeaders(res);
+                console.log(JSON.stringify(data));
+                localStorage.cartid = data.cartid;
+                updateTotalCartNumber(productId, total_items);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Server failed to provide shopping cart number');
+            }
+        });
+    } else {
+        // put the new added item to the cart
+        updateTotalCartNumber(productId, total_items);
+    }
+}
+
 function addProductToList(product) {
     var imagepath = '../'+product.imagepath;
     var productHTML = '<div class="products-list_single">';
     productHTML += '<img class = "product-image" width = "250px" height = "250px" src ="'+imagepath+'"><br />';
     productHTML += '<span class = "product-name"></span><br />';
     productHTML += '<span class = "product-price"></span><br />';
-    productHTML += '<button id = "'+product.id+'" class="cart-submit">ADD TO CART</button><br />';
+    productHTML += '<button id = "'+product.id+'" class="cart-submit" onclick = addToCart(this.id)>ADD TO CART</button><br />';
     var $newProduct = $(productHTML);
     $newProduct.find('.product-name').text(product.name);
     $newProduct.find('.product-price').text(product.price);
