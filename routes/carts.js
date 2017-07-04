@@ -180,17 +180,5 @@ router.post('/checkout', function(req, res) {
     res.status(200).send();
 });
 
-// module.exports.updateCarts = function(user, req) {
-//     if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-//     console.log('Updating user ...');
-//     pool.query(
-//         'update carts set email = $1 where cartid = $2',
-//         [user.email, req.session.cartid],
-//         function(error, result) {
-//             console.log('Updating user done.');
-//         }
-//
-//     )
-// }
 
 module.exports = router;
