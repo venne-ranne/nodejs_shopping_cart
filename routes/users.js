@@ -5,11 +5,11 @@ var express = require('express');
 //handle client pool
 var pool = require('../config/database');
 var router = express.Router();
-var session = require('express-session');
 var bodyParser = require('body-parser');
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 var hash = require('crypto').createHash('sha256');
+var expressLayouts = require('express-ejs-layouts');
 
 // OAuth credentials
 var oauth2Client = new OAuth2(
@@ -29,11 +29,19 @@ var url = oauth2Client.generateAuthUrl({
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.use(session({
-    secret: 'iloveblackrabbitproject',
-    resave: false,
-    saveUninitialized: true}
-)); // session secret
+// Middleware for geting custom headers on request and making sure they are on the response
+const headers = ['name', 'email', 'role', 'cartid'];
+router.use(function(req, res, next) {
+    console.log('Request to users getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        var header = req.get(headers[a])
+        if (header !== null) {
+            res.set(headers[a], header);
+            console.log(headers[a] + ' : ' + req.get(headers[a]));
+        }
+    }
+    next();
+});
 
 // Send a salt to client for them to append to passwords
 var salt = 1234567890;
@@ -43,8 +51,8 @@ router.get('/login', function(req, res) {
 });
 
 
-// request to authenticate using google
-// user has recieved a access code which is to be exchanged for tokens
+// Request to authenticate using google
+// User has recieved a access code which is to be exchanged for tokens
 router.post('/login/google', function(req, res) {
     var code = req.body.code;
     console.log('Code : ' + code);
@@ -73,7 +81,8 @@ router.post('/login/google', function(req, res) {
                             if (result.rows.length == 1) {
                                 // user exists trust google and log them in
                                 user.role = result.rows[0].role;
-                                req.session.user = user;
+                                res.set('email', user.email);
+                                res.set('name', user.name);
                                 res.status(200).send({user: user});
                             } else {
                                 // new user make up password
@@ -81,7 +90,9 @@ router.post('/login/google', function(req, res) {
                                 user.password = hash.digest('hex');
                                 addNewUser(user);
                                 updateCarts(user, req);
-                                req.session.user = user;  // save the logged in user in the session
+                                res.set('email', user.email);
+                                res.set('name', user.name);
+                                //req.session.user = user;  // save the logged in user in the session
                                 res.status(201).send({user: user});
                             }
                     });
@@ -90,7 +101,7 @@ router.post('/login/google', function(req, res) {
         } else {
             console.log('Error : ' + error);
             res.status(403).send(error);
-        }
+        }{}
     });
 
 });
@@ -118,8 +129,10 @@ router.post('/login', function(req, res) {
                     var role = expectedUser.role;
                     console.log(expectedUser);
                     if (suppliedUser.password === expectedUser.password) {   // check passwords
-                        req.session.user = expectedUser;                     // save the logged in user in the session
+                        //req.session.user = expectedUser;                     // save the logged in user in the session
                         if (role == 'user') updateCarts(suppliedUser, req);  // successful login, update carts
+                        res.set('email', expectedUser.email);
+                        res.set('name', expectedUser.name);
                         res.send({user: expectedUser});
                     } else {
                         res.status(403).send('Password is incorrect');
@@ -130,12 +143,53 @@ router.post('/login', function(req, res) {
     });
 });
 
+router.get('/users/all', function(req, res) {
+  pool.query(
+      'SELECT * FROM users',
+      [],
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send(result.rows);
+  });
+});
+
+router.delete('/users/row', function(req, res) {
+  var email = req.body.email;
+  pool.query('DELETE FROM users WHERE email= $1', [email],
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send({status: "success"});
+  });
+});
+
+router.put('/users/row', function(req, res) {
+  var email = req.body.email;
+  var name = req.body.name;
+  var role = req.body.role;
+  pool.query('UPDATE users SET name = $1, role = $2 WHERE email= $3', [name, role, email],
+      function(error, result) {
+          if (error) res.status(500).send('Database query error');
+          res.status(200).send({status: "success"});
+      });
+});
+
+router.get('/users/save', function(req, res) {
+
+});
+
 router.get('/admin', function(req, res) {
-    if (req.session.user == undefined || req.session.user.role != 'admin'){
-        res.redirect('/');
-    } else {
-        res.render('dashboard.ejs', { layout: 'layouts/dashboard-layout', user: req.session.user});
-    }
+    // if (req.get('userName') === undefined || req.get('userRole') != 'admin'){
+    //     //res.redirect('/');
+    // } else {
+    //     //console.log("fdfdf");
+    //     pool.query('select * from products', function(error, result) {
+    //         res.status(200).render('admin.ejs',
+    //             {
+    //                 products: result.rows,
+    //             }
+    //         );
+    //     });
+    // }
 });
 
 // register request
@@ -153,39 +207,43 @@ router.post('/register', function(req, res) {
             } else {
                 addNewUser(newUser);
                 updateCarts(newUser, req);
-                req.session.user = newUser;  // save the logged in user in the session
+                res.set('email', newUser.email);
+                res.set('name', newUser.name);
+                // res.set({
+                //     'Content-Type': 'text/plain',
+                //     'email': newUser.email,
+                //     'name': newUser.name
+                // });
+                //req.session.user = newUser;  // save the logged in user in the session
                 res.status(201).send({user: newUser});
             }
     });
 });
 
 router.get('/logout', function(req, res) {
-    req.session.user = undefined;
+    console.log('Request to logout');
+    //req.session.user = undefined;
     res.status(200).send({user: undefined});
 });
 
 // This function assumes a check has been done if a user exists
 // Sets role to user
 function addNewUser(user) {
+    console.log('Adding new user...')
     pool.query(
         'insert into users values($1, $2, $3, $4)',
         [user.email, user.password, user.name, 'user']
     );
-
 }
 
 function updateCarts(user, req) {
-    if (req.session.cartid == undefined) return;  // means the user haven't add anything to the cart yet
-    console.log('Updating user ...');
-    pool.connect(function(err, client, done) {
-        var query = client.query(
+    if (req.get('cartid') != undefined) {
+        console.log('Updating user...');
+        pool.query(
             'update carts set email = $1 where cartid = $2',
-            [user.email, req.session.cartid]
+            [user.email, req.get('cartid')],
+            function(error, result) {}
         );
-        query.on('end', function(result) {
-            console.log('Updating user done.');
-            client.end();
-        });
-    });
+    }
 }
 module.exports = router;

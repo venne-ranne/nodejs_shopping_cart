@@ -12,3 +12,66 @@
          <% } %>
    </div>
 </div>
+<div class = "products-list-wrap">
+   <h3 class = "result-label"></h3>
+   <div class = "products-list">
+   </div>
+</div>
+<div class = "admin-container">
+<h1>Admin Dashboard</h1>
+<div class = "order-view-container">
+    <h3 class = "subtitle">Shopping Carts Summary</h3></br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date Added</th>
+                <th>Cart ID</th>
+                <th>Status</th>
+                <th>Customer Email</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class = "table-body">
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <div id = "order-edit-container">
+        <form class = "input-text">
+            <label for="cart-id" id = "edit-cartid"></label></br>
+            <label for="email" id = "edit-email"></label></br>
+            <label for="status" id = "edit-status"></label></br>
+        </form>
+        <div class = "shopping-cart-container">
+            <ul class = "shopping-cart"></ul>
+        </div>
+  </div>
+</div>
+</div>
+
+<script>
+   if (localStorage.userName != undefined && localStorage.role == 'admin'){
+    $.ajax({
+        type: 'GET',
+        url: '/carts/all',
+        success: function(data){
+            for (i = 0; i < data.length; i++) {
+                var product = data[i];
+                var status = product.sold ? 'COMPLETER' : 'INCOMPLETE';
+                var rowHTML = '<tr class = "order-rows">';
+                rowHTML += '<td class = "row-date">'+product.date_added+'</td>';
+                rowHTML += '<td class = "row-cartid">'+product.cartid+'</td>';
+                rowHTML += '<td class = "row-status">'+status+'</td>';
+                rowHTML += '<td class = "row-user">'+product.email+'</td>';
+                rowHTML += '<td class = "row-total"></td>';
+                rowHTML += '<td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button>';
+                rowHTML += '<button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
+                rowHTML += '</tr>';
+                $('.table-body').append(rowHTML);
+            }
+        }
+    });
+}
+</script>

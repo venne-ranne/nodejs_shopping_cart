@@ -1,7 +1,4 @@
-<div class = "admin-search">
-
-</div>
-
+<h1>Admin Dashboard</h1>
 <div class = "order-view-container">
     <h3 class = "subtitle">Shopping Carts Summary</h3></br>
     <table class="table table-striped">
@@ -16,16 +13,16 @@
             </tr>
         </thead>
         <tbody>
-            <% for (var i = 0; i < rows.length; i++) {%>
+            <% for (var i = 0; i < products.length; i++) {%>
             <tr class = "order-rows">
-                <td><%= rows[i].date_added %></td>
-                <td class = "row-cart-id"><%= rows[i].cartid %></td>
-                <% if (rows[i].sold == 'true'){%>
+                <td><%= products[i].date_added %></td>
+                <td class = "row-cart-id"><%= products[i].cartid %></td>
+                <% if (products[i].sold == 'true'){%>
                     <td class = "row-status">COMPLETE</td>
                 <% } else {%>
                     <td class = "row-status">INCOMPLETE</td>
                 <% } %>
-                <td class = "row-user"><%= rows[i].email %></td>
+                <td class = "row-user"><%= products[i].email %></td>
                 <td>...</td>
                 <td><button class = "row-edit-btn"><span class = "modern-pic-icon">V</span></button><button class = "row-delete-btn"><span class = "modern-pic-icon">X<span></button></td>
             </tr>

@@ -1,6 +1,18 @@
-
+const headers = ['name', 'email', 'role', 'cartid'];
 
 $(document).ready(function(e) {
+
+    // Set headers to be sent on all ajax requests
+    $.ajaxSetup({
+        beforeSend: function(req) {
+            console.log('Setting headers');
+            for (var a = 0; a < headers.length; ++ a) {
+                console.log(headers[a] + ':' + localStorage.getItem(headers[a]));
+                req.setRequestHeader(headers[a], localStorage.getItem(headers[a]));
+            }
+        }
+    });
+
 
     var fadeSpeed = 200, fadeTo = 0.5, topDistance = 30;
     var topbarME = function() { $('.header').fadeTo(fadeSpeed,1); };
@@ -22,6 +34,38 @@ $(document).ready(function(e) {
             inside = false;
         }
     });
+        //
+        // $.ajax({
+        //     method: 'POST',
+        //     url: '/collections/new',
+        //     success: function(data) {
+        //         $('.products-list').empty();   // removed the previous content
+        //         // get json array of products which match query in some way
+        //         $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+        //         for (i = 0; i < 4; i++) {
+        //             addProductToList(data[i]);
+        //         }
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         console.log('Error!!!!');
+        //     }
+        // });
+        //
+        // $.ajax({
+        //     method: 'POST',
+        //     url: '/collections/new',
+        //     success: function(data) {
+        //         $('.products-list').empty();   // removed the previous content
+        //         // get json array of products which match query in some way
+        //         $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+        //         for (i = 0; i < 4; i++) {
+        //             addProductToList(data[i]);
+        //         }
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         console.log('Error!!!!');
+        //     }
+        // });
 
     // $('#menu-new').on('click', function(e){
     //     //$('.replace-container').load('collections.ejs');

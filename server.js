@@ -25,13 +25,16 @@ var obj = {
 };
 
 var port = process.env.PORT || 8080; ;
-
+var maxCacheTime = 1000 * 60 * 2;
 
 // start express application
 var app = express();
 
 // static files such as css, js, resource files in views folder
-app.use(express.static('./views'));
+// set length of time to cache
+app.use(express.static('./views', {
+//  maxAge: maxCacheTime
+}));
 
 /* Use Included Routes */
 
@@ -41,11 +44,6 @@ app.use('/', users);
 app.use('/collections', collections);
 // shopping cart functionality
 app.use('/carts', carts);
-
-app.use(session({
-    secret: 'iloveblackrabbitproject',
-    resave: false,
-    saveUninitialized: true})); // session secret
 
 // set up template engine
 app.set('view engine', 'ejs');
@@ -62,11 +60,13 @@ app.set('layout', 'layouts/layout');
 
 // root page
 app.get('/', function(req, res) {
-    if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { user: req.session.user, totalcart: req.session.totalcart});
+    //if (req.session.totalcart == undefined) req.session.totalcart = 0;
+    res.render('index.ejs', {totalcart: 0});
 });
 
 //start server listening
 app.listen(port, function() {
      console.log("Server running on port : " + port);
- });
+
+});
+

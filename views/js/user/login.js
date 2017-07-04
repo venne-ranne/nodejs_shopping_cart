@@ -8,7 +8,18 @@ function start() {
 }
 
 $(document).ready(function(e) {
-
+    if (localStorage.name == undefined){
+        $('#logout-li').hide();
+        $('#admin-container').hide();
+    } else {
+      $('#login-li').hide();
+      $('#logout-li').show();
+      $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+      if (localStorage.role == 'admin'){
+          admin_dashboard();
+          //window.location.href = "/admin";
+      }
+    }
     var login_btn = document.getElementById('signin-btn');
     var register_btn = document.getElementById('register-btn');
     var salt = -1;
@@ -74,12 +85,22 @@ $(document).ready(function(e) {
             data: JSON.stringify(formData),
             contentType: 'application/json',
             dataType: 'json',
-            success: function(data) {
-                if (data.user.role == 'user'){
-                    location.reload();  // change site to reflect logged on status
-                } else {
-                    window.location.href = "/admin"; // redirect to admin
+            success: function(data, textStatus, response) {
+                localStorage.email = response.getResponseHeader('email');
+                localStorage.name = response.getResponseHeader('name');
+                localStorage.role = data.user.role;
+                console.log('Name : ' + localStorage.name);
+                console.log('Email : ' + localStorage.email);
+                $('#login-li').hide();
+                $('#logout-li').show();
+                $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+                if (data.user.role === 'admin'){
+                    //indow.location.href = "/admin"; // redirect to admin
+                    admin_dashboard();
+
                 }
+                //location.reload();
+                $('#login-dialog').dialog('close');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (errorThrown === 'Unprocessable Entity') {
@@ -118,8 +139,17 @@ $(document).ready(function(e) {
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 dataType: 'json',
-                success: function(data) {
-                    location.reload();  // change site to reflect logged on status
+                success: function(data, textStatus, response) {
+                    localStorage.email = response.getResponseHeader('email');
+                    localStorage.name = response.getResponseHeader('name');
+                    localStorage.role = data.user.role;
+                    console.log('Name : ' + localStorage.name);
+                    console.log('Email : ' + localStorage.email);
+                    $('#login-li').hide();
+                    $('#logout-li').show();
+                    $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+                    $('#login-dialog').dialog('close');
+                    //location.reload();  // change site to reflect logged on status
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (errorThrown === 'Conflict') {
@@ -131,12 +161,16 @@ $(document).ready(function(e) {
         }
     });
 
-    $('#logout-btn').on('click', function(){
+    $('#logout-button').on('click', function(){
         console.log("Logout btn is clicked..");
         $.ajax({
             method: 'GET',
             url: '/logout',
-            success: function(data) {
+            success: function(data, textStatus, request) {
+                localStorage.removeItem('email');
+                localStorage.removeItem('name') ;
+                localStorage.removeItem('role');
+                after_logout_display();
                 location.reload();
             }
         });
@@ -154,14 +188,20 @@ $(document).ready(function(e) {
                     type: 'POST',
                     url: '/login/google',
                     contentType: 'application/json',
-                    success: function(result) {
+                    success: function(result, textStatus, response) {
                         console.log('Success : ' + JSON.stringify(result));
                         // login successful - result object contains user
-                        if (result.user.role == 'user'){
-                            location.reload();  // change site to reflect logged on status
-                        } else {
-                            window.location.href = "/admin"; // redirect to admin
-                        }
+                        // if (result.user.role == 'user'){
+                        //     location.reload();  // change site to reflect logged on status
+                        // } else {
+                        //     window.location.href = "/admin"; // redirect to admin
+                        // }
+                        localStorage.email = response.getResponseHeader('email');
+                        localStorage.name = response.getResponseHeader('name');
+                        $('#login-li').hide();
+                        $('#logout-li').show();
+                        $('#logout-button').text("Hi, "+localStorage.name + "! logout");
+                        $('#login-dialog').dialog('close');
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log('Error');
@@ -176,8 +216,17 @@ $(document).ready(function(e) {
     }); // end click
 }); // end ready
 
-
-
+function after_logout_display(){
+    $('.products-list').show();
+    $('#shopping-cart-li').show();
+    $('#checkout-li').show();
+    $('.replace-container').show();
+    $('.nav-container').show();
+    $('#search-box').show();
+    $('.admin-container').hide();
+    $('#logout-li').hide();
+    $('#login-li').show();
+}
 
 function activate_tabs(button1 , button2){
     button1.style.removeProperty('background');

@@ -1,11 +1,83 @@
 <div class = "replace-container">
 <div class = "home-features">
     <a href="/collections/arts"><img src="../resources/homefeature.png" id = "homefeature-photo" alt="NEW ARRIVALS"/></a>
-    </div>
+</div>
 </div>
 
 <div class = "products-list-wrap">
    <h3 class = "result-label"></h3>
    <div class = "products-list">
    </div>
+</div>
+
+<div class = "admin-container">
+<h1>Admin Dashboard</h1></br>
+<button id = "users-table-btn">USERS</button>
+<button id = "carts-table-btn">SHOPPING CARTS</button>
+<div class = "order-view-container">
+    <h3 class = "subtitle">Shopping Carts Summary</h3></br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date Added</th>
+                <th>Cart ID</th>
+                <th>Status</th>
+                <th>Customer Email</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class = "table-body">
+        </tbody>
+    </table>
+</div>
+
+<div class = "users-view-container">
+    <h3 class = "subtitle">All Users Summary</h3></br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody class = "user-table-body">
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <div id = "order-edit-container">
+        <form class = "input-text">
+            <label for="cart-id" id = "edit-cartid"></label></br>
+            <label for="email" id = "edit-email"></label></br>
+            <label for="status" id = "edit-status"></label></br>
+        </form>
+        <div class = "shopping-cart-container">
+            <ul class = "shopping-cart"></ul>
+        </div>
+  </div>
+</div>
+
+<div>
+    <div id = "user-edit-container">
+        <form class = "input-text">
+            <label for="email">EMAIL</label></br>
+				    <input type="text" name="user-edit-email" class="user-edit-email">
+            <label for="password">PASSWORD</label></br>
+            <input type="text" name="user-edit-password" class="user-edit-password">
+            <label for="name">NAME</label></br>
+            <input type="text" name="user-edit-name" class="user-edit-name">
+            <label for="role">ROLE</label></br>
+            <input type="text" name="user-edit-role" class="user-edit-role">
+            <button id = "saving-btn">SUBMIT</button>
+        </form>
+        <div class = "shopping-cart-container">
+            <ul class = "shopping-cart"></ul>
+        </div>
+  </div>
+</div>
+
 </div>

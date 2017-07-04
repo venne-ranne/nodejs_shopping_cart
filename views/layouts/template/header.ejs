@@ -3,15 +3,11 @@
       <input type=“search” name=“search” id="search-text" placeholder="Search…">
   </div>
    <ul>
-      <% if (user != undefined) { %>
-          <li class = "tabs">Hi, <b><%= user.name %>! </b><button id = "logout-btn"> sign out </button>
-      </li>
-      <% } else { %>
-          <li class = "tabs"><button id = "login-btn">
+          <li class = "tabs" id = "login-li"><button id = "login-btn">
               <span class="glyphicon glyphicon-user" aria-hidden="true"></span> LOG IN</button>
           </li>
-      <% } %>
-      <li class = "tabs"><button id = "shopping-cart-btn"><span class = "modern-pic-icon">i</span> CART(<span id = "total-num-cart"><%= totalcart %></span>)</button></li>
-      <li class = "tabs"><button>CHECKOUT</button></li>
+          <li class = "tabs" id = "logout-li"><button id = "logout-button">sign out</button></li>
+      <li class = "tabs" id = "shopping-cart-li"><button id = "shopping-cart-btn"><span class = "modern-pic-icon">i</span> CART(<span id = "total-num-cart"><%= totalcart %></span>)</button></li>
+      <!--<li class = "tabs" id = "checkout-li"><button>CHECKOUT</button></li>-->
    </ul>
 </header>
