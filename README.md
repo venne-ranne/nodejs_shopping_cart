@@ -17,7 +17,6 @@ The main file of our application, this defines the express application and start
 `GET -> /`   
 The server renders and sends the main page of the application.
 
----
 
 ## `routes/users.js`
 
@@ -119,9 +118,42 @@ If the username is already taken the server will respond with status 409 Conflic
 Will set all response headers to null and return an undefined user
 
 ## `routes/carts.js`
+Handles all shopping cart functionality.
 
+`GET -> /size`  
+Returns the size of the users cart.
+```
+{
+    total: {
+        sum: 5
+    }
+}
+```
 
----  
+`PUT -> /carts`  
+Add an item to your cart. Request should be a JSON request of a product id.
+```
+{
+    id: 1
+}
+```
+The server respond with the new total number of items in the cart.
+```
+{
+    totalcart: 1
+}
+```
+If the product does not exist the server will respond with status 500 server error.
+
+`POST -> /carts`  
+Request the server to make a new shopping cart. No data payload needs to be sent.  
+The server with respond with the id number of the cart.
+```
+{
+    cartid: 42
+}
+```
+
 `GET -> /carts`  
 Get all items currently in your cart. Returns an array of product objects.
 ```
@@ -149,33 +181,6 @@ Get all items currently in your cart. Returns an array of product objects.
 ]
 ```
 
----
-`PUT -> /carts`  
-Add an item to your cart. Request should be a JSON request of a product id.
-```
-{
-  id: 1
-}
-```
-The server respond with the new total number of items in the cart.
-```
-{
-  totalcart: 1
-}
-```
-If the product does not exist the server will respond with status 500 server error.
-
----
-`POST -> /carts`  
-Request the server to make a new shopping cart. No data payload needs to be sent.  
-The server with respond with the id number of the cart.
-```
-{
-  cartid: 42
-}
-```
-
----
 `DELETE -> /carts`   
 Request the server to remove an item from your cart.  Request must include the product id and how many removed.
 ```
@@ -185,26 +190,47 @@ Request the server to remove an item from your cart.  Request must include the p
 }
 ```
 The server will respond with the user and list of products deleted.
+
+`GET -> /carts/all`  
+Returns all rows in the carts table along with their subtotals.
+
+`DELETE -> /carts/all/row`  
+Delete a given cart from the database.  
+
+`PUT -> /carts/quantity`
+Adjusts the quantity of a product in a cart.  
+Request body:
 ```
 {
-  user: {
-
-  },
-  products: [{
-    id: ,
-
-  }],
-  totalcart: 1
+    quantity: 99,
+    product: 88
 }
 ```
 
-## Collections
+`POST -> /carts/admin/cart`  
+Admin route for getting all products in a given cart.
 
----
+`DELETE -> /carts/admin/cart`
+Admin route for removing an item from a cart.  
+Request body:
+```
+{
+    cartid: 42,
+    quantity: 98,
+    product: 88
+}
+```
+
+`POST -> /carts/checkout`
+Checks out the users shopping cart. Updates their cart to sold and sets the cart response header to null.
+
+## `routes/collections.js`
+
 `GET -> /collections`  
 Return all items in products.  
 A query can be added to perform a case insensitve search of products.  
-eg. `GET -> /collections?search="searchPattern"`  
+eg.  
+`GET -> /collections?search="searchPattern"`  
 For a successful search (results found) the products are returned as a JSON array.
 ```
 [
@@ -217,7 +243,6 @@ For a successful search (results found) the products are returned as a JSON arra
 ```
 In the case of a search with no results the server sends status 204 No Content
 
----
 `GET -> /collections/:category="category"`
 Return all products within a given category.
 
