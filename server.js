@@ -59,7 +59,7 @@ app.set('layout', 'layouts/layout');
 // root page
 app.get('/', function(req, res) {
     //if (req.session.totalcart == undefined) req.session.totalcart = 0;
-    res.render('index.ejs', { totalcart: 0});
+    res.render('index.ejs', {totalcart: 0});
 });
 
 //start server listening

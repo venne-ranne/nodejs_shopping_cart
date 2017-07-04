@@ -17,8 +17,11 @@ const headers = ['name', 'email', 'role', 'cartid'];
 router.use(function(req, res, next) {
     console.log('Request to carts, getting/setting headers');
     for (var a = 0; a < headers.length; ++ a) {
-        res.set(req.get(headers[a]));
-        console.log(headers[a] + ' : ' + req.get(headers[a]));
+        var header = req.get(headers[a]);
+        if (header !== null) {
+            res.set(headers[a], header);
+            console.log(headers[a] + ' : ' + req.get(headers[a]));
+        }
     }
     next();
 });
@@ -35,11 +38,9 @@ router.get('/size', function(req, res) {
         [cartid],
         function(error, result) {
             if (!error) {
-                console.log('Hello');
-                console.log(result.rows[0]);
                 res.status(200).send({total :result.rows[0]});
             } else {
-                res.status(420).send('Insert into carts Error : ' + error);
+                res.status(500).send('Insert into carts Error : ' + error);
             }
     });
 }

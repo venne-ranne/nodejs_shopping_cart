@@ -7,7 +7,7 @@ $(document).ready(function(e) {
         beforeSend: function(req) {
             console.log('Setting headers');
             for (var a = 0; a < headers.length; ++ a) {
-                console.log(localStorage.getItem(headers[a]));
+                console.log(headers[a] + ':' + localStorage.getItem(headers[a]));
                 req.setRequestHeader(headers[a], localStorage.getItem(headers[a]));
             }
         }

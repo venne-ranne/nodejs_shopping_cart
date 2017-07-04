@@ -62,7 +62,8 @@ $(document).ready(function(e) {
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({email:user}),
-                success: function(data) {
+                success: function(data, textStatus, res) {
+                    getHeaders(res);
                     console.log(JSON.stringify(data));
                     localStorage.cartid = data.cartid;
                     updateTotalCartNumber(productId, total_items);
@@ -125,33 +126,24 @@ $(document).ready(function(e) {
 
 // update the cart total number when an item is added to cart
 function updateTotalCartNumber(selectedItem, total_items){
-
     $.ajax({
         method: 'PUT',
         url: '/carts',
         data: JSON.stringify({ id: selectedItem }),
         contentType: 'application/json',
         dataType: 'json',
-        beforeSend: function(reqb) {
-            console.log('Setting cartid header : ' + localStorage.cartid);
-            reqb.setRequestHeader('cartid', localStorage.cartid);
-        },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log('failed to add item to cart');
         },
         success: function(data, textStatus, response){
             console.log(localStorage.cartid);
-            //getHeaders(response);
-
             $.ajax({
                 method: 'GET',
                 url: '/carts/size',
-                beforeSend: function(reqa) {
-                    console.log('Setting cartid header : ' + localStorage.cartid);
-                    reqa.setRequestHeader('cartid', localStorage.cartid);
-                },
+
                 success: function(data, textStatus, response) {
-                    $('#total-num-cart').text(data.total);
+                    
+                    $('#total-num-cart').text(data.total.sum);
                 }
             });
 
