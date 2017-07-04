@@ -1,0 +1,31 @@
+
+//Curl Tests
+
+
+// redirect to html
+curl https://guarded-falls-74429.herokuapp.com/ > open.html
+
+//include header information
+curl -i https://guarded-falls-74429.herokuapp.com/collections/homedecor
+
+
+//list of all the new collections as JSON objects
+curl -H "Accept: application/json" -X GET https://guarded-falls-74429.herokuapp.com/collections/new
+
+//server stress test
+curl -s https://guarded-falls-74429.herokuapp.com[1-500]
+
+
+//specify a certificate file
+curl --cacert c:\temp\cacerts.crt https://guarded-falls-74429.herokuapp.com/login
+
+
+//using the time command we can get a view on our performance
+time curl -s https://guarded-falls-74429.herokuapp.com[1-500]
+
+
+
+ 
+
+
+ 
