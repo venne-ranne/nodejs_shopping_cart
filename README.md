@@ -1,4 +1,4 @@
-# Welcome to the project reopsitory for Group 6
+# Welcome to the project repository for Group 6
 ## Team members
 - [Adam Faulkner](@faulknadam)
 - [Vivienne Yapp](@yappvivi)
