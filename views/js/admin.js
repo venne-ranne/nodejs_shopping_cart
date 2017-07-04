@@ -23,7 +23,6 @@ $(document).ready(function(e) {
 
     $('.saving-btn').on('click', function(e){
       e.preventDefault();
-      console.log("save burrrojodjso");123
       $.ajax({
           type: 'PUT',
           url: '/users/row',
@@ -170,7 +169,7 @@ $(document).ready(function(e) {
           method: 'GET',
           url: '/users/save',
           success: function(data) {
-              console.log("sdsds");
+              alert('Saved successful!');
           },
           error: function(jqXHR, textStatus, errorThrown) {
               console.log('Error saving users table to file!!!!');
