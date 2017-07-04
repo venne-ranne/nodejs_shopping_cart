@@ -29,7 +29,8 @@ $(document).ready(function(e) {
             inside = false;
         }
     });
-        // 
+
+        //
         // $.ajax({
         //     method: 'POST',
         //     url: '/collections/new',

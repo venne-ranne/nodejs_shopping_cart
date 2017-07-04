@@ -155,5 +155,4 @@ function getHeaders(res) {
     localStorage.userEmail = res.getResponseHeader('email');
     localStorage.role = res.getResponseHeader('role');
     localStorage.cartid = res.getResponseHeader('cartid');
-
 }
