@@ -14,7 +14,7 @@ In this way the client is responsible for maintaining the session.
 
 The main file of our application, this defines the express application and starts the server listening.  
 
-`GET -> /`
+`GET -> /`   
 The server renders and sends the main page of the application.
 
 ---
@@ -79,18 +79,23 @@ The server sends the users table as an array of user objects.
 An email is sent to the server for removal from the table.  
 ```
 {
-    email: example@email.com
+    email: 'example@email.com'
 }
 ```
-A database error with status 500 or for a success status 200
+Response will be a database error with status 500 or for a success status 200
 
 `PUT -> /users/row`  
 Update a users details with the new name and role given along with the the users current email.  
 ```
 {
-    email: example.com,
-    name: John Doe,
+    email: 'example.com',
+    name: 'John Doe',
+    role: 'admin'
 }
+```
+Response will be a database error with status 500 or for a success status 200
+
+`GET -> /users/save`
 
 ---
 `GET -> /admin`  

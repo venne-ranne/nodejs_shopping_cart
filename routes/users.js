@@ -10,6 +10,7 @@ var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 var hash = require('crypto').createHash('sha256');
 var expressLayouts = require('express-ejs-layouts');
+var fs = require('fs');
 
 // OAuth credentials
 var oauth2Client = new OAuth2(
@@ -187,7 +188,28 @@ router.put('/users/row', function(req, res) {
       });
 });
 
+
+
 router.get('/users/save', function(req, res) {
+    // get all users
+    pool.query(
+        'SELECT * FROM users',
+        [],
+        function(error, result) {
+            if (error) res.status(500).send('Database query error');
+            else {
+                // write to file
+                var users = JSON.stringify(result.rows);
+                var filename = __dirname + '/saves/Users-' + Date.now().toString() + '.json';
+                fs.writeFile(
+                    filename,
+                    users,
+                    function(error) {
+                        res.sendFile(filename);
+                    });
+                // serve file for download
+            }
+    });
 
 });
 
