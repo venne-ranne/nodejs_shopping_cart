@@ -8,7 +8,7 @@ $(document).ready(function(e) {
             url: '/carts/size',
             success: function(data, textStatus, response) {
                 $('#total-num-cart').text(data.total);
-            }
+            },
         });
     }
     var subtotal = 0.00;
@@ -52,11 +52,18 @@ $(document).ready(function(e) {
         var productId = this.id;
         var total_items = document.getElementById("total-num-cart").innerHTML;
         // set up the cartid number for the first-timer
+        console.log('Adding item to cart, total:' + total_items);
         if (total_items == 0){
+            console.log('No items making new cart');
+            var user = localStorage.email || 'guest';
             $.ajax({
                 method: 'POST',
                 url: '/carts',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({email:user}),
                 success: function(data) {
+                    console.log(JSON.stringify(data));
                     localStorage.cartid = data.cartid;
                     updateTotalCartNumber(productId, total_items);
                 },
@@ -118,12 +125,17 @@ $(document).ready(function(e) {
 
 // update the cart total number when an item is added to cart
 function updateTotalCartNumber(selectedItem, total_items){
+
     $.ajax({
         method: 'PUT',
         url: '/carts',
         data: JSON.stringify({ id: selectedItem }),
         contentType: 'application/json',
         dataType: 'json',
+        beforeSend: function(req) {
+            console.log('Setting cartid header : ' + localStorage.cartid);
+            req.setRequestHeader('cartid', localStorage.cartid);
+        },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log('failed to add item to cart');
         },

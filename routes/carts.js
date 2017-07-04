@@ -20,6 +20,9 @@ router.use(function(req, res, next) {
 router.get('/size', function(req, res) {
     var cartid = req.get('cartid');
     console.log(cartid);
+    if (cartid == undefined || isNaN(cartid)) {
+        res.status(200).send({total: 0});
+    } else {
     pool.query(
         'select SUM(incarts.quantity) from incarts where cartid = $1',
         [cartid],
@@ -28,14 +31,15 @@ router.get('/size', function(req, res) {
                 console.log(result.rows[0]);
                 res.status(200).send({total :result.rows[0]});
             } else {
-                res.status(420).send('Error : ' + error);
+                res.status(420).send('Insert into carts Error : ' + error);
             }
     });
+}
 });
 
 // add a product to a cart
 router.put('/', function(req, res) {
-    console.log('Adding an item to cart');
+    console.log('Adding an item to cart ' + req.body.id);
     var product = req.body.id;
     var cart = req.get('cartid');
     var user = req.get('email') || 'guest';
@@ -49,7 +53,7 @@ router.put('/', function(req, res) {
             if (!error) {
                 res.status(201).send({});
             } else {
-                res.status(500).send('Getting a cart numbert Database query error');
+                res.status(500).send('Adding item to cart Error : ' + error);
             }
     });
 });
