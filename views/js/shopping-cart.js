@@ -3,13 +3,7 @@ $(document).ready(function(e) {
         localStorage.removeItem('cartid');
         $('#total-num-cart').text(0);
     } else {
-        $.ajax({
-            method: 'GET',
-            url: '/carts/size',
-            success: function(data, textStatus, response) {
-                $('#total-num-cart').text(data.total.sum);
-            },
-        });
+        getCartSize();
     }
     var subtotal = 0.00;
 
@@ -85,7 +79,7 @@ $(document).ready(function(e) {
         $.ajax({
             method: 'DELETE',
             url: '/carts',
-            data: JSON.stringify({ id: itemId, numItems: quantity}),
+            data: JSON.stringify({ id: itemId, numItems: quantity, cartid: localStorage.cartid}),
             contentType: 'application/json',
             dataType: 'json',
             success: function(data, textStatus, response){
@@ -93,6 +87,7 @@ $(document).ready(function(e) {
                 $deleteItem.parent('li').effect('puff', function(){ $deleteItem.remove(); });
                 minusTotal = (quantity*data.products[0].price);
                 subtotal = parseFloat(subtotal-minusTotal).toFixed(2);  // two decimal points
+                getCartSize();
                 $('#total-num-cart').text(data.totalcart);
                 $('.cart-subtotal').text(' $'+subtotal);
                 console.log("item deleted from cart.");
@@ -137,16 +132,18 @@ function updateTotalCartNumber(selectedItem, total_items){
         },
         success: function(data, textStatus, response){
             console.log(localStorage.cartid);
-            $.ajax({
-                method: 'GET',
-                url: '/carts/size',
+            getCartSize();
+        }
+    });
+}
 
-                success: function(data, textStatus, response) {
-
-                    $('#total-num-cart').text(data.total.sum);
-                }
-            });
-
+// Gets the size of the shopping cart
+function getCartSize() {
+    $.ajax({
+        method: 'GET',
+        url: '/carts/size',
+        success: function(data, textStatus, response) {
+            $('#total-num-cart').text(data.total.sum);
         }
     });
 }

@@ -12,19 +12,19 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.use(expressLayouts);
 
-// // middleware for geting custom headers on request and making sure they are on the response
-// const headers = ['name', 'email', 'role', 'cartid'];
-// router.use(function(req, res, next) {
-//     console.log('Request to carts, getting/setting headers');
-//     for (var a = 0; a < headers.length; ++ a) {
-//         var header = req.get(headers[a]);
-//         if (header !== null) {
-//             res.set(headers[a], header);
-//             console.log(headers[a] + ' : ' + req.get(headers[a]));
-//         }
-//     }
-//     next();
-// });
+// middleware for geting custom headers on request and making sure they are on the response
+const headers = ['name', 'email', 'role', 'cartid'];
+router.use(function(req, res, next) {
+    console.log('Request to carts, getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        var header = req.get(headers[a]);
+        if (header !== null) {
+            res.set(headers[a], header);
+            console.log(headers[a] + ' : ' + req.get(headers[a]));
+        }
+    }
+    next();
+});
 
 // Returns the size of a users cart given a cartid
 router.get('/size', function(req, res) {
@@ -123,7 +123,7 @@ router.get('/', function(req, res) {
 
 // delete an item from the cart
 router.delete('/', function(req, res) {
-    var cartid = req.session.cartid;
+    var cartid = req.get('cartid');
     var quantity = req.body.numItems;
     var product = req.body.id;
     if (cartid != undefined && cartid !== '') {
@@ -141,8 +141,8 @@ router.delete('/', function(req, res) {
                 function(err, result) {
                     done(err);
                     if (err) res.status(500).send('Database query error');
-                    req.session.totalcart = req.session.totalcart - quantity;
-                    res.status(200).send({user: req.session.user, products:result.rows, totalcart: req.session.totalcart});
+                    //req.session.totalcart = req.session.totalcart - quantity;
+                    res.status(200).send({user: req.get('name'), products:result.rows});
             });
         });
     }
