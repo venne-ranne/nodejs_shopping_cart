@@ -24,23 +24,26 @@ $(document).ready(function(e) {
         }
     });
 
-    $('.user-table-body').on('click', '#user-save-btn', function(){
-      console.log("save burrrojodjso");
-      // $.ajax({
-      //     type: 'PUT',
-      //     url: 'users/row',
-      //     data: JSON.stringify({
-      //       email: $user_email,
-      //       role: $user_role,
-      //       name: $user_name
-      //     }),
-      //     contentType: 'application/json',
-      //     dataType: 'json',
-      //     success: function(data){
-      //         console.log("update successful...");
-      //         $('#user-edit-container').dialog('close');
-      //     }
-      // });
+    $('#saving-btn').on('click', function(e){
+      e.preventDefault();
+      console.log("save burrrojodjso");123
+      $.ajax({
+          type: 'PUT',
+          url: 'users/row',
+          data: JSON.stringify({
+            email: $user_email,
+            role: $('.user-edit-role').val(),
+            name: $('.user-edit-name').val()
+          }),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function(data){
+              console.log("update successful...");
+              $user_parent.find(".row-user-name").text($('.user-edit-name').val());
+              $user_parent.find(".row-user-role").text($('.user-edit-role').val());
+              $('#user-edit-container').dialog('close');
+          }
+      });
     });
 
     $('.user-table-body').on('click', '.row-user-edit-btn', function(){
@@ -178,45 +181,23 @@ $(document).ready(function(e) {
       $('.order-view-container').show();
     });
 
-    // $.ajax({
-    //     method: 'GET',
-    //     url: '/users/all',
-    //     success: function(data) {
-    //       for (i = 0; i < data.length; i++) {
-    //           var user = data[i];
-    //           var rowHTML = '<tr class = "order-rows">';
-    //           rowHTML += '<td class = "row-user-email">'+user.email+'</td>';
-    //           rowHTML += '<td class = "row-user-password">'+user.password+'</td>';
-    //           rowHTML += '<td class = "row-user-name">'+user.name+'</td>';
-    //           rowHTML += '<td class = "row-user-role">'+user.role+'</td>';
-    //           rowHTML += '<td><button class = "row-user-edit-btn"><span class = "modern-pic-icon">V</span></button>';
-    //           rowHTML += '<button class = "row-user-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
-    //           rowHTML += '</tr>';
-    //           $('.user-table-body').append(rowHTML);
-    //       }
-    //     },
-    //     error: function(jqXHR, textStatus, errorThrown) {
-    //         console.log('Error getting users table!!!!');
-    //     }
-    // });
-
-    if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
-        $.ajax({
-            method: 'POST',
-            url: '/collections/new',
-            success: function(data) {
-                $('.products-list').empty();   // removed the previous content
-                // get json array of products which match query in some way
-                $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
-                for (i = 0; i < 4; i++) {
-                    addProductToList(data[i]);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('Error!!!!');
-            }
-        });
-    }
+    // if ((localStorage.name != undefined && localStorage.role != 'admin') || localStorage.name == undefined ){
+    //     $.ajax({
+    //         method: 'POST',
+    //         url: '/collections/new',
+    //         success: function(data) {
+    //             $('.products-list').empty();   // removed the previous content
+    //             // get json array of products which match query in some way
+    //             $('.products-list').append('</br><span class = "title-name">NEW ARRIVAL</span></br>');
+    //             for (i = 0; i < 4; i++) {
+    //                 addProductToList(data[i]);
+    //             }
+    //         },
+    //         error: function(jqXHR, textStatus, errorThrown) {
+    //             console.log('Error!!!!');
+    //         }
+    //     });
+    // }
 
 });
 
@@ -250,6 +231,27 @@ function admin_dashboard(){
                 $('.table-body').append(rowHTML);
             }
 
+        }
+    });
+    $.ajax({
+        method: 'GET',
+        url: '/users/all',
+        success: function(data) {
+          for (i = 0; i < data.length; i++) {
+              var user = data[i];
+              var rowHTML = '<tr class = "order-rows">';
+              rowHTML += '<td class = "row-user-email">'+user.email+'</td>';
+              rowHTML += '<td class = "row-user-password">'+user.password+'</td>';
+              rowHTML += '<td class = "row-user-name">'+user.name+'</td>';
+              rowHTML += '<td class = "row-user-role">'+user.role+'</td>';
+              rowHTML += '<td><button class = "row-user-edit-btn"><span class = "modern-pic-icon">V</span></button>';
+              rowHTML += '<button class = "row-user-delete-btn"><span class = "modern-pic-icon">X<span></button></td>';
+              rowHTML += '</tr>';
+              $('.user-table-body').append(rowHTML);
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('Error getting users table!!!!');
         }
     });
 }
