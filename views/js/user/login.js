@@ -8,7 +8,7 @@ function start() {
 }
 
 $(document).ready(function(e) {
-    if (localStorage.name == undefined){
+    if (localStorage.name == undefined || localStorage.name === 'null'){
         $('#logout-li').hide();
         $('#admin-container').hide();
     } else {

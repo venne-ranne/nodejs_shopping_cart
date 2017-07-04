@@ -24,12 +24,12 @@ $(document).ready(function(e) {
         }
     });
 
-    $('#saving-btn').on('click', function(e){
+    $('.saving-btn').on('click', function(e){
       e.preventDefault();
       console.log("save burrrojodjso");123
       $.ajax({
           type: 'PUT',
-          url: 'users/row',
+          url: '/users/row',
           data: JSON.stringify({
             email: $user_email,
             role: $('.user-edit-role').val(),
@@ -88,7 +88,7 @@ $(document).ready(function(e) {
         // remove a row in users table
         $.ajax({
             type: 'DELETE',
-            url: 'users/row',
+            url: '/users/row',
             data: JSON.stringify({ email:  $email}),
             contentType: 'application/json',
             dataType: 'json',
