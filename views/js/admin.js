@@ -7,9 +7,7 @@ $(document).ready(function(e) {
         minHeight: 380,
         minWidth: 500,
         close: function(){  // to reset the textfield to the default values
-            $('#login-dialog [type=email]').val('');
-            $('#login-dialog [type=password]').val('');
-            $('#login-dialog [type=text]').val('');
+            $('#order-edit-container [type=text]').val('');
         }
     });
 
@@ -62,6 +60,31 @@ $(document).ready(function(e) {
         $('.user-edit-role').val($user_role);
     });
 
+    $('.table-body').on('click', '.row-edit-btn', function(){
+        $('#order-edit-container').dialog('open');
+        $item_selectedRow = $(this);
+        $item_parent = $item_selectedRow.closest("tr");
+        $item_cartid = $item_parent.find(".row-cartid").text();
+        $item_date = $item_parent.find(".row-date").text();
+        $item_email = $item_parent.find(".row-user").text();
+        $('.item-edit-cartid').prop('readonly', true);
+        $('.item-edit-email').prop('readonly', true);
+        $('.item-edit-date').prop('readonly', true);
+        $('.item-edit-cartid').val($item_cartid);
+        $('.item-edit-email').val($item_email);
+        $('.item-edit-date').val($item_date);
+        $.ajax({
+            type: 'GET',
+            url: '/carts',
+            data: JSON.stringify({
+              cartid: $item_cartid,
+          }),
+            success: function(data){
+                console.log("get all carts successful...");
+            }
+        });
+    });
+
     $('.table-body').on('click', '.row-delete-btn', function(){
         var $selectedRow = $(this);
         var $parent = $selectedRow.closest("tr");
@@ -77,6 +100,9 @@ $(document).ready(function(e) {
             success: function(data){
                 console.log("remove successful...");
                 $parent.remove();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('Server failed to provide cart list');
             }
         });
     });

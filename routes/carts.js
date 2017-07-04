@@ -14,17 +14,17 @@ router.use(expressLayouts);
 
 // middleware for geting custom headers on request and making sure they are on the response
 const headers = ['name', 'email', 'role', 'cartid'];
-router.use(function(req, res, next) {
-    console.log('Request to carts, getting/setting headers');
-    for (var a = 0; a < headers.length; ++ a) {
-        var header = req.get(headers[a]);
-        if (header !== null) {
-            res.set(headers[a], header);
-            console.log(headers[a] + ' : ' + req.get(headers[a]));
-        }
-    }
-    next();
-});
+// router.use(function(req, res, next) {
+//     console.log('Request to carts, getting/setting headers');
+//     for (var a = 0; a < headers.length; ++ a) {
+//         var header = req.get(headers[a]);
+//         if (header !== null) {
+//             res.set(headers[a], header);
+//             console.log(headers[a] + ' : ' + req.get(headers[a]));
+//         }
+//     }
+//     next();
+// });
 
 // Returns the size of a users cart given a cartid
 router.get('/size', function(req, res) {
