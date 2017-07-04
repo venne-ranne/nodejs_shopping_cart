@@ -45,6 +45,19 @@ app.use('/collections', collections);
 // shopping cart functionality
 app.use('/carts', carts);
 
+const headers = ['name', 'email', 'role', 'cartid'];
+app.use(function(req, res, next) {
+    console.log('Request to users getting/setting headers');
+    for (var a = 0; a < headers.length; ++ a) {
+        var header = req.get(headers[a])
+        if (header !== null) {
+            res.set(headers[a], header);
+            console.log(headers[a] + ' : ' + req.get(headers[a]));
+        }
+    }
+    next();
+});
+
 // set up template engine
 app.set('view engine', 'ejs');
 app.use(expressLayouts);

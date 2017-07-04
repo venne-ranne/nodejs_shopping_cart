@@ -16,7 +16,7 @@ $(document).ready(function(e) {
                     }
                     $('.products-list').empty();   // removed the previous content
                     // if the result is 0
-                    if (data == "NOT FOUND"){
+                    if (data == "NOT FOUND" || data == undefined){
                         $('.result-label').text("0 results");
                         return;
                     }
