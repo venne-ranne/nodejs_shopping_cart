@@ -1,4 +1,6 @@
 # Welcome to the project repository for Group 6
+Preview demo [Black Rabbit] (https://guarded-falls-74429.herokuapp.com/)
+
 ## Team members
 - [Adam Faulkner](@faulknadam)
 - [Vivienne Yapp](@yappvivi)
